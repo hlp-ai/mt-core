@@ -1,4 +1,3 @@
-"""Module defining learning rate schedules."""
 
 from yimt.optimizers.lr_schedules import (
     CosineAnnealing,
@@ -10,3 +9,5 @@ from yimt.optimizers.lr_schedules import (
     make_learning_rate_schedule,
     register_learning_rate_schedule,
 )
+
+from yimt.optimizers.utils import make_optimizer, register_optimizer
