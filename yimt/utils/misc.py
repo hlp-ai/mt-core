@@ -1,4 +1,5 @@
 import functools
+import tensorflow as tf
 
 
 class ClassRegistry(object):
@@ -62,3 +63,25 @@ class ClassRegistry(object):
         in the registry.
         """
         return self._registry.get(name)
+
+
+def shape_list(x):
+    """Return list of dims, statically where possible."""
+    x = tf.convert_to_tensor(x)
+    if tf.executing_eagerly():
+        return x.shape.as_list()
+
+    # If unknown rank, return dynamic shape
+    if x.shape.dims is None:
+        return tf.shape(x)
+
+    static = x.shape.as_list()
+    shape = tf.shape(x)
+
+    ret = []
+    for i, _ in enumerate(static):
+        dim = static[i]
+        if dim is None:
+            dim = shape[i]
+        ret.append(dim)
+    return ret
