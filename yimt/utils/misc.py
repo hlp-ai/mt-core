@@ -1,4 +1,6 @@
 import functools
+import sys
+
 import tensorflow as tf
 
 
@@ -85,3 +87,18 @@ def shape_list(x):
             dim = shape[i]
         ret.append(dim)
     return ret
+
+
+def print_as_bytes(text, stream=None):
+    """Prints a string as bytes to not rely on :obj:`stream` default encoding.
+
+    Args:
+      text: The text to print.
+      stream: The stream to print to (``sys.stdout`` if not set).
+    """
+    if stream is None:
+        stream = sys.stdout
+    write_buffer = stream.buffer if hasattr(stream, "buffer") else stream
+    write_buffer.write(tf.compat.as_bytes(text))
+    write_buffer.write(b"\n")
+    stream.flush()
