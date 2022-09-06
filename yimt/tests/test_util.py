@@ -15,7 +15,7 @@ def get_test_data_dir():
 
 
 def make_data_file(path, lines):
-    with open(path, "w") as data:
+    with open(path, "w", encoding="utf-8") as data:
         for line in lines:
             data.write("%s\n" % line)
     return path
