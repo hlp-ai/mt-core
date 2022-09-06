@@ -11,7 +11,7 @@ class Vocab(object):
 
     Example:
 
-      >>> vocab = opennmt.data.Vocab.from_file("wmtende.vocab")
+      >>> vocab = yimt.data.Vocab.from_file("wmtende.vocab")
       >>> len(vocab)
       32000
       >>> "be" in vocab
