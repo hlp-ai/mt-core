@@ -16,7 +16,7 @@ class WordNoiser(object):
         """Initializes the noising class.
 
         Args:
-          noises: A list of :class:`opennmt.data.Noise` instances to apply
+          noises: A list of :class:`yimt.data.Noise` instances to apply
             sequentially.
           subword_token: The special token used by the subword tokenizer. This is
             required when the noise should be applied at the word level and not the
@@ -26,7 +26,7 @@ class WordNoiser(object):
             directly from :obj:`subword_token`.
 
         See Also:
-          :func:`opennmt.data.tokens_to_words`
+          :func:`yimt.data.tokens_to_words`
         """
         if noises is None:
             noises = []
@@ -220,7 +220,7 @@ class WordDropout(Noise):
 class WordOmission(Noise):
     """Randomly omits words in a sequence.
 
-    This is different than :class:`opennmt.data.WordDropout` as it drops a
+    This is different than :class:`yimt.data.WordDropout` as it drops a
     fixed number of words.
 
     Example:

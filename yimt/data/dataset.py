@@ -352,7 +352,7 @@ def batch_dataset(batch_size, padded_shapes=None):
       A ``tf.data.Dataset`` transformation.
 
     See Also:
-      :func:`opennmt.data.batch_sequence_dataset`
+      :func:`yimt.data.batch_sequence_dataset`
     """
     return lambda dataset: dataset.padded_batch(
         batch_size, padded_shapes=padded_shapes or _get_output_shapes(dataset)
@@ -415,7 +415,7 @@ def batch_sequence_dataset(
         match the number of parallel elements.
 
     See Also:
-      :func:`opennmt.data.batch_dataset`
+      :func:`yimt.data.batch_dataset`
     """
     batch_size = batch_size * batch_multiplier
 
@@ -563,11 +563,11 @@ def training_pipeline(
       A ``tf.data.Dataset`` transformation.
 
     See Also:
-      - :func:`opennmt.data.batch_sequence_dataset`
-      - :func:`opennmt.data.make_cardinality_multiple_of`
-      - :func:`opennmt.data.filter_examples_by_length`
-      - :func:`opennmt.data.filter_irregular_batches`
-      - :func:`opennmt.data.shuffle_dataset`
+      - :func:`yimt.data.batch_sequence_dataset`
+      - :func:`yimt.data.make_cardinality_multiple_of`
+      - :func:`yimt.data.filter_examples_by_length`
+      - :func:`yimt.data.filter_irregular_batches`
+      - :func:`yimt.data.shuffle_dataset`
     """
     if dataset_size is not None and num_shards > 1:
         # Update dataset_size based on the shard size.
