@@ -1,6 +1,7 @@
 import collections
 import copy
 import functools
+import heapq
 import io
 import sys
 
@@ -400,3 +401,156 @@ def extract_batches(tensors):
             batch_size = batch_size or value.shape[0]
         for b in range(batch_size):
             yield {key: value[b] for key, value in tensors.items()}
+
+
+def enable_mixed_precision(force=False):
+    """Globally enables mixed precision if the detected hardware supports it.
+
+    Args:
+      force: Set ``True`` to force mixed precision mode even if the hardware
+        does not support it.
+
+    Returns:
+      A boolean to indicate whether mixed precision was enabled or not.
+    """
+    if not force:
+        gpu_devices = tf.config.get_visible_devices("GPU")
+        if not gpu_devices:
+            tf.get_logger().warning("Mixed precision not enabled: no GPU is detected")
+            return False
+
+        gpu_details = tf.config.experimental.get_device_details(gpu_devices[0])
+        compute_capability = gpu_details.get("compute_capability")
+        if compute_capability is None:
+            tf.get_logger().warning(
+                "Mixed precision not enabled: a NVIDIA GPU is required"
+            )
+            return False
+        if compute_capability < (7, 0):
+            tf.get_logger().warning(
+                "Mixed precision not enabled: a NVIDIA GPU with compute "
+                "capability 7.0 or above is required, but the detected GPU "
+                "has compute capability %d.%d" % compute_capability
+            )
+            return False
+
+    tf.keras.mixed_precision.set_global_policy("mixed_float16")
+    return True
+
+
+def disable_mixed_precision():
+    """Globally disables mixed precision."""
+    tf.keras.mixed_precision.set_global_policy("float32")
+
+
+def mixed_precision_enabled():
+    """Returns ``True`` if mixed precision is enabled."""
+    policy = tf.keras.mixed_precision.global_policy()
+    return "float16" in policy.name
+
+
+class OrderRestorer(object):
+    """Helper class to restore out-of-order elements in order."""
+
+    def __init__(self, index_fn, callback_fn):
+        """Initializes this object.
+
+        Args:
+          index_fn: A callable mapping an element to a unique index.
+          callback_fn: A callable taking an element that will be called in order.
+        """
+        self._index_fn = index_fn
+        self._callback_fn = callback_fn
+        self._next_index = 0
+        self._elements = {}
+        self._heap = []
+
+    @property
+    def buffer_size(self):
+        """Number of elements waiting to be notified."""
+        return len(self._heap)
+
+    @property
+    def next_index(self):
+        """The next index to be notified."""
+        return self._next_index
+
+    def _try_notify(self):
+        old_index = self._next_index
+        while self._heap and self._heap[0] == self._next_index:
+            index = heapq.heappop(self._heap)
+            value = self._elements.pop(index)
+            self._callback_fn(value)
+            self._next_index += 1
+        return self._next_index != old_index
+
+    def push(self, x):
+        """Push event :obj:`x`."""
+        index = self._index_fn(x)
+        if index is None:
+            self._callback_fn(x)
+            return True
+        if index < self._next_index:
+            raise ValueError("Event index %d was already notified" % index)
+        self._elements[index] = x
+        heapq.heappush(self._heap, index)
+        return self._try_notify()
+
+
+def read_summaries(event_dir, event_file_pattern="events.out.tfevents.*"):
+    """Reads summaries from TensorFlow event files.
+
+    Args:
+      event_dir: Directory containing event files.
+      event_file_pattern: The pattern to look for event files.
+
+    Returns:
+      A list of tuple (step, dict of summaries), sorted by step.
+    """
+    if not tf.io.gfile.exists(event_dir):
+        return []
+    summaries = collections.defaultdict(dict)
+    for event_file in tf.io.gfile.glob(os.path.join(event_dir, event_file_pattern)):
+        for event in tf.compat.v1.train.summary_iterator(event_file):
+            if not event.HasField("summary"):
+                continue
+            for value in event.summary.value:
+                tensor_proto = value.tensor
+                tensor = tf.io.parse_tensor(
+                    tensor_proto.SerializeToString(), tf.as_dtype(tensor_proto.dtype)
+                )
+                summaries[event.step][value.tag] = tf.get_static_value(tensor)
+    return list(sorted(summaries.items(), key=lambda x: x[0]))
+
+
+def get_devices(count=1, fallback_to_cpu=True):
+    """Gets devices.
+
+    Args:
+      count: The number of devices to get.
+      fallback_to_cpu: If ``True``, return CPU devices if no GPU is available.
+
+    Returns:
+      A list of device names.
+
+    Raises:
+      ValueError: if :obj:`count` is greater than the number of visible devices.
+    """
+    device_type = "GPU"
+    devices = tf.config.list_logical_devices(device_type=device_type)
+    if not devices and fallback_to_cpu:
+        tf.get_logger().warning("No GPU is detected, falling back to CPU")
+        device_type = "CPU"
+        devices = tf.config.list_logical_devices(device_type=device_type)
+    if len(devices) < count:
+        raise ValueError(
+            "Requested %d %s devices but %d %s %s visible"
+            % (
+                count,
+                device_type,
+                len(devices),
+                device_type,
+                "is" if len(devices) == 1 else "are",
+            )
+        )
+    return devices[0:count]
