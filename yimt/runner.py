@@ -57,7 +57,7 @@ class Runner(object):
         """Initializes the runner parameters.
 
         Args:
-          model: A :class:`opennmt.models.Model` instance to run or a callable that
+          model: A :class:`yimt.models.Model` instance to run or a callable that
             returns such instance.
           config: The run configuration.
           auto_config: If ``True``, use automatic configuration values defined by
@@ -66,7 +66,7 @@ class Runner(object):
           seed: The random seed to set.
 
         Raises:
-          TypeError: if :obj:`model` is not a :class:`opennmt.models.Model` instance
+          TypeError: if :obj:`model` is not a :class:`yimt.models.Model` instance
             or a callable.
         """
         if isinstance(model, models.Model):
@@ -77,9 +77,9 @@ class Runner(object):
             self._model_fn = model
         else:
             raise TypeError(
-                "model should be a opennmt.models.Model instance or a callable"
+                "model should be a yimt.models.Model instance or a callable"
             )
-        tf.get_logger().info("Using OpenNMT-tf version %s", __version__)
+        tf.get_logger().info("Using YiMT version %s", __version__)
         tf.get_logger().info("Using model:\n%s", self._model)
         self._optimizer = None
         self._config = copy.deepcopy(config)
@@ -97,7 +97,7 @@ class Runner(object):
 
     @property
     def model(self):
-        """The :class:`opennmt.models.Model` executed by this runner."""
+        """The :class:`yimt.models.Model` executed by this runner."""
         return self._model
 
     @property
@@ -447,8 +447,8 @@ class Runner(object):
         Args:
           export_dir: The export directory.
           checkpoint_path: The checkpoint path to export. If ``None``, the latest is used.
-          exporter: A :class:`opennmt.utils.Exporter` instance. Defaults to
-            :class:`opennmt.utils.SavedModelExporter`.
+          exporter: A :class:`yimt.utils.Exporter` instance. Defaults to
+            :class:`yimt.utils.SavedModelExporter`.
         """
         config = self._finalize_config()
         model = self._init_model(config)
@@ -577,7 +577,7 @@ def _auto_tune_batch_size(
             args = [
                 sys.executable or "python",
                 "-m",
-                "opennmt.bin.main",
+                "yimt.bin.main",
                 "--log_level",
                 "ERROR",
                 "--config",

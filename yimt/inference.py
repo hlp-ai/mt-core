@@ -14,13 +14,13 @@ def predict_dataset(
     """Outputs the model predictions for the dataset.
 
     To run inference on strings directly, see
-    :meth:`opennmt.models.Model.serve_function`.
+    :meth:`yimt.models.Model.serve_function`.
 
     Args:
-      model: A :class:`opennmt.models.Model` instance.
+      model: A :class:`yimt.models.Model` instance.
       dataset: A ``tf.data.Dataset`` instance outputting features.
       print_params: A dictionary of parameters passed to
-        :meth:`opennmt.models.Model.print_prediction`.
+        :meth:`yimt.models.Model.print_prediction`.
       predictions_file: If set, predictions are saved in this file, otherwise they
         are printed on the standard output.
       log_time: If ``True``, several time metrics will be printed in the logs at
@@ -101,11 +101,11 @@ def score_dataset(model, dataset, print_params=None, output_file=None):
     """Outputs the model scores for the dataset.
 
     Args:
-      model: A :class:`opennmt.models.Model` instance.
+      model: A :class:`yimt.models.Model` instance.
       dataset: A ``tf.data.Dataset`` instance outputting parallel features and
         labels.
       print_params: A dictionary of parameters passed to
-        :meth:`opennmt.models.Model.print_score`.
+        :meth:`yimt.models.Model.print_score`.
       output_file: If set, outputs are saved in this file, otherwise they are
         printed on the standard output.
     """

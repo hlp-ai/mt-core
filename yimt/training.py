@@ -19,9 +19,9 @@ class Trainer:
         """Initializes the trainer.
 
         Args:
-          model: A :class:`opennmt.models.Model` instance to train.
+          model: A :class:`yimt.models.Model` instance to train.
           optimizer: A ``tf.keras.optimizers.Optimizer`` instance.
-          checkpoint: A :class:`opennmt.utils.checkpoint.Checkpoint` instance. If
+          checkpoint: A :class:`yimt.utils.checkpoint.Checkpoint` instance. If
             not set, no checkpoints will be saved.
         """
         self._checkpoint = checkpoint
@@ -72,7 +72,7 @@ class Trainer:
           accum_steps: The number of gradient accumulation steps.
           report_steps: Report status every this many steps.
           save_steps: Save a checkpoint every this many steps.
-          evaluator: A :class:`opennmt.evaluation.Evaluator` instance to call for
+          evaluator: A :class:`yimt.evaluation.Evaluator` instance to call for
             evaluation.
           eval_steps: Evaluate every this many steps.
           moving_average_decay: If set, maintain an exponential moving average of the model
@@ -351,10 +351,10 @@ class HorovodTrainer(Trainer):
         """Initializes the Horovod trainer.
 
         Args:
-          model: A :class:`opennmt.models.Model` instance to train.
+          model: A :class:`yimt.models.Model` instance to train.
           optimizer: A ``tf.keras.optimizers.Optimizer`` instance.
           hvd: The global Horovod object.
-          checkpoint: A :class:`opennmt.utils.checkpoint.Checkpoint` instance. If
+          checkpoint: A :class:`yimt.utils.checkpoint.Checkpoint` instance. If
             not set, no checkpoints will be saved.
         """
         super().__init__(model, optimizer, checkpoint=checkpoint)
@@ -397,9 +397,9 @@ class MirroredStrategyTrainer(Trainer):
         """Initializes the MirroredStrategy trainer.
 
         Args:
-          model: A :class:`opennmt.models.Model` instance to train.
+          model: A :class:`yimt.models.Model` instance to train.
           optimizer: A ``tf.keras.optimizers.Optimizer`` instance.
-          checkpoint: A :class:`opennmt.utils.checkpoint.Checkpoint` instance. If
+          checkpoint: A :class:`yimt.utils.checkpoint.Checkpoint` instance. If
             not set, no checkpoints will be saved.
           devices: List of device strings to use for training. If not set, all
             visible GPUs are used.

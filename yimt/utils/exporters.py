@@ -47,7 +47,7 @@ def make_exporter(name, **kwargs):
       **kwargs: Additional arguments to pass to the exporter constructor.
 
     Returns:
-      A :class:`opennmt.utils.Exporter` instance.
+      A :class:`yimt.utils.Exporter` instance.
 
     Raises:
       ValueError: if :obj:`name` is invalid.

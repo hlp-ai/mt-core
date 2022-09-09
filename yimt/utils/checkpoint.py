@@ -16,7 +16,7 @@ class Checkpoint(object):
         """Initializes the wrapper.
 
         Args:
-          model: A :class:`opennmt.models.Model` to save.
+          model: A :class:`yimt.models.Model` to save.
           optimizer: The optimizer instance.
           model_dir: The directory where checkpoints will be saved. If not set, a
             temporary directory will be used.
@@ -42,11 +42,11 @@ class Checkpoint(object):
 
         Args:
           config: The user configuration.
-          model: A :class:`opennmt.models.Model` to save.
+          model: A :class:`yimt.models.Model` to save.
           optimizer: The optimizer instance.
 
         Returns:
-          A :class:`opennmt.utils.Checkpoint` instance.
+          A :class:`yimt.utils.Checkpoint` instance.
         """
         train_config = config.get("train")
         if train_config is None:
@@ -174,7 +174,7 @@ def average_checkpoints(
       ValueError: if no checkpoints are found in :obj:`model_dir`.
 
     See Also:
-      :func:`opennmt.utils.average_checkpoints_into_layer`
+      :func:`yimt.utils.average_checkpoints_into_layer`
     """
     if model_dir == output_dir:
         raise ValueError("Model and output directory must be different")
@@ -214,7 +214,7 @@ def average_checkpoints_into_layer(checkpoints, layer, layer_prefix):
       ValueError: if :obj:`layer` is not already built.
 
     See Also:
-      :func:`opennmt.utils.average_checkpoints`
+      :func:`yimt.utils.average_checkpoints`
     """
     if not checkpoints:
         raise ValueError("There should be at least one checkpoint")

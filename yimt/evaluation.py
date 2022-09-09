@@ -40,7 +40,7 @@ class Evaluator(object):
         """Initializes the evaluator.
 
         Args:
-          model: A :class:`opennmt.models.Model` to evaluate.
+          model: A :class:`yimt.models.Model` to evaluate.
           features_file: Path to the evaluation features.
           labels_file: Path to the evaluation labels.
           batch_size: The evaluation batch size.
@@ -56,8 +56,8 @@ class Evaluator(object):
           model_dir: The active model directory.
           export_on_best: Export a model when this evaluation metric has the
             best value so far.
-          exporter: A :class:`opennmt.utils.Exporter` instance to export the model.
-            Defaults to :class:`opennmt.utils.SavedModelExporter`.
+          exporter: A :class:`yimt.utils.Exporter` instance to export the model.
+            Defaults to :class:`yimt.utils.SavedModelExporter`.
           max_exports_to_keep: Maximum number of exports to keep. Older exports will
             be garbage collected. Set to ``None`` to keep all exports.
 
@@ -147,7 +147,7 @@ class Evaluator(object):
         """Creates an evaluator from the configuration.
 
         Args:
-          model: A :class:`opennmt.models.Model` to evaluate.
+          model: A :class:`yimt.models.Model` to evaluate.
           config: The global user configuration.
           features_file: Optional input features file to evaluate. If not set, will
             load ``eval_features_file`` from the data configuration.
@@ -155,7 +155,7 @@ class Evaluator(object):
             ``eval_labels_file`` from the data configuration.
 
         Returns:
-          A :class:`opennmt.evaluation.Evaluator` instance.
+          A :class:`yimt.evaluation.Evaluator` instance.
 
         Raises:
           ValueError: for supervised models, if one of :obj:`features_file` and

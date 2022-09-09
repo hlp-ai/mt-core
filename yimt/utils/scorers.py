@@ -152,7 +152,7 @@ def make_scorers(names):
       names: A list of scorer names or a single name.
 
     Returns:
-      A list of :class:`opennmt.utils.Scorer` instances.
+      A list of :class:`yimt.utils.Scorer` instances.
 
     Raises:
       ValueError: if a scorer name is invalid.

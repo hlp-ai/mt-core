@@ -1,6 +1,6 @@
 """YiMT module."""
 
-from opennmt.version import __version__, _check_tf_version
+from yimt.version import __version__, _check_tf_version
 
 _check_tf_version()
 
