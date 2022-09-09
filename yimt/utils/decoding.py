@@ -35,7 +35,7 @@ class Sampler(abc.ABC):
           params: A dictionary of user parameters.
 
         Returns:
-          A :class:`opennmt.utils.Sampler` instance.
+          A :class:`yimt.utils.Sampler` instance.
         """
         sampling_topk = params.get("sampling_topk", 1)
         if sampling_topk == 1:
@@ -101,7 +101,7 @@ class DecodingStrategy(abc.ABC):
           tflite_mode: boolean, should be set to True only if you're exporting with TensorFlow Lite
 
         Returns:
-          A :class:`opennmt.utils.DecodingStrategy` instance.
+          A :class:`yimt.utils.DecodingStrategy` instance.
         """
         beam_size = params.get("beam_width", 1)
         if beam_size > 1:
@@ -449,9 +449,9 @@ def dynamic_decode(
       start_ids: Initial input IDs of shape :math:`[B]`.
       end_id: ID of the end of sequence token.
       initial_state: Initial decoder state.
-      decoding_strategy: A :class:`opennmt.utils.DecodingStrategy`
+      decoding_strategy: A :class:`yimt.utils.DecodingStrategy`
         instance that defines the decoding logic. Defaults to a greedy search.
-      sampler: A :class:`opennmt.utils.Sampler` instance that samples
+      sampler: A :class:`yimt.utils.Sampler` instance that samples
         predictions from the model output. Defaults to an argmax sampling.
       maximum_iterations: The maximum number of iterations to decode for.
       minimum_iterations: The minimum number of iterations to decode for.
@@ -461,7 +461,7 @@ def dynamic_decode(
       tflite_output_size: If not None will run TFLite safe, is the size of 1D output tensor.
 
     Returns:
-      A :class:`opennmt.utils.DecodingResult` instance.
+      A :class:`yimt.utils.DecodingResult` instance.
     """
     if initial_state is None:
         initial_state = {}

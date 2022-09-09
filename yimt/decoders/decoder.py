@@ -65,7 +65,7 @@ class Decoder(tf.keras.layers.Layer):
         """Initializes the decoder parameters.
 
         If you don't set one of :obj:`vocab_size` or :obj:`output_layer` here,
-        you should later call the method :meth:`opennmt.decoders.Decoder.initialize`
+        you should later call the method :meth:`yimt.decoders.Decoder.initialize`
         to initialize this decoder instance.
 
         Args:
