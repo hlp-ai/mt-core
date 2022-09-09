@@ -3,6 +3,7 @@ import functools
 import sys
 
 import tensorflow as tf
+from tensorflow.python.training.tracking import graph_view
 
 
 class ClassRegistry(object):
@@ -188,3 +189,33 @@ def extract_suffixed_keys(dictionary, suffix):
             original_key = key[: -len(suffix)]
             sub_dict[original_key] = value
     return sub_dict
+
+
+def get_variables_name_mapping(root, root_key=None):
+    """Returns mapping between variables and their name in the object-based
+    representation.
+
+    Args:
+      root: The root layer.
+      root_key: Key that was used to save :obj:`root`, if any.
+
+    Returns:
+      A dict mapping names to variables.
+    """
+    # TODO: find a way to implement this function using public APIs.
+    names_to_variables = {}
+    _, path_to_root = graph_view.ObjectGraphView(root)._breadth_first_traversal()
+    for path in path_to_root.values():
+        if not path:
+            continue
+        variable = path[-1].ref
+        if not isinstance(variable, tf.Variable):
+            continue
+        name = "%s/%s" % (
+            "/".join(field.name for field in path),
+            ".ATTRIBUTES/VARIABLE_VALUE",
+        )
+        if root_key is not None:
+            name = "%s/%s" % (root_key, name)
+        names_to_variables[name] = variable
+    return names_to_variables
