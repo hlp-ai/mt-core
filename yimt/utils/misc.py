@@ -1,4 +1,5 @@
 import collections
+import copy
 import functools
 import sys
 
@@ -219,3 +220,8 @@ def get_variables_name_mapping(root, root_key=None):
             name = "%s/%s" % (root_key, name)
         names_to_variables[name] = variable
     return names_to_variables
+
+
+def clone_layer(layer):
+    """Clones a layer."""
+    return copy.deepcopy(layer)
