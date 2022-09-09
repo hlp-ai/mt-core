@@ -123,27 +123,7 @@ class Checkpoint(object):
         if checkpoint_path is None:
             tf.get_logger().warning("No checkpoint to restore in %s", self._model_dir)
             return None
-        if is_v1_checkpoint(checkpoint_path):
-            tf.get_logger().info("Upgrading V1 checkpoint...")
-            # Work with copies of model and optimizer as the downstream task might
-            # need to create the variable differently (e.g. under a distribution
-            # strategy scope).
-            tmp_model = misc.clone_layer(self._model)
-            tmp_optimizer = (
-                copy.deepcopy(self._optimizer) if self._optimizer is not None else None
-            )
-            tmp_model.create_variables(optimizer=tmp_optimizer)
-            step = _restore_v1_checkpoint(
-                checkpoint_path, tmp_model, optimizer=tmp_optimizer
-            )
-            # Save an updated checkpoint in the model directory and restore this one instead.
-            tmp_checkpoint = Checkpoint(
-                tmp_model, optimizer=tmp_optimizer, model_dir=self._model_dir
-            )
-            checkpoint_path = tmp_checkpoint.save(step)
-            return self.restore(
-                checkpoint_path=checkpoint_path, weights_only=weights_only
-            )
+
         load_status = checkpoint.restore(checkpoint_path)
         load_status.expect_partial()
         tf.get_logger().info("Restored checkpoint %s", checkpoint_path)
@@ -153,15 +133,6 @@ class Checkpoint(object):
 def get_step_from_checkpoint_prefix(prefix):
     """Extracts the training step from the checkpoint file prefix."""
     return int(prefix.split("-")[-1])
-
-
-def is_v1_checkpoint(checkpoint_path):
-    """Returns ``True`` if the checkpoint at :obj:`checkpoint_path` has been
-    trained with OpenNMT-tf v1.
-    """
-    if tf.io.gfile.isdir(checkpoint_path):
-        checkpoint_path = tf.train.latest_checkpoint(checkpoint_path)
-    return os.path.basename(checkpoint_path).startswith("model")
 
 
 def get_checkpoint_variables(checkpoint_path):
@@ -272,39 +243,6 @@ def average_checkpoints_into_layer(checkpoints, layer, layer_prefix):
 
 _V1_OPTIM_SCOPE = "optim"
 _V1_SLOTS_MAPPING = {"Adam": "m", "Adam_1": "v"}
-
-
-def _restore_v1_checkpoint(checkpoint_path, model, optimizer=None):
-    v1_variables = get_checkpoint_variables(checkpoint_path)
-    v1_structure = _variables_to_structure(v1_variables)
-    step = v1_structure["global_step"]
-    if optimizer is not None:
-        optimizer.iterations.assign(step)
-        if _V1_OPTIM_SCOPE in v1_structure:
-            slots = v1_structure[_V1_OPTIM_SCOPE]
-            del v1_structure[_V1_OPTIM_SCOPE]
-            v1_structure = _merge_optimizer_slots(v1_structure, slots)
-    mapping = model.map_v1_weights(v1_structure)
-    existing_variables = set(variable.ref() for variable in model.variables)
-    mapped_variables = set(variable.ref() for variable, _ in mapping)
-    missing_mapping = existing_variables.difference(mapped_variables)
-    if missing_mapping:
-        raise ValueError(
-            "The following variables were not mapped: %s"
-            % (", ".join(var.name for var in missing_mapping))
-        )
-    # Assign each variable and possibly the optimizer slots.
-    for v2_variable, v1_variable in mapping:
-        if isinstance(v1_variable, tuple):
-            v1_variable, v1_slots = v1_variable
-        else:
-            v1_slots = None
-        v2_variable.assign(v1_variable)
-        if v1_slots is not None:
-            for slot_name, value in v1_slots.items():
-                v2_slot = optimizer.get_slot(v2_variable, slot_name)
-                v2_slot.assign(value)
-    return step
 
 
 def _variables_to_structure(variables):
