@@ -270,7 +270,7 @@ def make_tokenizer(config=None):
         YAML configuration file, or a JSON string.
 
     Returns:
-      A :class:`opennmt.tokenizers.Tokenizer` instance.
+      A :class:`yimt.tokenizers.Tokenizer` instance.
 
     Raises:
       ValueError: if :obj:`config` is invalid.

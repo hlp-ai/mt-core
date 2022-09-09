@@ -50,7 +50,7 @@ def make_learning_rate_schedule(
       initial_learning_rate: The initial learning rate value. This can be
         ``None`` if the learning rate is fully defined by the schedule.
       schedule_type: The type of learning rate schedule. A class name from
-        ``tf.keras.optimizers.schedules`` or :mod:`opennmt.schedules` as a string.
+        ``tf.keras.optimizers.schedules`` or :mod:`yimt.schedules` as a string.
       schedule_params: Additional parameters passed to the schedule constructor.
       schedule_step_duration: The number of training steps that make 1 schedule step.
       start_step: Start the schedule after this many steps.
@@ -64,7 +64,7 @@ def make_learning_rate_schedule(
         schedule.
 
     See Also:
-      :class:`opennmt.schedules.ScheduleWrapper`
+      :class:`yimt.schedules.ScheduleWrapper`
     """
     if schedule_params is None:
         schedule_params = {}
@@ -97,7 +97,7 @@ class ScheduleWrapper(tf.keras.optimizers.schedules.LearningRateSchedule):
           minimum_learning_rate: Do not decay past this learning rate value.
 
         See Also:
-          :class:`opennmt.schedules.make_learning_rate_schedule`
+          :class:`yimt.schedules.make_learning_rate_schedule`
         """
         self.schedule = schedule
         self.step_start = step_start
@@ -148,7 +148,7 @@ class RsqrtDecay(tf.keras.optimizers.schedules.LearningRateSchedule):
                                             {\sqrt{\max(\text{step},\text{warmup_steps})}}
 
     See also:
-      - :class:`opennmt.schedules.InvSqrtDecay`
+      - :class:`yimt.schedules.InvSqrtDecay`
     """
 
     def __init__(self, scale, warmup_steps):
@@ -188,7 +188,7 @@ class InvSqrtDecay(tf.keras.optimizers.schedules.LearningRateSchedule):
                                        \sqrt{\frac{\text{warmup_steps}}{\text{step}}}
 
     See also:
-      - :class:`opennmt.schedules.RsqrtDecay`
+      - :class:`yimt.schedules.RsqrtDecay`
     """
 
     def __init__(self, learning_rate, warmup_steps):

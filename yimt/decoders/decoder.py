@@ -405,24 +405,24 @@ class Decoder(tf.keras.layers.Layer):
         """Decodes dynamically from :obj:`start_ids`.
 
         Args:
-          embeddings: Target embeddings or :class:`opennmt.inputters.WordEmbedder`
+          embeddings: Target embeddings or :class:`yimt.inputters.WordEmbedder`
             to apply on decoded ids.
           start_ids: Initial input IDs of shape :math:`[B]`.
           end_id: ID of the end of sequence token.
           initial_state: Initial decoder state.
-          decoding_strategy: A :class:`opennmt.utils.DecodingStrategy`
+          decoding_strategy: A :class:`yimt.utils.DecodingStrategy`
             instance that define the decoding logic. Defaults to a greedy search.
-          sampler: A :class:`opennmt.utils.Sampler` instance that samples
+          sampler: A :class:`yimt.utils.Sampler` instance that samples
             predictions from the model output. Defaults to an argmax sampling.
           maximum_iterations: The maximum number of iterations to decode for.
           minimum_iterations: The minimum number of iterations to decode for.
           tflite_output_size: If not None will run TFLite safe, is the size of 1D output tensor.
 
         Returns:
-          A :class:`opennmt.utils.DecodingResult` instance.
+          A :class:`yimt.utils.DecodingResult` instance.
 
         See Also:
-          :func:`opennmt.utils.dynamic_decode`
+          :func:`yimt.utils.dynamic_decode`
         """
         if isinstance(embeddings, text_inputter.WordEmbedder):
             input_fn = lambda ids: embeddings({"ids": ids})

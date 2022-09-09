@@ -71,7 +71,7 @@ class ParallelEncoder(Encoder):
 
     If the input is a single ``tf.Tensor``, the same input will be encoded by
     every encoders. Otherwise, when the input is a Python sequence (e.g. the non
-    reduced output of a :class:`opennmt.inputters.ParallelInputter`),
+    reduced output of a :class:`yimt.inputters.ParallelInputter`),
     each encoder will encode its corresponding input in the sequence.
 
     See for example "Multi-Columnn Encoder" in https://arxiv.org/abs/1804.09849.
@@ -88,14 +88,14 @@ class ParallelEncoder(Encoder):
         """Initializes the parameters of the encoder.
 
         Args:
-          encoders: A list of :class:`opennmt.encoders.Encoder` or a single
+          encoders: A list of :class:`yimt.encoders.Encoder` or a single
             one, in which case the same encoder is applied to each input.
-          outputs_reducer: A :class:`opennmt.layers.Reducer` to merge all
+          outputs_reducer: A :class:`yimt.layers.Reducer` to merge all
             outputs. If ``None``, defaults to
-            :class:`opennmt.layers.JoinReducer`.
-          states_reducer: A :class:`opennmt.layers.Reducer` to merge all
+            :class:`yimt.layers.JoinReducer`.
+          states_reducer: A :class:`yimt.layers.Reducer` to merge all
             states. If ``None``, defaults to
-            :class:`opennmt.layers.JoinReducer`.
+            :class:`yimt.layers.JoinReducer`.
           outputs_layer_fn: A callable or list of callables applied to the
             encoders outputs If it is a single callable, it is applied on each
             encoder output. Otherwise, the ``i`` th callable is applied on

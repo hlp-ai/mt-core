@@ -268,7 +268,7 @@ class TextInputter(Inputter):
         """Enables noise to be applied to the input features.
 
         Args:
-          noiser: A :class:`opennmt.data.WordNoiser` instance.
+          noiser: A :class:`yimt.data.WordNoiser` instance.
           in_place: If ``False``, the noisy version of the input will be stored as
             a separate feature prefixed with ``noisy_``.
           probability: When :obj:`in_place` is enabled, the probability to apply the

@@ -15,8 +15,8 @@ class PositionEncoder(tf.keras.layers.Layer):
         """Initializes the position encoder.
 
         Args:
-          reducer: A :class:`opennmt.layers.Reducer` to merge inputs and position
-            encodings. Defaults to :class:`opennmt.layers.SumReducer`.
+          reducer: A :class:`yimt.layers.Reducer` to merge inputs and position
+            encodings. Defaults to :class:`yimt.layers.SumReducer`.
           **kwargs: Additional layer keyword arguments.
         """
         super().__init__(**kwargs)
@@ -66,8 +66,8 @@ class PositionEmbedder(PositionEncoder):
         Args:
           maximum_position: The maximum position to embed. Positions greater
             than this value will be set to :obj:`maximum_position`.
-          reducer: A :class:`opennmt.layers.Reducer` to merge inputs and position
-            encodings. Defaults to :class:`opennmt.layers.SumReducer`.
+          reducer: A :class:`yimt.layers.Reducer` to merge inputs and position
+            encodings. Defaults to :class:`yimt.layers.SumReducer`.
           **kwargs: Additional layer keyword arguments.
         """
         super().__init__(reducer=reducer, **kwargs)

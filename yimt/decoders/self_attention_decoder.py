@@ -43,13 +43,13 @@ class SelfAttentionDecoder(decoder.Decoder):
             the feed forward layer.
           ffn_activation: The activation function to apply between the two linear
             transformations of the feed forward layer.
-          position_encoder_class: The :class:`opennmt.layers.PositionEncoder`
+          position_encoder_class: The :class:`yimt.layers.PositionEncoder`
             class to use for position encoding (or a callable that returns an
             instance).
           num_sources: The number of source contexts expected by this decoder.
           maximum_relative_position: Maximum relative position representation
             (from https://arxiv.org/abs/1803.02155).
-          attention_reduction: A :class:`opennmt.layers.MultiHeadAttentionReduction`
+          attention_reduction: A :class:`yimt.layers.MultiHeadAttentionReduction`
             value to specify how to reduce multi-head attention matrices.
           pre_norm: If ``True``, layer normalization is applied before each
             sub-layer. Otherwise it is applied after.

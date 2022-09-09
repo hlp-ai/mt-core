@@ -183,7 +183,7 @@ class MultiHeadAttentionReduction(enum.Enum):
         Args:
           attention: A list of multi-head attention matrices, with shape
             :math:`[B, H, T_t, T_s]`.
-          policy: A :class:`opennmt.layers.MultiHeadAttentionReduction` value.
+          policy: A :class:`yimt.layers.MultiHeadAttentionReduction` value.
 
         Returns:
           A single attention matrix with shape :math:`[B, T_t, T_s]`.

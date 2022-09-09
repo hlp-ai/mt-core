@@ -6,8 +6,8 @@ import tensorflow as tf
 from tensorflow.python.eager import context
 from tensorflow.python.framework import ops
 
-from opennmt.data import vocab
-from opennmt import constants
+from yimt.data import vocab
+from yimt import constants
 
 
 def get_test_data_dir():

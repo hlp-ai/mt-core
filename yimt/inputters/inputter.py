@@ -102,7 +102,7 @@ class Inputter(tf.keras.layers.Layer):
         """Builds a dataset to be used for inference.
 
         For evaluation and training datasets, see
-        :class:`opennmt.inputters.ExampleInputter`.
+        :class:`yimt.inputters.ExampleInputter`.
 
         Args:
           features_file: The test file.
@@ -119,7 +119,7 @@ class Inputter(tf.keras.layers.Layer):
           A ``tf.data.Dataset``.
 
         See Also:
-          :func:`opennmt.data.inference_pipeline`
+          :func:`yimt.data.inference_pipeline`
         """
         transform_fns = _get_dataset_transforms(
             self, num_threads=num_threads, training=False
@@ -179,7 +179,7 @@ class Inputter(tf.keras.layers.Layer):
 
     def has_prepare_step(self):
         """Returns ``True`` if this inputter implements a data preparation step
-        in method :meth:`opennmt.inputters.Inputter.prepare_elements`.
+        in method :meth:`yimt.inputters.Inputter.prepare_elements`.
         """
         return False
 
@@ -190,7 +190,7 @@ class Inputter(tf.keras.layers.Layer):
         can be overriden to apply an external pre-tokenization.
 
         Note that the results of the method are unbatched and then passed to
-        method :meth:`opennmt.inputters.Inputter.make_features`.
+        method :meth:`yimt.inputters.Inputter.make_features`.
 
         Args:
           elements: A batch of dataset elements.
@@ -214,7 +214,7 @@ class Inputter(tf.keras.layers.Layer):
 
         Args:
           element: An element from the dataset returned by
-            :meth:`opennmt.inputters.Inputter.make_dataset`.
+            :meth:`yimt.inputters.Inputter.make_dataset`.
           features: An optional and possibly partial dictionary of features to
             augment.
           training: Run in training mode.
@@ -247,7 +247,7 @@ class Inputter(tf.keras.layers.Layer):
 
         Args:
           features: A dictionary of ``tf.Tensor``, the output of
-            :meth:`opennmt.inputters.Inputter.make_features`.
+            :meth:`yimt.inputters.Inputter.make_features`.
           training: Run in training mode.
 
         Returns:
@@ -348,8 +348,8 @@ class ParallelInputter(MultiInputter):
         """Initializes a parallel inputter.
 
         Args:
-          inputters: A list of :class:`opennmt.inputters.Inputter`.
-          reducer: A :class:`opennmt.layers.Reducer` to merge all inputs. If
+          inputters: A list of :class:`yimt.inputters.Inputter`.
+          reducer: A :class:`yimt.layers.Reducer` to merge all inputs. If
             set, parallel inputs are assumed to have the same length.
           share_parameters: Share the inputters parameters.
           combine_features: Combine each inputter features in a single dict or
@@ -577,8 +577,8 @@ class MixedInputter(MultiInputter):
         """Initializes a mixed inputter.
 
         Args:
-          inputters: A list of :class:`opennmt.inputters.Inputter`.
-          reducer: A :class:`opennmt.layers.Reducer` to merge all inputs.
+          inputters: A list of :class:`yimt.inputters.Inputter`.
+          reducer: A :class:`yimt.layers.Reducer` to merge all inputs.
           dropout: The probability to drop units in the merged inputs.
         """
         super().__init__(inputters, reducer=reducer)
@@ -668,7 +668,7 @@ class ExampleInputterAdapter:
           A ``tf.data.Dataset``.
 
         See Also:
-          :func:`opennmt.data.inference_pipeline`
+          :func:`yimt.data.inference_pipeline`
         """
         if labels_file is not None:
             data_files = [features_file, labels_file]
@@ -763,7 +763,7 @@ class ExampleInputterAdapter:
           A ``tf.data.Dataset``.
 
         See Also:
-          :func:`opennmt.data.training_pipeline`
+          :func:`yimt.data.training_pipeline`
         """
         if labels_file is not None:
             data_files = [features_file, labels_file]

@@ -1,4 +1,4 @@
-"""Define the OpenNMT tokenizer."""
+"""Define the yimt tokenizer."""
 
 import os
 
@@ -22,7 +22,7 @@ class OpenNMTTokenizer(tokenizer.Tokenizer):
         """
         case_feature = kwargs.get("case_feature")
         if case_feature:
-            raise ValueError("case_feature is not supported with OpenNMT-tf")
+            raise ValueError("case_feature is not supported with yimt")
         kwargs.setdefault("mode", "conservative")
         self._config = kwargs
         self._tokenizer = pyonmttok.Tokenizer(**kwargs)
