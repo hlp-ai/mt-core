@@ -1,3 +1,4 @@
+import collections
 import functools
 import sys
 
@@ -102,3 +103,88 @@ def print_as_bytes(text, stream=None):
     write_buffer.write(tf.compat.as_bytes(text))
     write_buffer.write(b"\n")
     stream.flush()
+
+
+def item_or_tuple(x):
+    """Returns :obj:`x` as a tuple or its single element."""
+    x = tuple(x)
+    if len(x) == 1:
+        return x[0]
+    else:
+        return x
+
+
+def count_lines(filename, buffer_size=65536):
+    """Returns the number of lines of the file :obj:`filename`."""
+    with tf.io.gfile.GFile(filename, mode="rb") as f:
+        num_lines = 0
+        while True:
+            data = f.read(buffer_size)
+            if not data:
+                return num_lines
+            num_lines += data.count(b"\n")
+
+
+class RelativeConfig(collections.abc.Mapping):
+    """Helper class to lookup keys relative to a prefix."""
+
+    def __init__(self, config, prefix=None, config_name=None):
+        """Initializes the relative configuration.
+
+        Args:
+          config: The configuration.
+          prefix: The prefix. Keys will be looked up relative to this prefix.
+          config_name: The name of the configuration, mostly used to make error
+            messages more explicit.
+        """
+        self._config = config
+        self._prefix = prefix or ""
+        self._config_name = config_name
+
+    def __getitem__(self, relative_key):
+        absolute_key = "%s%s" % (self._prefix, relative_key)
+        value = self._config.get(absolute_key)
+        if value is not None:
+            return value
+        value = self._config.get(relative_key)
+        if value is not None:
+            return value
+        raise KeyError(
+            "Missing field '%s' in the %sconfiguration"
+            % (absolute_key, self._config_name + " " if self._config_name else "")
+        )
+
+    def __len__(self):
+        return len(self._config)
+
+    def __iter__(self):
+        return iter(self._config)
+
+
+def is_gzip_file(filename):
+    """Returns ``True`` if :obj:`filename` is a GZIP file."""
+    return filename.endswith(".gz")
+
+
+def extract_prefixed_keys(dictionary, prefix):
+    """Returns a dictionary with all keys from :obj:`dictionary` that are prefixed
+    with :obj:`prefix`.
+    """
+    sub_dict = {}
+    for key, value in dictionary.items():
+        if key.startswith(prefix):
+            original_key = key[len(prefix) :]
+            sub_dict[original_key] = value
+    return sub_dict
+
+
+def extract_suffixed_keys(dictionary, suffix):
+    """Returns a dictionary with all keys from :obj:`dictionary` that are suffixed
+    with :obj:`suffix`.
+    """
+    sub_dict = {}
+    for key, value in dictionary.items():
+        if key.endswith(suffix):
+            original_key = key[: -len(suffix)]
+            sub_dict[original_key] = value
+    return sub_dict

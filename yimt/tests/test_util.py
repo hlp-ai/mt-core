@@ -6,6 +6,9 @@ import tensorflow as tf
 from tensorflow.python.eager import context
 from tensorflow.python.framework import ops
 
+from opennmt.data import vocab
+from opennmt import constants
+
 
 def get_test_data_dir():
     test_dir = os.path.dirname(os.path.realpath(__file__))
@@ -18,6 +21,20 @@ def make_data_file(path, lines):
     with open(path, "w", encoding="utf-8") as data:
         for line in lines:
             data.write("%s\n" % line)
+    return path
+
+
+def make_vocab(path, tokens):
+    vocabulary = vocab.Vocab(
+        special_tokens=[
+            constants.PADDING_TOKEN,
+            constants.START_OF_SENTENCE_TOKEN,
+            constants.END_OF_SENTENCE_TOKEN,
+        ]
+    )
+    for token in tokens:
+        vocabulary.add(token)
+    vocabulary.serialize(path)
     return path
 
 
