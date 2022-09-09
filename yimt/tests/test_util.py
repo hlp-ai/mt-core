@@ -8,6 +8,7 @@ from tensorflow.python.framework import ops
 
 from yimt.data import vocab
 from yimt import constants
+from yimt.utils import misc
 
 
 def get_test_data_dir():
