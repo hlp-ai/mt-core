@@ -78,3 +78,16 @@ def run_with_mixed_precision(fn):
             misc.disable_mixed_precision()
 
     return decorator
+
+
+def make_vocab_from_file(path, data_file):
+    vocabulary = vocab.Vocab(
+        special_tokens=[
+            constants.PADDING_TOKEN,
+            constants.START_OF_SENTENCE_TOKEN,
+            constants.END_OF_SENTENCE_TOKEN,
+        ]
+    )
+    vocabulary.add_from_text(data_file)
+    vocabulary.serialize(path)
+    return path

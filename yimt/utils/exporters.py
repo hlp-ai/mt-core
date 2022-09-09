@@ -114,7 +114,7 @@ class TFLiteExporter(Exporter):
             converter.optimizations = [tf.lite.Optimize.DEFAULT]
             converter.target_spec.supported_types = [tf.float16]
 
-        tflite_model_path = os.path.join(export_dir, "opennmt.tflite")
+        tflite_model_path = os.path.join(export_dir, "yimt.tflite")
         tflite_model = converter.convert()
         with tf.io.gfile.GFile(tflite_model_path, "wb") as f:
             f.write(tflite_model)

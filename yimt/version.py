@@ -1,4 +1,4 @@
-"""OpenNMT-tf version."""
+"""YiMT version."""
 
 __version__ = "2.26.1"
 
@@ -21,7 +21,7 @@ def _check_tf_version():
         return
 
     warnings.warn(
-        "OpenNMT-tf supports TensorFlow versions %s (included) to %s (excluded), "
+        "YiMT supports TensorFlow versions %s (included) to %s (excluded), "
         "but you have TensorFlow %s installed. Some features might not work properly."
         % (INCLUSIVE_MIN_TF_VERSION, EXCLUSIVE_MAX_TF_VERSION, tf.__version__),
         UserWarning,
