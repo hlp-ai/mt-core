@@ -555,3 +555,42 @@ def get_devices(count=1, fallback_to_cpu=True):
             )
         )
     return devices[0:count]
+
+
+def get_variables_name_mapping(root, root_key=None):
+    """Returns mapping between variables and their name in the object-based
+    representation.
+
+    Args:
+      root: The root layer.
+      root_key: Key that was used to save :obj:`root`, if any.
+
+    Returns:
+      A dict mapping names to variables.
+    """
+    # TODO: find a way to implement this function using public APIs.
+    names_to_variables = {}
+    _, path_to_root = graph_view.ObjectGraphView(root)._breadth_first_traversal()
+    for path in path_to_root.values():
+        if not path:
+            continue
+        variable = path[-1].ref
+        if not isinstance(variable, tf.Variable):
+            continue
+        name = "%s/%s" % (
+            "/".join(field.name for field in path),
+            ".ATTRIBUTES/VARIABLE_VALUE",
+        )
+        if root_key is not None:
+            name = "%s/%s" % (root_key, name)
+        names_to_variables[name] = variable
+    return names_to_variables
+
+
+def get_variable_name(variable, root, model_key="model"):
+    """Gets the variable name in the object-based representation."""
+    names_to_variables = get_variables_name_mapping(root, root_key=model_key)
+    for name, var in names_to_variables.items():
+        if var is variable:
+            return name
+    return None
