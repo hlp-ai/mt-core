@@ -1,7 +1,5 @@
 """Checkpoint utilities."""
 
-import copy
-import os
 import tempfile
 
 import tensorflow as tf
@@ -240,45 +238,3 @@ def average_checkpoints_into_layer(checkpoints, layer, layer_prefix):
             value = reader.get_tensor(path)
             variable.assign_add(value / num_checkpoints)
 
-
-_V1_OPTIM_SCOPE = "optim"
-_V1_SLOTS_MAPPING = {"Adam": "m", "Adam_1": "v"}
-
-
-def _variables_to_structure(variables):
-    """Represents variables a nested dictionary with scope names as keys."""
-    structure = {}
-    for name, value in variables.items():
-        fields = name.split("/")
-        cur = structure
-        for i, key in enumerate(fields):
-            if key not in cur:
-                if i + 1 == len(fields):
-                    cur[key] = value
-                    break
-                cur[key] = {}
-            cur = cur[key]
-    return structure
-
-
-def _merge_optimizer_slots(variables, slots):
-    """Replaces leaves in the variables structure by tuples of
-    (variable, dict of optimizer slots).
-    """
-    if isinstance(variables, dict):
-        merged = {}
-        for key, value in variables.items():
-            if key not in slots:
-                merged[key] = copy.deepcopy(value)
-            else:
-                merged[key] = _merge_optimizer_slots(value, slots[key])
-        return merged
-    else:
-        new_slots = {}
-        for name, value in slots.items():
-            name = _V1_SLOTS_MAPPING.get(name)
-            if name is None:
-                # Just ignore the optimizer slots if their name is not listed.
-                return variables
-            new_slots[name] = value
-        return (variables, new_slots)
