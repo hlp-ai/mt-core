@@ -29,7 +29,7 @@ tf_version_requirement = ">=%s,<%s" % (
 
 
 setup(
-    name="YiMT",
+    name="yimt",
     version=version["__version__"],
     license="MIT",
     description="Neural machine translation using TensorFlow",
@@ -75,13 +75,4 @@ setup(
     },
     tests_require=tests_require,
     packages=find_packages(exclude=["bin", "*.tests"]),
-    entry_points={
-        "console_scripts": [
-            "yimt-build-vocab=yimt.bin.build_vocab:main",
-            "yimt-detokenize-text=yimt.bin.detokenize_text:main",
-            "yimt-main=yimt.bin.main:main",
-            "yimt-merge-config=yimt.bin.merge_config:main",
-            "yimt-tokenize-text=yimt.bin.tokenize_text:main",
-        ],
-    },
 )
