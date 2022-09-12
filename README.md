@@ -7,6 +7,15 @@ Transformer based Nerual Machine Translation
 3. Effective and efficient data pipline
 4. Support checkpoint averaging
 5. Beam search for inference
+6. Supported file format: TXT, DOC, DOCX, PPTX, PDF, HTML, XML
+7. Preserve file format after translation
+8. A common and easy-to-use Translator interface.
+9. Support several NMT model types, such as Checkpoint, SavedModel and CTranslate2.
+10. Manage NMT models through config file.
 
 ## References
 1. https://github.com/OpenNMT/OpenNMT-tf
+2. https://github.com/ymoslem/DesktopTranslator
+3. https://github.com/kakaobrain/word2word
+4. https://github.com/argosopentech/translate-html
+5. https://github.com/argosopentech/argos-translate
