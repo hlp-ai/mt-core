@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <style>
+        body {text-align: center;}
+
+        #logo {font-size: 16pt; padding-top: 24pt; padding-bottom: 24pt;}
+        #inout {padding-top: 12pt;}
+        #copyright {font-size: 11pt; padding-top: 24pt; padding-bottom: 24pt;}
+        .ta {font-size: 11pt; line-height: 1.5; padding:8px;}
+    </style>
+    
+    <script>
+        async function myfunc(){
+          qstr = document.getElementById('q').value;
+          qstr = qstr.trim();
+          if(qstr.length==0) return;
+          source_lang = document.getElementById('source').value
+          target_lang = document.getElementById('target').value
+          const res = await fetch("http://127.0.0.1:5555/translate",
+          {method: "POST",
+          body: JSON.stringify({q: qstr, source: source_lang, target: target_lang, format: "text"}),
+          headers: { "Content-Type": "application/json" }
+          }
+          );
+
+          trans_json = await res.json();
+          console.log(trans_json);
+          //p = trans_json.translatedText.replace("\n", "<br>");
+          document.getElementById('translation').value = trans_json.translatedText;
+        }
+    </script>
+    <title>YiMT Translation</title>
+</head>
+<body>
+<div id="logo">Welcome to YiMT Translation</div>
+
+<div id="toolbar">
+    <select id="source" name="source">
+        <option value="auto">自动检测</option>
+        <option value="zh">Chinese</option>
+        <option value="en">English</option>
+        <option value="ja">Japanese</option>
+    </select>
+    <span>-></span>
+    <select id="target" name="target">
+        <option value="zh">Chinese</option>
+        <option value="en">English</option>
+        <option value="ja">Japanese</option>
+    </select>
+    <input type="button" value="翻译文本" onclick='myfunc()'>
+    <input type="button" value="翻译文档" onclick="window.location.href='/file'">
+</div>
+
+<div id="inout">
+    <textarea id="q" name="q" rows="20" cols="50" class="ta"></textarea>
+    <textarea id="translation" name="translation" rows="20" cols="50" class="ta"></textarea>
+</div>
+
+<div id="copyright">
+    <span>Copyright 2021-2022 by Liu Xiaofeng</span>
+</div>
+</body>
+</html>
