@@ -7,11 +7,14 @@ Transformer based Nerual Machine Translation
 3. Effective and efficient data pipline
 4. Support checkpoint averaging
 5. Beam search for inference
-6. Supported file format: TXT, DOC, DOCX, PPTX, PDF, HTML, XML
+6. Support file translation: TXT, DOC, DOCX, PPTX, PDF, HTML, XML
 7. Preserve file format after translation
 8. A common and easy-to-use Translator interface.
 9. Support several NMT model types, such as Checkpoint, SavedModel and CTranslate2.
 10. Manage NMT models through config file.
+11. RESTful service interface for translation
+12. Provide Web interface for text and file translation
+13. Support translation volume limit and API key
 
 ## References
 1. https://github.com/OpenNMT/OpenNMT-tf
