@@ -16,6 +16,14 @@ Transformer based Nerual Machine Translation
 12. Provide Web interface for text and file translation
 13. Support translation volume limit and API key
 
+## Contents
+The contents of this repository are as follows:
++ Package yimt.core: [Core NMT](./yimt/core/README.md)
++ Package yimt.api: [Translator API](./yimt/api/README.md)
++ Package yimt.files: [File Translation](./yimt/files/README.md)
++ Package yimt.service: [Translation Service](./yimt/service/README.md)
++ Package yimt.corpus: [Corpus Tools](./yimt/corpus/README.md)
+
 ## References
 1. https://github.com/OpenNMT/OpenNMT-tf
 2. https://github.com/ymoslem/DesktopTranslator
