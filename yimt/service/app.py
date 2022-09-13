@@ -116,7 +116,7 @@ def create_app(args):
             default_limits=get_routes_limits(args.req_limit, args.daily_req_limit, api_keys_db),
         )
     else:
-        from yimt_service.utils import NoLimiter
+        from yimt.service.utils import NoLimiter
 
         limiter = NoLimiter()
 
