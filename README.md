@@ -22,3 +22,4 @@ Transformer based Nerual Machine Translation
 3. https://github.com/kakaobrain/word2word
 4. https://github.com/argosopentech/translate-html
 5. https://github.com/argosopentech/argos-translate
+6. https://github.com/LibreTranslate/LibreTranslate
