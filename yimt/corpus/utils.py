@@ -1,6 +1,7 @@
 import io
-import os
 import random
+
+import zhconv
 
 
 def is_ascii_char(s):
@@ -120,3 +121,8 @@ def split(files, num_per_file):
         f.close()
 
     print(cnt)
+
+
+def hant_2_hans(hant_str: str):
+    """Traditional Chinese to Simplified Chinese"""
+    return zhconv.convert(hant_str, 'zh-hans')

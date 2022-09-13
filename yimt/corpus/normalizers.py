@@ -1,4 +1,4 @@
-from yimt.corpus.utils import is_ascii_char
+from yimt.corpus.utils import is_ascii_char, hant_2_hans
 
 
 class Normalizer(object):
@@ -96,5 +96,31 @@ class PairPunctNormalizer(Normalizer):
         tgt = pair[1]
 
         src, tgt = self.normalize_pair(src, tgt)
+
+        return src + "\t" + tgt
+
+
+class Hant2Hans(Normalizer):
+    """Traditional Chinese to Simplified Chinese"""
+
+    def __init__(self, norm_src=True, norm_tgt=True):
+        self.norm_src = norm_src
+        self.norm_tgt = norm_tgt
+
+    def normalize(self, s):
+        if not self.norm_src and not self.norm_tgt:
+            return s
+
+        pair = s.split("\t")
+        if len(pair) != 2:
+            print(s)
+            return s
+        src = pair[0]
+        tgt = pair[1]
+        if self.norm_src:
+            src = hant_2_hans(src)
+
+        if self.norm_tgt:
+            tgt = hant_2_hans(tgt)
 
         return src + "\t" + tgt
