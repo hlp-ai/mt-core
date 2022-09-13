@@ -1,6 +1,10 @@
+APScheduler==3.9.1
 beautifulsoup4==4.11.1
 ctranslate2==2.17.0
 docx==0.2.4
+expiringdict==1.2.1
+Flask==2.1.1
+Flask_Limiter==2.4.5.1
 fugashi==1.1.2
 hangul_korean==1.0rc2
 horovod==0.25.0
@@ -35,5 +39,6 @@ spacy==3.1.0
 tensorboard==2.6.0
 tensorflow_addons==0.16.1
 tensorflow_gpu==2.6.3
-tensorflow_probability==0.17.0
+tensorflow_probability==0.18.0
+Werkzeug==2.1.1
 word2word==1.0.0
