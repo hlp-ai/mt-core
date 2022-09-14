@@ -1,5 +1,6 @@
 import io
 import random
+import re
 
 import zhconv
 
@@ -148,3 +149,16 @@ def dedup(in_path, out_path):
             out_f.write(p + "\n")
 
     print("Total:", total, "Unique:", n)
+
+
+def from_sgm(sgm_path, out_path):
+    """Convert sgm file of WMT into plain text"""
+    pattern = re.compile(r"<seg id=\"\d+\">(.+?)</seg>")
+
+    lines = "\r".join(io.open(sgm_path, encoding="utf-8").readlines())
+
+    out_f = io.open(out_path, "w", encoding="utf-8")
+
+    for m in re.finditer(pattern, lines):
+        print(m.group(1))
+        out_f.write(m.group(1) + "\n")
