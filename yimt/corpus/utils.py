@@ -3,6 +3,7 @@ import random
 import re
 
 import zhconv
+import lxml.etree as ET
 
 
 def is_ascii_char(s):
@@ -162,3 +163,22 @@ def from_sgm(sgm_path, out_path):
     for m in re.finditer(pattern, lines):
         print(m.group(1))
         out_f.write(m.group(1) + "\n")
+
+
+def from_xml(xml_file):
+    """Convert XML file of WMT into plain text"""
+    output_stem = xml_file[:-4]
+
+    pair = xml_file.split(".")[-2]
+    src, tgt = pair.split("-")
+
+    tree = ET.parse(xml_file)
+    # NOTE: Assumes exactly one translation
+
+    with open(output_stem + "." + src, "w", encoding="utf-8") as ofh:
+        for seg in tree.getroot().findall(".//src//seg"):
+            print(seg.text, file=ofh)
+
+    with open(output_stem + "." + tgt, "w", encoding="utf-8") as ofh:
+        for seg in tree.getroot().findall(".//ref//seg"):
+            print(seg.text, file=ofh)
