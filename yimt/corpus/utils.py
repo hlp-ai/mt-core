@@ -126,3 +126,25 @@ def split(files, num_per_file):
 def hant_2_hans(hant_str: str):
     """Traditional Chinese to Simplified Chinese"""
     return zhconv.convert(hant_str, 'zh-hans')
+
+
+def dedup(in_path, out_path):
+    """Write unique inputs"""
+    f = io.open(in_path, encoding="utf-8")
+    out_f = io.open(out_path, "w", encoding="utf-8")
+
+    pairs = dict()
+    n = 0
+    total = 0
+    for p in f:
+        p = p.strip()
+        total += 1
+        if total % 100000 == 0:
+            print("Total:", total, "Unique:", n)
+        h = hash(p)
+        if h not in pairs:
+            pairs[h] = n
+            n += 1
+            out_f.write(p + "\n")
+
+    print("Total:", total, "Unique:", n)
