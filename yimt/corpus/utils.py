@@ -11,6 +11,11 @@ def is_ascii_char(s):
     return len(s) == 1 and '\u0000' < s[0] < '\u00ff'
 
 
+def is_ascii(s):
+    """All are ASCII chars"""
+    return all(map(is_ascii_char, s))
+
+
 def same_lines(path1, path2):
     """Two text files have the same numbers of lines?"""
     lines1 = 0
