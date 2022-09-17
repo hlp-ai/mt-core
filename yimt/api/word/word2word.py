@@ -4,13 +4,13 @@ import os
 import pickle
 from time import time
 
-from word2word.utils import (
+from yimt.api.word.utils import (
     download_or_load, download_os2018, get_savedir
 )
-from word2word.tokenization import (
-    load_tokenizer, get_sents, get_vocab, update_dicts
+from yimt.api.word.tokenization import (
+    get_sents, get_vocab, update_dicts
 )
-from word2word.methods import (
+from yimt.api.word.methods import (
     rerank, rerank_mp, get_trans_co, get_trans_pmi
 )
 
