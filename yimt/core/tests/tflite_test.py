@@ -7,8 +7,8 @@ import tensorflow as tf
 from packaging import version
 from parameterized import parameterized
 
-from yimt.core import layers
-from yimt.models import catalog
+from yimt.core import data, layers
+from yimt.core.models import catalog
 from yimt.core.tests import test_util
 from yimt.core.utils import exporters
 
@@ -35,7 +35,7 @@ def _create_dataset(model, temp_dir):
 
 
 def _get_predictions(model, dataset, vocab_path):
-    _, tokens_to_ids, _ = yimt.core.data.vocab.create_lookup_tables(vocab_path)
+    _, tokens_to_ids, _ = data.vocab.create_lookup_tables(vocab_path)
 
     elem = next(iter(dataset))
     elem_ids = tf.cast(tf.squeeze(elem["ids"]), dtype=tf.dtypes.int32)
@@ -119,7 +119,7 @@ class TFLiteTest(tf.test.TestCase):
         export_dir = self.get_temp_dir()
         _convert_tflite(model, export_dir, params, quantization)
         self.assertTrue(dir_has_tflite_file(export_dir))
-        export_file = os.path.join(export_dir, "opennmt.tflite")
+        export_file = os.path.join(export_dir, "yimt.tflite")
         interpreter = tf.lite.Interpreter(model_path=export_file, num_threads=1)
         input_details = interpreter.get_input_details()
         output_details = interpreter.get_output_details()
