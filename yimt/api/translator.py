@@ -13,7 +13,7 @@ from yimt.api.text_splitter import paragraph_detokenizer, paragraph_tokenizer
 
 
 class WordTranslator(object):
-    """Translate word with word2word package"""
+    """Word/Phrase Translator"""
 
     def __init__(self, source_lang, target_lang):
         self.lexicon = Word2word(source_lang, target_lang)
@@ -30,12 +30,15 @@ class WordTranslator(object):
 
 
 def load_translator(model_or_config_dir, sp_src_path, lang_pair=None):
-    """Create translator
+    """Create translator form config or model
 
-    :param model_or_config_dir: model directory or config yaml file
-    :param sp_src_path: SentencePiece model file for source language
-    :param lang_pair: lang pair supported by translator
-    :return: a Translator
+    Args:
+        param model_or_config_dir: model directory or config yaml file
+        sp_src_path: SentencePiece model file for source language
+        lang_pair: lang pair supported by translator
+
+    Returns:
+        a Translator
     """
     if ctranslate2.contains_model(model_or_config_dir):  # CTranslate2 model
         return TranslatorCT2(model_or_config_dir, sp_src_path, lang_pair)
@@ -94,6 +97,7 @@ class Translator(object):
                 to_translate = texts[i:i+self.batch_size]
             else:
                 to_translate = texts[i:]
+
             translations = self._translate_batch(to_translate)
 
             translations = self._post_zh(translations)
@@ -247,7 +251,6 @@ class TranslatorSaved(Translator):
 
         self._imported = tf.saved_model.load(export_dir)
         self._translate_fn = self._imported.signatures["serving_default"]
-        # sp_model_path = os.path.join(export_dir, "assets.extra", "wmtende.model")
 
     def _translate_batch(self, texts):
         """Translates a batch of texts."""
