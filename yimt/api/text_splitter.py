@@ -1,3 +1,4 @@
+"""Split sentences and paragraphs"""
 import re
 
 import pysbd
@@ -65,38 +66,38 @@ def _get_tokenizer(lang):
     return tokenizer
 
 
-def word_segment(sentence, language):
+def word_segment(sentence, lang):
     """Segment sentence into tokens
     
     Args:
         sentence: sentence
-        language: language code string
+        lang: language code string
         
     Returns:
         token list
     """
-    tokenizer = _get_tokenizer(language)
-    if language == 'ko':
+    tokenizer = _get_tokenizer(lang)
+    if lang == 'ko':
         # words = [word for word, _ in tokenizer.pos(sent)]
         tokenizer.inputAsString(sentence)
         tokenizer.doSegment()
         toks = tokenizer.segmentedOutput
         words = toks.split()
-    elif language == 'ja':
+    elif lang == 'ja':
         # words = [elem for elem in tokenizer.getWS(sent)]
         words = [word.surface for word in tokenizer(sentence)]
-    elif language == 'th':
+    elif lang == 'th':
         words = tokenizer(sentence, engine='mm')
-    elif language == 'vi':
+    elif lang == 'vi':
         words = tokenizer.tokenize(sentence).split()
-    elif language == 'zh_cn':
+    elif lang == 'zh_cn' or lang == "zh":
         # words = [elem for elem in tokenizer.getWS(sent)]
         # words = list(tokenizer.cut(sent, cut_all=False))
         doc = tokenizer(sentence)
         words = [t.text for t in doc]
-    elif language == "zh_tw":
+    elif lang == "zh_tw":
         words = list(tokenizer.cut(sentence, cut_all=False))
-    elif language == "ar":
+    elif lang == "ar":
         words = tokenizer.tokenize(sentence)
     # elif lang=="en":
     #     words = tokenizer(sent)
@@ -107,12 +108,12 @@ def word_segment(sentence, language):
     return words
 
 
-def split_sentences(text, language="en"):
+def split_sentences(text, lang="en"):
     """Segment paragraph into sentences
 
     Args:
         text: paragraph string
-        language: language code string
+        lang: language code string
 
     Returns:
         list of sentences
@@ -125,22 +126,22 @@ def split_sentences(text, language="en"):
                        "fa", "nl", "da", "fr", "my", "el", "it", "ja", "de", "kk", "sk"]
 
     languages = languages_splitter + languages_indic + languages_pysbd
-    language = language if language in languages else "en"
+    lang = lang if lang in languages else "en"
 
     text = text.strip()
 
-    if language in languages_pysbd:
-        segmenter = pysbd.Segmenter(language=language, clean=True)
+    if lang in languages_pysbd:
+        segmenter = pysbd.Segmenter(language=lang, clean=True)
         sentences = segmenter.segment(text)
-    elif language in languages_splitter:
-        sentences = split_text_into_sentences(text, language)
-    elif language in languages_indic:
-        sentences = sentence_split(text, language)
+    elif lang in languages_splitter:
+        sentences = split_text_into_sentences(text, lang)
+    elif lang in languages_indic:
+        sentences = sentence_split(text, lang)
 
     return sentences
 
 
-def paragraph_tokenizer(text, language="en"):
+def paragraph_tokenizer(text, lang="en"):
     """Replace sentences with their indexes, and store indexes of newlines
     Args:
         text (str): Text to be indexed
@@ -149,17 +150,6 @@ def paragraph_tokenizer(text, language="en"):
         sentences (list): List of sentences
         breaks (list): List of indexes of sentences and newlines
     """
-
-    languages_splitter = ["ca", "cs", "da", "de", "el", "en", "es", "fi", "fr", "hu", "is", "it",
-                          "lt", "lv", "nl", "no", "pl", "pt", "ro", "ru", "sk", "sl", "sv", "tr"]
-    languages_indic = ["as", "bn", "gu", "hi", "kK", "kn", "ml", "mr", "ne", "or", "pa", "sa",
-                       "sd", "si", "ta", "te"]
-    languages_pysbd = ["en", "hi", "mr", "zh", "es", "am", "ar", "hy", "bg", "ur", "ru", "pl",
-                       "fa", "nl", "da", "fr", "my", "el", "it", "ja", "de", "kk", "sk"]
-
-    languages = languages_splitter + languages_indic + languages_pysbd
-    language = language if language in languages else "en"
-
     text = text.strip()
     paragraphs = text.splitlines(True)
 
@@ -170,7 +160,7 @@ def paragraph_tokenizer(text, language="en"):
         if paragraph == "\n":
             breaks.append("\n")
         else:
-            paragraph_sentences = split_sentences(paragraph, language)
+            paragraph_sentences = split_sentences(paragraph, lang)
 
             breaks.extend(
                 list(range(len(sentences), +len(sentences) + len(paragraph_sentences)))
