@@ -1,4 +1,4 @@
-from yimt.corpus.filters import SameFilter, EmptyFilter, OverlapFilter
+from yimt.corpus.filters import SameFilter, EmptyFilter, OverlapFilter, AllASCII
 
 if __name__ == "__main__":
     same_filter = SameFilter()
@@ -21,3 +21,7 @@ if __name__ == "__main__":
     print(overlap_filter.filter("aaaaaaa", "aaa啊啊啊啊啊啊阿"))
 
     print()
+
+    ascii_filter = AllASCII()
+    print(ascii_filter.filter("abcdeffggg fff", "abcdeffggg"))
+    print(overlap_filter.filter("啊啊啊", "abccc"))
