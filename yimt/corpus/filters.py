@@ -1,3 +1,4 @@
+from yimt.api.utils import detect_lang
 from yimt.corpus.utils import is_ascii
 
 
@@ -60,4 +61,18 @@ class AllASCII(Filter):
 
         if is_src_en and is_tgt_en:
             return None
+        return src, tgt
+
+
+class LangFilter(Filter):
+    """Filter pair with wrong language"""
+
+    def __init__(self, src_lang, tgt_lang):
+        self.src_lang = src_lang
+        self.tgt_lang = tgt_lang
+
+    def filter(self, src, tgt):
+        if detect_lang(src) != self.src_lang or detect_lang(tgt) != self.tgt_lang:
+            return None
+
         return src, tgt
