@@ -1,3 +1,4 @@
+"""Admin GUI entry"""
 import tkinter as tk
 from functools import partial
 from tkinter import *

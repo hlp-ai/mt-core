@@ -1,3 +1,4 @@
+""""Frame UI for train menu"""
 import os
 import tkinter as tk
 from tkinter import *
