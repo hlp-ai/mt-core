@@ -2,7 +2,7 @@
 import argparse
 import os
 
-from yimt.core.ex import train_spm, load_spm, tokenize_file
+from yimt.core.ex.sp import train_spm, load_spm, tokenize_file
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
