@@ -8,7 +8,7 @@ from functools import partial
 
 import yaml
 
-from yimt.admin.win_utils import ask_open_file, ask_save_file
+from yimt.admin.win_utils import ask_open_file, ask_save_file, ask_dir
 from yimt.core.ex.sp import train_spm, load_spm, tokenize_file
 
 
