@@ -246,36 +246,3 @@ class CosineAnnealing(tf.keras.optimizers.schedules.LearningRateSchedule):
             tf.less(step, self.warmup_steps), true_fn=linear, false_fn=annealing
         )
 
-
-@register_learning_rate_schedule
-class RNMTPlusDecay(tf.keras.optimizers.schedules.LearningRateSchedule):
-    """Defines the decay function described in https://arxiv.org/abs/1804.09849."""
-
-    def __init__(
-        self, scale, num_replicas, warmup_steps=500, start_step=600000, end_step=1200000
-    ):
-        """Initializes the decay function.
-
-        Args:
-          scale: The scale constant.
-          num_replicas: The number of concurrent model replicas.
-          warmup_steps: The number of warmup steps.
-          start_step: The start step of the exponential decay.
-          end_step: The end step of the exponential decay.
-        """
-        self.scale = tf.cast(scale, tf.float32)
-        self.num_replicas = tf.cast(num_replicas, tf.float32)
-        self.warmup_steps = tf.cast(warmup_steps, tf.float32)
-        self.start_step = tf.cast(start_step, tf.float32)
-        self.end_step = tf.cast(end_step, tf.float32)
-
-    def __call__(self, step):
-        t = tf.cast(step, tf.float32)
-        n = self.num_replicas
-        p = self.warmup_steps
-        s = self.start_step
-        e = self.end_step
-        return self.scale * tf.minimum(
-            tf.minimum(1 + (t * (n - 1)) / (n * p), n),
-            n * tf.pow(2 * n, (s - n * t) / (e - s)),
-        )

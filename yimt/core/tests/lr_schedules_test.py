@@ -81,9 +81,6 @@ class LRSchedulesTest(tf.test.TestCase):
             lr_schedules.CosineAnnealing(2.5e-4, max_step=1000000, warmup_steps=4000)
         )
 
-    def testRNMTPlusDecay(self):
-        self._testNoError(lr_schedules.RNMTPlusDecay(1.0, 2))
-
 
 if __name__ == "__main__":
     tf.test.main()
