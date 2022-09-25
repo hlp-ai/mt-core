@@ -96,13 +96,6 @@ class SelfAttentionDecoder(decoder.Decoder):
     def support_alignment_history(self):
         return True
 
-    def map_v1_weights(self, weights):
-        m = super().map_v1_weights(weights)
-        m += self.layer_norm.map_v1_weights(weights["LayerNorm"])
-        for i, layer in enumerate(self.layers):
-            m += layer.map_v1_weights(weights["layer_%d" % i])
-        return m
-
     def _run(
         self,
         inputs,

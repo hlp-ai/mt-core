@@ -223,7 +223,3 @@ class Transformer(SequenceToSequence):
                 },
             },
         )
-
-    def map_v1_weights(self, weights):
-        weights["seq2seq"] = weights.pop("transformer")
-        return super().map_v1_weights(weights)

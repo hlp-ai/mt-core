@@ -564,13 +564,6 @@ class SelfAttentionDecoderLayer(tf.keras.layers.Layer):
         )
         self.ffn = TransformerLayerWrapper(self.ffn, dropout, pre_norm=pre_norm)
 
-    def map_v1_weights(self, weights):
-        m = []
-        m += self.self_attention.map_v1_weights(weights["masked_multi_head"])
-        m += self.attention[0].map_v1_weights(weights["multi_head"])
-        m += self.ffn.map_v1_weights(weights["ffn"])
-        return m
-
     def call(
         self,
         inputs,
