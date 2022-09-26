@@ -52,7 +52,7 @@ def depth(tag):
 def translate_preserve_formatting(translator, input_text):
     """Translates but preserves a space if it exists on either end of translation.
     Args:
-        translator (translate.ITranslation): The translation to apply
+        translator: Translator
         input_text (str): The text to translate
     Returns:
         str: The translated text
@@ -80,7 +80,7 @@ def inject_tags_inference(translator, tag):
     tag is only modified in place if tag injection is successful.
 
     Args:
-        translator(translate.ITranslation): The translation to apply to the tags.
+        translator: The translation to apply to the tags.
         tag (ITag): A depth=2 tag tree to attempt injection on.
  
     Returns:
@@ -96,7 +96,6 @@ def inject_tags_inference(translator, tag):
 
     class InjectionTag:
         """
-
         Attributes:
             text (str): The text of the tag
             tag (ITag): The depth 1 ITag it represents
@@ -171,7 +170,7 @@ def translate_tags(underlying_translation, tag):
     Recursively takes either an ITag or a str, modifies it in place, and returns the translated tag tree
 
     Args:
-        underlying_translation (translate.ITranslation): The translation to apply
+        underlying_translation: Translator
         tag (ITag or str): The tag tree to translate
 
     Returns:
@@ -209,13 +208,13 @@ NON_TRANSLATEABLE_TAGS = [
 
 
 def itag_of_soup(soup):
-    """Returns an argostranslate.tags.ITag tree from a BeautifulSoup object.
+    """Returns an ITag tree from a BeautifulSoup object.
 
     Args:
         soup (bs4.element.Navigablestring or bs4.element.Tag): Beautiful Soup object
 
     Returns:
-        argostranslate.tags.ITag: Argos Translate ITag tree
+        ITag: ITag tree
     """
     if isinstance(soup, bs4.element.NavigableString):
         return str(soup)
@@ -226,10 +225,10 @@ def itag_of_soup(soup):
 
 
 def soup_of_itag(itag):
-    """Returns a BeautifulSoup object from an Argos Translate ITag.
+    """Returns a BeautifulSoup object from an ITag.
 
     Args:
-        itag (argostranslate.tags.ITag): ITag object to convert to Soup
+        itag: ITag object to convert to Soup
 
     Returns:
         bs4.elements.BeautifulSoup: BeautifulSoup object
