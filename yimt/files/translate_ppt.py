@@ -8,6 +8,7 @@ from yimt.api.utils import detect_lang
 
 
 def scan_doc(ppt, new_ppt):
+    """Get text to be translated"""
     runs = []
     for i, (slide, new_slide) in enumerate(zip(ppt.slides, new_ppt.slides)):
         # print("Slide{}".format(i + 1), slide.slide_layout)
@@ -33,7 +34,7 @@ def translate_ppt_auto(in_fn, source_lang="auto", target_lang="zh", translation_
 
     doc = Presentation(docx_fn)
     translated_doc = Presentation(docx_fn)
-    runs = scan_doc(doc, translated_doc)
+    runs = scan_doc(doc, translated_doc)  # get text paragraphs
 
     if source_lang == "auto":
         source_lang = detect_lang(runs[0].text)
@@ -43,7 +44,7 @@ def translate_ppt_auto(in_fn, source_lang="auto", target_lang="zh", translation_
 
     txt_list = [r.text for r in runs]
 
-    result_list = translator.translate_list(txt_list)
+    result_list = translator.translate_list(txt_list)  # translate
     for i in range(len(runs)):
         runs[i].text = result_list[i]
 

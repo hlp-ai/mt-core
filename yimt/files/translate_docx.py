@@ -34,6 +34,7 @@ def is_pic(paragraph: Paragraph):
 
 
 def handle_sections(doc, new_doc):
+    """Copy page format"""
     sec = doc.sections[0]
     sec_new = new_doc.sections[0]
     sec_new.left_margin = sec.left_margin
@@ -57,6 +58,7 @@ def get_heading(p):
 
 
 def handle_paragraph_txt(p, new_doc):
+    """Copy and get text to be translated"""
     runs = []
     h = get_heading(p)
     if h == 0:
@@ -85,6 +87,7 @@ def handle_paragraph_txt(p, new_doc):
 
 
 def handle_paragraph_img(p, doc, new_doc):
+    """Copy image"""
     img = p._element.xpath('.//pic:pic')
     img: CT_Picture = img[0]
     embed = img.xpath('.//a:blip/@r:embed')[0]
@@ -102,10 +105,9 @@ def scan_doc(doc, new_doc):
     else:
         raise ValueError("something's not right")
 
-    runs = []
-
     handle_sections(doc, new_doc)
 
+    runs = []
     for child in parent_elm.iterchildren():
         if isinstance(child, CT_P):
             p = Paragraph(child, doc)
