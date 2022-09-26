@@ -7,6 +7,9 @@ from yimt.api.translator import WordTranslator, load_translator, Translator
 class Translators(object):
 
     def __init__(self, config_path=os.path.join(os.path.dirname(__file__), "translators.yml")):
+        if not os.path.exists(config_path):
+            raise ValueError("Translator config file {} not exist.".format(config_path))
+
         self.config_file = config_path
 
         self.translators, self.lang_pairs = self.available_translators()
