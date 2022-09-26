@@ -1,11 +1,3 @@
-
-"""
-t = Tag(['I went to ', Tag(['Paris']), ' last summer.'])
-
-translated_tags = translate_tags(translation, t)
-for translated_tag in translated_tags.children:
-    print(str(translated_tag))
-"""
 import bs4
 
 
@@ -20,7 +12,6 @@ class ITag:
     """
 
     def text(self):
-
         """The combined text of all of the children
 
         Returns:
@@ -254,7 +245,7 @@ def translate_html(translator, html):
     """Translate HTML str.
 
     Args:
-        translator (argostranslate.translate.ITranslation): Argos Translate Translation
+        translator: Translator
         html (str): An HTML string
 
     Returns:
