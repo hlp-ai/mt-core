@@ -26,7 +26,7 @@ class Translators(object):
         """Get translators from config file
 
         Returns:
-             dictionary from language pair to translator parameter, language pairs
+             dictionary from language pair to translator parameter, list of language pairs
         """
         translators = {}
         lang_pairs = []
