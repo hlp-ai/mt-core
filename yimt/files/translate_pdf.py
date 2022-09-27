@@ -94,17 +94,17 @@ def translate_pdf_auto(pdf_fn, source_lang="auto", target_lang="zh", translation
                     print_to_canvas(t, x, y, 11, 11, pdf)
                     continue
 
-                if not should_translate_en(t):
-                    print("***Skipping", block)
-                    print_to_canvas(t, x, y, w, h, pdf)
-                    continue
-
                 print("***Translate", block)
 
                 # translate and print
                 if translator is None:
                     if source_lang == "auto":
                         source_lang = detect_lang(t)
+
+                    if source_lang == "en" and not should_translate_en(t):
+                        print("***Skipping", block)
+                        print_to_canvas(t, x, y, w, h, pdf)
+                        continue
 
                     from yimt.api.translators import Translators
                     translator = Translators().get_translator(source_lang, target_lang)
