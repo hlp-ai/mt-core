@@ -13,15 +13,18 @@ from yimt.admin.win_utils import ask_open_file, ask_save_file, ask_dir
 from yimt.core.ex.sp import train_spm, load_spm, tokenize_file
 
 
+def get_file_name(p):
+    return os.path.basename(p)
+
+
 def get_sp_prefix(corpus_path, vocab_size):
-    idx = corpus_path.rfind("/")
-    if idx != -1:
-        corpus_path = corpus_path[idx+1:]
-    else:
-        idx = corpus_path.rfind("\\")
-        if idx != -1:
-            corpus_path = corpus_path[idx + 1:]
+    corpus_path = get_file_name(corpus_path)
     return "{}-sp-{}".format(corpus_path, vocab_size)
+
+
+def get_tok_file(corpus_path):
+    corpus_path = get_file_name(corpus_path)
+    return corpus_path + ".tok"
 
 
 def create_sp_train(parent):
@@ -91,10 +94,10 @@ def create_sp_tokenize(parent):
     entry_model.grid(row=1, column=1, padx=10, pady=5)
     tk.Button(parent, text="...", command=partial(ask_open_file, entry_model)).grid(row=1, column=2, padx=10, pady=5)
 
-    tk.Label(parent, text="Output file").grid(row=2, column=0, sticky="e")
+    tk.Label(parent, text="Output path").grid(row=2, column=0, sticky="e")
     entry_output = tk.Entry(parent, width=50)
     entry_output.grid(row=2, column=1, padx=10, pady=5)
-    tk.Button(parent, text="...", command=partial(ask_save_file, entry_output)).grid(row=2, column=2, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_dir, entry_output)).grid(row=2, column=2, padx=10, pady=5)
 
 
     def go():
@@ -112,6 +115,8 @@ def create_sp_tokenize(parent):
         if len(tok_output.strip()) == 0:
             tk.messagebox.showinfo(title="Info", message="Output path empty.")
             return
+
+        tok_output = os.path.join(tok_output, get_tok_file(corpus_file))
 
         print(corpus_file, sp_model, tok_output)
 
