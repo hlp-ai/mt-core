@@ -13,6 +13,17 @@ from yimt.admin.win_utils import ask_open_file, ask_save_file, ask_dir
 from yimt.core.ex.sp import train_spm, load_spm, tokenize_file
 
 
+def get_sp_prefix(corpus_path, vocab_size):
+    idx = corpus_path.rfind("/")
+    if idx != -1:
+        corpus_path = corpus_path[idx+1:]
+    else:
+        idx = corpus_path.rfind("\\")
+        if idx != -1:
+            corpus_path = corpus_path[idx + 1:]
+    return "{}-sp-{}".format(corpus_path, vocab_size)
+
+
 def create_sp_train(parent):
     tk.Label(parent, text="Corpus path").grid(row=0, column=0, padx=10, pady=5, sticky="e")
     entry_corpus = tk.Entry(parent, width=50)
@@ -27,7 +38,7 @@ def create_sp_train(parent):
     tk.Label(parent, text="SP model path").grid(row=2, column=0, sticky="e")
     entry_model = tk.Entry(parent, width=50)
     entry_model.grid(row=2, column=1, padx=10, pady=5)
-    tk.Button(parent, text="...", command=partial(ask_save_file, entry_model)).grid(row=2, column=2, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_dir, entry_model)).grid(row=2, column=2, padx=10, pady=5)
 
     tk.Label(parent, text="Max num of sentences").grid(row=3, column=0, padx=10, pady=5, sticky="e")
     entry_max_sentences = tk.Entry(parent)
@@ -54,6 +65,8 @@ def create_sp_train(parent):
         if len(sp_model.strip()) == 0:
             tk.messagebox.showinfo(title="Info", message="Model path empty.")
             return
+
+        sp_model = os.path.join(sp_model, get_sp_prefix(corpus_file, vocab_size))
 
         print(corpus_file, vocab_size, sp_model)
 
