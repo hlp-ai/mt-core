@@ -7,3 +7,6 @@ File Translation based on yimt.api
 + XML
 + PPTX
 + TXT
+
+## Usage
+Try translate_files.py
