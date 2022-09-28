@@ -15,7 +15,7 @@ Transformer based Nerual Machine Translation
 11. RESTful service interface for translation
 12. Provide Web interface for text and file translation
 13. Support translation volume limit and API key
-14. Friendly GUI for traning and manipulating NMT models
+14. Friendly GUI for training and manipulating NMT models
 15. Tools for filtering, normalizing, merging, splitting, sampling, converting and deduping parallel corpus
 
 ## Contents
