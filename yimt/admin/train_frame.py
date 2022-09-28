@@ -10,26 +10,8 @@ from functools import partial
 import yaml
 
 from yimt.admin.win_utils import ask_open_file, ask_save_file, ask_dir
+from yimt.core.ex.pre_train import get_sp_prefix, get_tok_file, get_vocab_file
 from yimt.core.ex.sp import train_spm, load_spm, tokenize_file
-
-
-def get_file_name(p):
-    return os.path.basename(p)
-
-
-def get_sp_prefix(corpus_path, vocab_size):
-    corpus_path = get_file_name(corpus_path)
-    return "{}-sp-{}".format(corpus_path, vocab_size)
-
-
-def get_tok_file(corpus_path):
-    corpus_path = get_file_name(corpus_path)
-    return corpus_path + ".tok"
-
-
-def get_vocab_file(tok_corpus_path):
-    corpus_path = get_file_name(tok_corpus_path)
-    return corpus_path + ".vocab"
 
 
 def create_sp_train(parent):
@@ -176,6 +158,86 @@ def create_build_vocab(parent):
         tk.messagebox.showinfo(title="Info", message="Vocab created.")
 
     tk.Button(parent, text="Build Vocab", command=go).grid(row=3, column=1, padx=10, pady=5)
+
+
+def create_pretrain(parent):
+    tk.Label(parent, text="Raw Source Training Corpus path").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    entry_corpus_src_train = tk.Entry(parent, width=50)
+    entry_corpus_src_train.grid(row=0, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_corpus_src_train)).grid(row=0, column=2, padx=10, pady=5)
+
+    tk.Label(parent, text="Size of Source vocab").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    entry_vocab_size_src = tk.Entry(parent)
+    entry_vocab_size_src.grid(row=1, column=1, padx=10, pady=5, sticky="w")
+    entry_vocab_size_src.insert(0, "4800")
+
+    tk.Label(parent, text="Raw Source Eval Corpus path").grid(row=2, column=0, padx=10, pady=5, sticky="e")
+    entry_corpus_src_eval = tk.Entry(parent, width=50)
+    entry_corpus_src_eval.grid(row=2, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_corpus_src_eval)).grid(row=2, column=2, padx=10,
+                                                                                           pady=5)
+
+    tk.Label(parent, text="Raw Target Training Corpus path").grid(row=3, column=0, padx=10, pady=5, sticky="e")
+    entry_corpus_tgt_train = tk.Entry(parent, width=50)
+    entry_corpus_tgt_train.grid(row=3, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_corpus_tgt_train)).grid(row=3, column=2, padx=10,
+                                                                                           pady=5)
+
+    tk.Label(parent, text="Size of Target vocab").grid(row=4, column=0, padx=10, pady=5, sticky="e")
+    entry_vocab_size_tgt = tk.Entry(parent)
+    entry_vocab_size_tgt.grid(row=4, column=1, padx=10, pady=5, sticky="w")
+    entry_vocab_size_tgt.insert(0, "4800")
+
+    tk.Label(parent, text="Raw Target Eval Corpus path").grid(row=5, column=0, padx=10, pady=5, sticky="e")
+    entry_corpus_tgt_eval = tk.Entry(parent, width=50)
+    entry_corpus_tgt_eval.grid(row=5, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_corpus_tgt_eval)).grid(row=5, column=2, padx=10,
+                                                                                           pady=5)
+
+    tk.Label(parent, text="Max num of sentences").grid(row=6, column=0, padx=10, pady=5, sticky="e")
+    entry_max_sentences = tk.Entry(parent)
+    entry_max_sentences.grid(row=6, column=1, padx=10, pady=5, sticky="w")
+    entry_max_sentences.insert(0, "5000000")
+
+    tk.Label(parent, text="Character coverage").grid(row=7, column=0, padx=10, pady=5, sticky="e")
+    entry_coverage = tk.Entry(parent)
+    entry_coverage.grid(row=7, column=1, padx=10, pady=5, sticky="w")
+    entry_coverage.insert(0, "0.9999")
+
+    tk.Label(parent, text="Output path").grid(row=8, column=0, sticky="e")
+    entry_output = tk.Entry(parent, width=50)
+    entry_output.grid(row=8, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_dir, entry_output)).grid(row=8, column=2, padx=10, pady=5)
+
+
+    def go():
+        corpus_src_train = entry_corpus_src_train.get().strip()
+        corpus_src_eval = entry_corpus_src_eval.get().strip()
+        corpus_tgt_train = entry_corpus_tgt_train.get().strip()
+        corpus_tgt_eval = entry_corpus_tgt_eval.get().strip()
+        vocab_size_src = entry_vocab_size_src.get().strip()
+        vocab_size_tgt = entry_vocab_size_tgt.get().strip()
+        output_path = entry_output.get().strip()
+
+        if len(corpus_src_train) == 0 or len(corpus_tgt_train) == 0 or len(corpus_src_eval) == 0 or len(corpus_tgt_eval) == 0:
+            tk.messagebox.showinfo(title="Info", message="Training Corpus path empty.")
+            return
+
+        if len(vocab_size_src) == 0 or len(vocab_size_tgt)==0:
+            tk.messagebox.showinfo(title="Info", message="Vocab size empty.")
+            return
+
+        if len(output_path) == 0:
+            tk.messagebox.showinfo(title="Info", message="Output path empty.")
+            return
+
+        pretrain_cmd = "python ../core/ex/pre_train.py {} {} {} {} {} {} {} {} {}"
+
+        os.popen(pretrain_cmd.format(corpus_src_train, vocab_size_src, corpus_tgt_train, vocab_size_tgt, corpus_src_eval, corpus_tgt_eval, output_path, entry_max_sentences.get(), entry_coverage.get())).readlines()
+
+        tk.messagebox.showinfo(title="Info", message="One-Step PreTrain Done.")
+
+    tk.Button(parent, text="One-Step PreTrain", command=go).grid(row=9, column=1, padx=10, pady=5)
 
 
 def create_edit_config(parent):

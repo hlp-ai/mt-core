@@ -5,7 +5,7 @@ from tkinter import *
 
 from yimt.admin.app_frame import create_average, create_export, create_eval, create_infer, create_translate
 from yimt.admin.train_frame import create_sp_train, create_sp_tokenize, create_build_vocab, create_edit_config, \
-    create_train
+    create_train, create_pretrain
 
 
 def on_menu(frame):
@@ -39,6 +39,11 @@ if __name__ == "__main__":
     build_vocab_frame.pack()
     create_build_vocab(build_vocab_frame)
     frames.append(build_vocab_frame)
+
+    pretrain_frame = tk.Frame(win_main)
+    pretrain_frame.pack()
+    create_pretrain(pretrain_frame)
+    frames.append(pretrain_frame)
 
     edit_config_frame = tk.Frame(win_main)
     edit_config_frame.pack()
@@ -82,6 +87,8 @@ if __name__ == "__main__":
     train_menu.add_command(label="Train SP", command=partial(on_menu, sp_train_frame))
     train_menu.add_command(label="Tokenize with SP", command=partial(on_menu, sp_tokenize_frame))
     train_menu.add_command(label="Build Vocab", command=partial(on_menu, build_vocab_frame))
+    train_menu.add_separator()
+    train_menu.add_command(label="One-Step PreTrain", command=partial(on_menu, pretrain_frame))
     train_menu.add_command(label="Edit Config", command=partial(on_menu, edit_config_frame))
     train_menu.add_separator()
     train_menu.add_command(label="Train MT", command=partial(on_menu, train_frame))
