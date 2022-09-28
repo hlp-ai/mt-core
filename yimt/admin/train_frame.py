@@ -27,8 +27,13 @@ def get_tok_file(corpus_path):
     return corpus_path + ".tok"
 
 
+def get_vocab_file(tok_corpus_path):
+    corpus_path = get_file_name(tok_corpus_path)
+    return corpus_path + ".vocab"
+
+
 def create_sp_train(parent):
-    tk.Label(parent, text="Corpus path").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Raw Corpus path").grid(row=0, column=0, padx=10, pady=5, sticky="e")
     entry_corpus = tk.Entry(parent, width=50)
     entry_corpus.grid(row=0, column=1, padx=10, pady=5)
     tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_corpus)).grid(row=0, column=2, padx=10, pady=5)
@@ -83,7 +88,7 @@ def create_sp_train(parent):
 
 
 def create_sp_tokenize(parent):
-    tk.Label(parent, text="Corpus path").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Raw Corpus path").grid(row=0, column=0, padx=10, pady=5, sticky="e")
     entry_corpus = tk.Entry(parent, width=50)
     entry_corpus.grid(row=0, column=1, padx=10, pady=5)
 
@@ -129,7 +134,7 @@ def create_sp_tokenize(parent):
 
 
 def create_build_vocab(parent):
-    tk.Label(parent, text="Corpus path").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Tokenized Corpus path").grid(row=0, column=0, padx=10, pady=5, sticky="e")
     entry_corpus = tk.Entry(parent, width=50)
     entry_corpus.grid(row=0, column=1, padx=10, pady=5)
     tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_corpus)).grid(row=0, column=2, padx=10, pady=5)
@@ -142,7 +147,7 @@ def create_build_vocab(parent):
     tk.Label(parent, text="Vocab path").grid(row=2, column=0, sticky="e")
     entry_vocab = tk.Entry(parent, width=50)
     entry_vocab.grid(row=2, column=1, padx=10, pady=5)
-    tk.Button(parent, text="...", command=partial(ask_save_file, entry_vocab)).grid(row=2, column=2, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_dir, entry_vocab)).grid(row=2, column=2, padx=10, pady=5)
 
     def go():
         corpus_file = entry_corpus.get()
@@ -159,6 +164,8 @@ def create_build_vocab(parent):
         if len(vocab_path.strip()) == 0:
             tk.messagebox.showinfo(title="Info", message="Vocab path empty.")
             return
+
+        vocab_path = os.path.join(vocab_path, get_vocab_file(corpus_file))
 
         print(corpus_file, vocab_size, vocab_path)
 
