@@ -23,6 +23,7 @@ The contents of this repository are as follows:
 + Package yimt.files: [File Translation](./yimt/files/README.md)
 + Package yimt.service: [Translation Service](./yimt/service/README.md)
 + Package yimt.corpus: [Corpus Tools](./yimt/corpus/README.md)
++ Package yimt.admin: [Corpus Tools](./yimt/admin/README.md)
 
 ## References
 1. https://github.com/OpenNMT/OpenNMT-tf
