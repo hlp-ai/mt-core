@@ -102,7 +102,7 @@ if __name__ == "__main__":
     app_menu.add_command(label="Export Checkpoint", command=partial(on_menu, export_frame))
     app_menu.add_separator()
     app_menu.add_command(label="Inference", command=partial(on_menu, infer_frame))
-    app_menu.add_command(label="Evaluation", command=partial(on_menu, eval_frame))
+    app_menu.add_command(label="Evaluate", command=partial(on_menu, eval_frame))
     app_menu.add_separator()
     app_menu.add_command(label="Translate", command=partial(on_menu, translate_frame))
 

@@ -306,7 +306,7 @@ def create_edit_config(parent):
     tk.Label(parent, text="Max Checkpoints").grid(row=11, column=0, padx=10, pady=5, sticky="e")
     entry_ckpt_max = tk.Entry(parent)
     entry_ckpt_max.grid(row=11, column=1, padx=10, pady=5, sticky="w")
-    entry_ckpt_max.insert(0, 5)
+    entry_ckpt_max.insert(0, '5')
 
     tk.Label(parent, text="Summary Step").grid(row=12, column=0, padx=10, pady=5, sticky="e")
     entry_summary_step = tk.Entry(parent)
@@ -316,7 +316,7 @@ def create_edit_config(parent):
     tk.Label(parent, text="Evaluation Step").grid(row=13, column=0, padx=10, pady=5, sticky="e")
     entry_eval_step = tk.Entry(parent)
     entry_eval_step.grid(row=13, column=1, padx=10, pady=5, sticky="w")
-    entry_eval_step.insert(0, 800)
+    entry_eval_step.insert(0, 200)
 
     tk.Label(parent, text="Evaluation Scorer").grid(row=14, column=0, padx=10, pady=5, sticky="e")
     entry_eval_scorer = tk.Entry(parent)
@@ -392,8 +392,7 @@ def create_edit_config(parent):
         config["train"]["max_step"] = int(entry_max_step.get())
         config["train"]["save_checkpoints_steps"] = int(entry_ckpt_step.get())
         config["train"]["keep_checkpoint_max"] = int(entry_ckpt_max.get())
-        config["train"]["keep_checkpoint_max"] = int(entry_ckpt_max.get())
-        config["train"]["average_last_checkpoints"] = int(entry_summary_step.get())
+        config["train"]["save_summary_steps"] = int(entry_summary_step.get())
 
         config["eval"] = {}
         config["eval"]["steps"] = int(entry_eval_step.get())
