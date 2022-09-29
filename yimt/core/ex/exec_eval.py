@@ -6,7 +6,7 @@ from yimt.core.ex.sp import tokenize_file, detokenize_file
 
 
 def run_eval(config_path, src_path, ref_path, sp_src, sp_tgt, lang_pair):
-    infer_cmd_str = "python ../bin/main.py --config {} --auto_config infer --features_file {} --predictions_file {}"
+    infer_cmd_str = "python -m yimt.core.bin.main --config {} --auto_config infer --features_file {} --predictions_file {}"
     bleu_cmd_str = "sacrebleu -l {} {} -i {}"
 
     src_path_tok = src_path + ".tok"
@@ -38,7 +38,7 @@ def run_eval(config_path, src_path, ref_path, sp_src, sp_tgt, lang_pair):
 
 
 def run_infer(config_path, src_path, sp_src, sp_tgt):
-    infer_cmd_str = "python ../bin/main.py --config {} --auto_config infer --features_file {} --predictions_file {}"
+    infer_cmd_str = "python -m yimt.core.bin.main --config {} --auto_config infer --features_file {} --predictions_file {}"
 
     src_path_tok = src_path + ".tok"
 
@@ -78,7 +78,7 @@ if __name__ == "__main__":
 
     tok_cmd_str = "python sp_tokenize.py {} {} {}"
     detok_cmd_str = "python sp_detokenize.py {} {} {}"
-    infer_cmd_str = "python ../bin/main.py --model_type TransformerBig --config {} --auto_config infer --features_file {} --predictions_file {}"
+    infer_cmd_str = "python ../bin/main.py --config {} --auto_config infer --features_file {} --predictions_file {}"
     bleu_cmd_str = "sacrebleu -l {} {} -i {}"
 
     sp_src = args.sp_src
