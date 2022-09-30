@@ -124,3 +124,18 @@ class Hant2Hans(Normalizer):
             tgt = hant_2_hans(tgt)
 
         return src + "\t" + tgt
+
+
+class ToZhNormalizer(Normalizer):
+
+    def __init__(self):
+        self.normalizers = [SpaceNormalizer(), NoPrintNormalizer(),
+                            Hant2Hans(norm_src=False, norm_tgt=True), PairPunctNormalizer()]
+
+    def normalize(self, s):
+        for normalizer in self.normalizers:
+            if len(s.strip()) == 0:
+                continue
+            s = normalizer.normalize(s)
+
+        return s
