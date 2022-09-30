@@ -17,6 +17,19 @@ def is_ascii(s):
     return all(map(is_ascii_char, s))
 
 
+def is_zh_char(s):
+    """Is it a Chinese char"""
+    return len(s) == 1 and '\u4e00' <= s[0] <= '\u9fa5'
+
+
+def has_zh(s):
+    """Does it contain Chinese char?"""
+    for c in s:
+        if is_zh_char(c):
+            return True
+    return False
+
+
 def same_lines(path1, path2):
     """Two text files have the same numbers of lines?"""
     lines1 = 0
