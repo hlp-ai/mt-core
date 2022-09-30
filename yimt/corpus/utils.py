@@ -2,6 +2,7 @@ import io
 import os
 import random
 import re
+import zipfile
 
 import zhconv
 import lxml.etree as ET
@@ -222,3 +223,20 @@ def from_xml(xml_file):
     with open(output_stem + "." + tgt, "w", encoding="utf-8") as ofh:
         for seg in tree.getroot().findall(".//ref//seg"):
             print(seg.text, file=ofh)
+
+
+def extract_zips(zips_dir, out_dir=None):
+    if out_dir is None:
+        out_dir = os.path.join(zips_dir, "unzip")
+
+    zips = os.listdir(zips_dir)
+    for zipf in zips:
+        if not zipf.endswith(".zip"):
+            continue
+
+        zFile = zipfile.ZipFile(os.path.join(zips_dir, zipf), "r")
+        for fileM in zFile.namelist():
+            if fileM.rfind(".") != len(fileM)-3:
+                continue
+            zFile.extract(fileM, out_dir)
+        zFile.close()
