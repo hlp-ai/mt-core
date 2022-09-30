@@ -1,5 +1,5 @@
 from yimt.api.utils import detect_lang
-from yimt.corpus.utils import is_ascii
+from yimt.corpus.utils import is_ascii, has_zh
 
 
 class Filter(object):
@@ -121,3 +121,47 @@ class LenDiffFilter(Filter):
             return src, tgt
         else:
             return None
+
+class LatinZhFilter(Filter):
+
+    def __init__(self):
+        self.en_len = lambda s: len(s.split())
+        self.zh_len = lambda s: len(s)
+
+        self.filters = [SameFilter(),
+                        AllASCII(),
+                        OverlapFilter(),
+                        LenFilter((3, 128), (3, 128), self.en_len, self.zh_len),
+                        LenDiffFilter(4, self.en_len, self.zh_len)]
+
+    def filter(self, src, tgt):
+        if has_zh(src):
+            return None
+
+        for f in self.filters:
+            r = f.filter(src, tgt)
+            if r is None:
+                return None
+
+        return src, tgt
+
+
+class JaZhFilter(Filter):
+
+    def __init__(self):
+        self.ja_len = lambda s: len(s)
+        self.zh_len = lambda s: len(s)
+
+        self.filters = [SameFilter(),
+                        AllASCII(),
+                        OverlapFilter(),
+                        LenFilter((3, 128), (3, 128), self.ja_len, self.zh_len),
+                        LenDiffFilter(3, self.ja_len, self.zh_len)]
+
+    def filter(self, src, tgt):
+        for f in self.filters:
+            r = f.filter(src, tgt)
+            if r is None:
+                return None
+
+        return src, tgt
