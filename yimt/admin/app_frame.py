@@ -57,7 +57,7 @@ def create_export(parent):
     tk.Label(parent, text="Export Type").grid(row=2, column=0, padx=10, pady=5, sticky="e")
     checkboc_type = ttk.Combobox(parent)
     checkboc_type.grid(row=2, column=1, padx=10, pady=5, sticky="w")
-    checkboc_type['value'] = ('SavedModel', 'ctranslate2')
+    checkboc_type['value'] = ('saved_model', 'ctranslate2', 'tflite_dynamic_range', 'tflite_float16')
     checkboc_type.current(0)
 
     def go():
@@ -73,8 +73,8 @@ def create_export(parent):
 
         export_pattern = "python ../core/bin/main.py --config {} --auto_config export --output_dir {}"
         export_cmd = export_pattern.format(conf, out)
-        if checkboc_type.get() == "ctranslate2":
-            export_cmd += " --format ctranslate2"
+        if checkboc_type.get() != "saved_model":
+            export_cmd += " --format {}".format(checkboc_type.get())
 
         print(export_cmd)
         os.popen(export_cmd).readlines()
