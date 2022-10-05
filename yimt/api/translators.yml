@@ -17,3 +17,8 @@ translators:
   zh-ja:
     model_or_config_dir: D:\kidden\mt\exp\zh-ja\ccm\run\ct2
     sp_src_path: D:\kidden\mt\exp\ja-zh\ccm\ccm-ja-zh.zh.sp.model
+
+languages:
+  - {code: en, name: English}
+  - {code: zh, name: Chinese}
+  - {code: ja, name: Japanese}

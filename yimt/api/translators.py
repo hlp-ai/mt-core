@@ -12,7 +12,7 @@ class Translators(object):
 
         self.config_file = config_path
 
-        self.translators, self.lang_pairs = self.available_translators()
+        self.translators, self.lang_pairs, self.langs_api = self.available_translators()
 
         self.from_langs = list(set([p.split("-")[0] for p in self.lang_pairs]))
         self.to_langs = list(set([p.split("-")[1] for p in self.lang_pairs]))
@@ -37,7 +37,11 @@ class Translators(object):
             translators[lang_pair] = params
             lang_pairs.append(lang_pair)
 
-        return translators, lang_pairs
+        langs_api = []
+        for lang in config.get("languages"):
+            langs_api.append(lang)
+
+        return translators, lang_pairs, langs_api
 
     def support_languages(self):
         return self.lang_pairs, self.from_langs, self.to_langs
