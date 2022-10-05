@@ -121,18 +121,23 @@ def create_app(args):
         limiter = NoLimiter()
 
     def access_check(f):
+        """Check API key"""
         @wraps(f)
         def func(*a, **kw):
-            if args.api_keys:
+            if args.api_keys:  # need API key
                 ak = get_req_api_key()
-                if ak and api_keys_db.lookup(ak) is None:
+                if not ak:
+                    abort(403, description="NO API key")
+                elif api_keys_db.lookup(ak) is None:
                     abort(403, description="Invalid API key")
-                elif (
-                    args.require_api_key_origin
-                    and api_keys_db.lookup(ak) is None
-                    and request.headers.get("Origin") != args.require_api_key_origin  # ?
-                ):
-                    abort(403, description="Please contact the server operator to obtain an API key")
+                # if ak and api_keys_db.lookup(ak) is None:
+                #     abort(403, description="Invalid API key")
+                # elif (
+                #     args.require_api_key_origin
+                #     and api_keys_db.lookup(ak) is None
+                #     and request.headers.get("Origin") != args.require_api_key_origin  # ?
+                # ):
+                #     abort(403, description="Please contact the server operator to obtain an API key")
 
             return f(*a, **kw)
 
@@ -191,17 +196,16 @@ def create_app(args):
         return response
 
     @app.post("/translate")
-    @app.get("/translate")
     @access_check
     def translate():
         """Translate text from a language to another"""
-        if request.is_json:
+        if request.is_json:  # json data in body of POST method
             json = get_json_dict(request)
             q = json.get("q")
             source_lang = json.get("source")
             target_lang = json.get("target")
             text_format = json.get("format")
-        else:
+        else:  # url data in body of POST method
             q = request.values.get("q")
             source_lang = request.values.get("source")
             target_lang = request.values.get("target")
@@ -225,6 +229,7 @@ def create_app(args):
         if len(q) == 0:
             return jsonify({'translatedText': ""})
 
+        # Check the length of input text
         if args.char_limit != -1:
             chars = len(q)
 
@@ -239,10 +244,10 @@ def create_app(args):
             source_lang = detect_lang(q)
 
         if source_lang not in from_langs:
-            abort(400, description="%s is not supported" % source_lang)
+            abort(400, description="Source language %s is not supported" % source_lang)
 
         if target_lang not in to_langs:
-            abort(400, description="%s is not supported" % target_lang)
+            abort(400, description="Target language %s is not supported" % target_lang)
 
         src = q
         lang = source_lang + "-" + target_lang
