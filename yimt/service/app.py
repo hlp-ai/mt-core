@@ -101,6 +101,7 @@ def create_app(args):
     translators = Translators()
 
     lang_pairs, from_langs, to_langs = translators.support_languages()
+    langs_api = translators.langs_api
 
     api_keys_db = None
 
@@ -180,12 +181,12 @@ def create_app(args):
     def languages():
         """Retrieve list of supported languages"""
         # log_service.info("/languages")
-        supported_languages = from_langs
+        supported_languages = langs_api
         return jsonify(supported_languages)
 
     @app.after_request
     def after_request(response):
-        response.headers.add("Access-Control-Allow-Origin", "*")
+        response.headers.add("Access-Control-Allow-Origin", "*")  # Allow CORS from anywhere
         response.headers.add(
             "Access-Control-Allow-Headers", "Authorization, Content-Type"
         )
