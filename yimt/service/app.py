@@ -268,7 +268,7 @@ def create_app(args):
 
         translator = translators.get_translator(source_lang, target_lang)
         if translator is None:
-            return "'Note: {}' not supported currently.".format(lang)
+            abort(400, description="Language pair %s is not supported" % lang)
 
         if text_format == "html":
             translation = str(translate_html(translator, src))
