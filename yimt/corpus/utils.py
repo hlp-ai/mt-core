@@ -226,6 +226,7 @@ def from_xml(xml_file):
 
 
 def extract_zips(zips_dir, out_dir=None):
+    """Unzip zip files in a directory into out directory"""
     if out_dir is None:
         out_dir = os.path.join(zips_dir, "unzip")
 
