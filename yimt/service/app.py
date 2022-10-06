@@ -95,7 +95,7 @@ def get_routes_limits(default_req_limit, daily_req_limit, api_keys_db):
 def create_app(args):
     app = Flask(__name__)
 
-    if not args.disable_files_translation:
+    if not args.disable_files_translation:  # clean uploaded files periodically
         remove_translated_files.setup(get_upload_dir())
 
     translators = Translators()
