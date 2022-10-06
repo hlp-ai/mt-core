@@ -40,8 +40,8 @@ def _get_tokenizer(lang):
         # tokenizer = Mykytea.Mykytea(opt)
         # import jieba
         # tokenizer = jieba
-        import spacy
-        tokenizer = spacy.load("zh_core_web_md", exclude=["tagger", "ner", "parser"])
+        import jieba
+        tokenizer = jieba
     elif lang == "zh_tw":
         import jieba
         tokenizer = jieba
@@ -91,10 +91,7 @@ def word_segment(sentence, lang):
     elif lang == 'vi':
         words = tokenizer.tokenize(sentence).split()
     elif lang == 'zh_cn' or lang == "zh":
-        # words = [elem for elem in tokenizer.getWS(sent)]
-        # words = list(tokenizer.cut(sent, cut_all=False))
-        doc = tokenizer(sentence)
-        words = [t.text for t in doc]
+        words = list(tokenizer.cut(sentence, cut_all=False))
     elif lang == "zh_tw":
         words = list(tokenizer.cut(sentence, cut_all=False))
     elif lang == "ar":
