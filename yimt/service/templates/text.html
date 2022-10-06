@@ -27,8 +27,8 @@
 
           trans_json = await res.json();
           if(res.ok){
-            console.log(trans_json);
-            //p = trans_json.translatedText.replace("\n", "<br>");
+            // console.log(trans_json);
+            // p = trans_json.translatedText.replace("\n", "<br>");
             document.getElementById('translation').value = trans_json.translatedText;
           }
           else{
