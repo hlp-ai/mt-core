@@ -60,6 +60,8 @@ def is_bitext(file_path):
 
 def single_to_pair(src_path, tgt_path, pair_path):
     """Combine source and target file into a parallel one"""
+    assert same_lines(src_path, tgt_path)
+
     src_f = io.open(src_path, encoding="utf-8")
     tgt_f = io.open(tgt_path, encoding="utf-8")
     out_f = io.open(pair_path, "w", encoding="utf-8")
