@@ -234,9 +234,10 @@ def extract_zips(zips_dir, out_dir=None):
         if not zipf.endswith(".zip"):
             continue
 
+        print("Unzip " + zipf)
+
         zFile = zipfile.ZipFile(os.path.join(zips_dir, zipf), "r")
         for fileM in zFile.namelist():
-            if fileM.rfind(".") != len(fileM)-3:
-                continue
-            zFile.extract(fileM, out_dir)
+            if fileM.rfind(".") == len(fileM)-3 or fileM.rfind(".") == len(fileM)-6:
+                zFile.extract(fileM, out_dir)
         zFile.close()
