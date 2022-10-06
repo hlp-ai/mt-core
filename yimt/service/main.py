@@ -46,24 +46,11 @@ def get_args():
         help="Set the default maximum number of requests per day per client, in addition to req-limit. (%(default)s)",
     )
     parser.add_argument(
-        "--batch-limit",
-        default=DEFAULT_ARGS['BATCH_LIMIT'],
-        type=int,
-        metavar="<number of texts>",
-        help="Set maximum number of texts to translate in a batch request (%(default)s)",
-    )
-    parser.add_argument(
         "--api-keys",
         default=DEFAULT_ARGS['API_KEYS'],
         action="store_true",
         help="Enable API keys database for per-user rate limits lookup",
     )
-    # parser.add_argument(
-    #     "--require-api-key-origin",
-    #     type=str,
-    #     default=DEFARGS['REQUIRE_API_KEY_ORIGIN'],
-    #     help="Require use of an API key for programmatic access to the API, unless the request origin matches this domain",
-    # )
     parser.add_argument(
         "--disable-web-ui", default=DEFAULT_ARGS['DISABLE_WEB_UI'], action="store_true", help="Disable web ui"
     )
