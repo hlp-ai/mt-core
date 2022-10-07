@@ -244,3 +244,30 @@ def extract_zips(zips_dir, out_dir=None):
             if fileM.rfind(".") == len(fileM)-3 or fileM.rfind(".") == len(fileM)-6:
                 zFile.extract(fileM, out_dir)
         zFile.close()
+
+
+def detok_zh_str(s):
+    result = ""
+    i = 0
+    while i < len(s):
+        if s[i] == " ":
+            if (i>0 and is_ascii_char(s[i-1])) and (i<len(s)-1 and is_ascii_char(s[i+1])):
+                result += " "
+        else:
+            result += s[i]
+        i += 1
+
+    return result
+
+
+def detok_zh(in_file, out_file=None):
+    if out_file is None:
+        out_file = in_file + ".detok"
+
+    outf = open(out_file, "w", encoding="utf-8")
+
+    with open(in_file, encoding="utf-8") as inf:
+        for line in inf:
+            line = line.strip()
+            line = detok_zh_str(line)
+            outf.write(line + "\n")
