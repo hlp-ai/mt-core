@@ -1,4 +1,4 @@
-from yimt.corpus.utils import is_ascii_char, hant_2_hans
+from yimt.corpus.utils import is_ascii_char, hant_2_hans, detok_zh_str
 
 
 class Normalizer(object):
@@ -26,15 +26,7 @@ class SpaceNormalizer(Normalizer):
         s = re.sub(r"\s{2,}", " ", s)
         s = s.strip()
 
-        new_s = ""
-        for i in range(len(s)):
-            if s[i] == " " and (
-                    (i > 0 and not is_ascii_char(s[i - 1]))
-                    or (i < len(s) - 1 and not is_ascii_char(s[i + 1]))):
-                continue
-            else:
-                new_s += s[i]
-        return new_s
+        return detok_zh_str(s)  # remove space between CJK characters
 
 
 def not_print_en(s):

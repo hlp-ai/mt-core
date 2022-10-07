@@ -258,16 +258,3 @@ def detok_zh_str(s):
         i += 1
 
     return result
-
-
-def detok_zh(in_file, out_file=None):
-    if out_file is None:
-        out_file = in_file + ".detok"
-
-    outf = open(out_file, "w", encoding="utf-8")
-
-    with open(in_file, encoding="utf-8") as inf:
-        for line in inf:
-            line = line.strip()
-            line = detok_zh_str(line)
-            outf.write(line + "\n")
