@@ -258,3 +258,27 @@ def detok_zh_str(s):
         i += 1
 
     return result
+
+
+def merge_moses(in_dir, source_lang=None, target_lang=None, out_dir=None):
+    assert source_lang is not None or target_lang is not None
+
+    if out_dir is None:
+        out_dir = os.path.join(in_dir, "tsv")
+
+    files = os.listdir(in_dir)
+    assert len(files)%2 == 0
+
+    files = list(sorted(files))
+    for i in range(len(files), step=2):
+        f1 = files[i]
+        f2 = files[i+1]
+        idx = f1.rfind(".")
+        bname = f1[:idx]
+        outf = os.path.join(out_dir, bname, ".tsv")
+        if source_lang is not None and f1.endswith(source_lang):
+            print(f1, f2, outf)
+            single_to_pair(f1, f2, outf)
+        elif target_lang is not None and f1.endswith(target_lang):
+            print(f2, f1, outf)
+            single_to_pair(f2, f1, outf)
