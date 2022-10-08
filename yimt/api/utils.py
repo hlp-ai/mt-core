@@ -24,8 +24,8 @@ def get_logger(log_filename, name="mt"):
     # fn = "{}.log".format(log_filename)
     formatter = logging.Formatter("%(asctime)s - %(name)s-%(levelname)s %(message)s")
 
-    max_bytes = 16*1024*1024
-    fh = RotatingFileHandler(log_filename, maxBytes=max_bytes, encoding="utf-8", backupCount=5)
+    max_bytes = 64*1024*1024
+    fh = RotatingFileHandler(log_filename, maxBytes=max_bytes, encoding="utf-8", backupCount=8)
     fh.setFormatter(formatter)
     fh.setLevel(logging.DEBUG)
     logger.addHandler(fh)
