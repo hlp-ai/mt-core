@@ -6,6 +6,7 @@ class BiTextScorer(object):
         pass
 
 
+# pip install bert-for-tf2
 class LaserScorer(BiTextScorer):
     """Filter based on similarity of pair with Laser sentence embedding"""
     from laserembeddings import Laser
