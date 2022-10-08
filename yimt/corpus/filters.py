@@ -131,7 +131,7 @@ class LatinZhFilter(Filter):
         self.filters = [SameFilter(),
                         AllASCII(),
                         OverlapFilter(),
-                        LenFilter((3, 128), (3, 128), self.en_len, self.zh_len),
+                        LenFilter((2, 128), (2, 128), self.en_len, self.zh_len),
                         LenDiffFilter(4, self.en_len, self.zh_len)]
 
     def filter(self, src, tgt):
@@ -146,7 +146,7 @@ class LatinZhFilter(Filter):
         return src, tgt
 
 
-class JaZhFilter(Filter):
+class JK2ZhFilter(Filter):
 
     def __init__(self):
         self.ja_len = lambda s: len(s)
@@ -154,8 +154,7 @@ class JaZhFilter(Filter):
 
         self.filters = [SameFilter(),
                         AllASCII(),
-                        OverlapFilter(),
-                        LenFilter((3, 128), (3, 128), self.ja_len, self.zh_len),
+                        LenFilter((2, 128), (2, 128), self.ja_len, self.zh_len),
                         LenDiffFilter(3, self.ja_len, self.zh_len)]
 
     def filter(self, src, tgt):
