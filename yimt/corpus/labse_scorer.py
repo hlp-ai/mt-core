@@ -59,7 +59,7 @@ def create_input(input_strings, tokenizer, max_seq_length):
     input_ids_all, input_mask_all, segment_ids_all = [], [], []
     for input_string in input_strings:
         # Tokenize input.
-        input_tokens = ["[CLS]"] + tokenizer._tokenize(input_string) + ["[SEP]"]
+        input_tokens = ["[CLS]"] + tokenizer.tokenize(input_string) + ["[SEP]"]
         input_ids = tokenizer.convert_tokens_to_ids(input_tokens)
         sequence_length = min(len(input_ids), max_seq_length)
 
