@@ -26,7 +26,8 @@ class SpaceNormalizer(Normalizer):
         s = re.sub(r"\s{2,}", " ", s)
         s = s.strip()
 
-        return detok_zh_str(s)  # remove space between CJK characters
+        # return detok_zh_str(s)  # remove space between CJK characters
+        return s
 
 
 def not_print_en(s):

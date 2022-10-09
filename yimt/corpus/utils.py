@@ -260,6 +260,19 @@ def detok_zh_str(s):
     return result
 
 
+def detok_zh(in_file, out_file=None):
+    if out_file is None:
+        out_file = in_file + ".detok"
+
+    outf = open(out_file, "w", encoding="utf-8")
+
+    with open(in_file, encoding="utf-8") as inf:
+        for line in inf:
+            line = line.strip()
+            line = detok_zh_str(line)
+            outf.write(line + "\n")
+
+
 def merge_moses(in_dir, source_lang=None, target_lang=None, out_dir=None):
     assert source_lang is not None or target_lang is not None
 
