@@ -186,7 +186,7 @@ def dedup(in_path, out_path):
         total += 1
         if total % 100000 == 0:
             print("Total:", total, "Unique:", n)
-        h = hash(p)
+        h = hash(p.lower())
         if h not in pairs:
             pairs[h] = n
             n += 1
