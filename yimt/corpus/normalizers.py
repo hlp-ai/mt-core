@@ -17,6 +17,10 @@ class Normalizer(object):
 class SpaceNormalizer(Normalizer):
     """Remove unnecessary spaces"""
 
+    def __init__(self, detok_tgt=False, detok_src=False):
+        self.detok_tgt = detok_tgt
+        self.detok_src = detok_src
+
     def normalize(self, s):
         import re
 
@@ -26,7 +30,19 @@ class SpaceNormalizer(Normalizer):
         s = re.sub(r"\s{2,}", " ", s)
         s = s.strip()
 
-        # return detok_zh_str(s)  # remove space between CJK characters
+        if self.detok_tgt or self.detok_src:
+            pair = s.split("\t")
+            src = pair[0]
+            tgt = pair[1]
+
+            if self.detok_tgt:
+                tgt = detok_zh_str(tgt)  # remove space between CJK characters
+
+            if self.detok_src:
+                src = detok_zh_str(src)
+
+            return src + "\t" + tgt
+
         return s
 
 
@@ -122,7 +138,7 @@ class Hant2Hans(Normalizer):
 class ToZhNormalizer(Normalizer):
 
     def __init__(self):
-        self.normalizers = [SpaceNormalizer(), NoPrintNormalizer(),
+        self.normalizers = [SpaceNormalizer(detok_tgt=True), NoPrintNormalizer(),
                             Hant2Hans(norm_src=False, norm_tgt=True), PairPunctNormalizer()]
 
     def normalize(self, s):
