@@ -283,12 +283,18 @@ def merge_moses(in_dir, source_lang=None, target_lang=None, out_dir=None):
     assert len(files)%2 == 0
 
     files = list(sorted(files))
-    for i in range(len(files), step=2):
+
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir, exist_ok=True)
+
+    for i in range(0, len(files), 2):
         f1 = files[i]
         f2 = files[i+1]
         idx = f1.rfind(".")
         bname = f1[:idx]
-        outf = os.path.join(out_dir, bname, ".tsv")
+        outf = os.path.join(out_dir, bname + ".tsv")
+        f1 = os.path.join(in_dir, f1)
+        f2 = os.path.join(in_dir, f2)
         if source_lang is not None and f1.endswith(source_lang):
             print(f1, f2, outf)
             single_to_pair(f1, f2, outf)
