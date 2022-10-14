@@ -9,8 +9,12 @@
         #inout {padding-top: 12pt;}
         #copyright {font-size: 11pt; padding-top: 24pt; padding-bottom: 24pt;}
         .ta {font-size: 11pt; line-height: 1.5; padding:8px;}
+
     </style>
-    
+    <link rel="stylesheet" type="text/css" href="text.css">
+
+
+
     <script>
         async function myfunc(){
           qstr = document.getElementById('q').value;
@@ -19,52 +23,164 @@
           source_lang = document.getElementById('source').value
           target_lang = document.getElementById('target').value
           const res = await fetch("http://127.0.0.1:5555/translate",
-            {method: "POST",
-            body: JSON.stringify({q: qstr, source: source_lang, target: target_lang, format: "text"}),
-            headers: { "Content-Type": "application/json" }
-            }
+          {method: "POST",
+          body: JSON.stringify({q: qstr, source: source_lang, target: target_lang, format: "text"}),
+          headers: { "Content-Type": "application/json" }
+          }
           );
 
           trans_json = await res.json();
-          if(res.ok){
-            // console.log(trans_json);
-            // p = trans_json.translatedText.replace("\n", "<br>");
-            document.getElementById('translation').value = trans_json.translatedText;
-          }
-          else{
-            alert(trans_json.error)
-          }
+          console.log(trans_json);
+          //p = trans_json.translatedText.replace("\n", "<br>");   
         }
+        
     </script>
     <title>YiMT Translation</title>
 </head>
 <body>
-<div id="logo">Welcome to YiMT Translation</div>
 
-<div id="toolbar">
-    <select id="source" name="source">
-        <option value="auto">自动检测</option>
-        <option value="zh">Chinese</option>
-        <option value="en">English</option>
-        <option value="ja">Japanese</option>
-    </select>
-    <span>-></span>
-    <select id="target" name="target">
-        <option value="zh">Chinese</option>
-        <option value="en">English</option>
-        <option value="ja">Japanese</option>
-    </select>
-    <input type="button" value="翻译文本" onclick='myfunc()'>
-    <input type="button" value="翻译文档" onclick="window.location.href='/file'">
-</div>
+    <div class="fanyi__nav">
+        <div class="fanyi__nav__container">
+                <a href="https://fanyi.youdao.com/?keyfrom=fanyi-new.logo" class="fanyi__nav__logo"></a>                 
+            <div class="nav_left">
+                <a target="_blank" class="nav"href="file.html">    文档翻译    </a><a target="_blank" class="nav" href="https://dsp.youdao.com/?keyfrom=fanyi-new.copyright">    翻译API    </a><a target="_blank"class="nav" href="https://ke.youdao.com/?keyfrom=fanyi-new.copyright">    登录  </a>
+            </div>
+                
+        </div>    
 
-<div id="inout">
-    <textarea id="q" name="q" rows="20" cols="50" class="ta"></textarea>
-    <textarea id="translation" name="translation" rows="20" cols="50" class="ta"></textarea>
-</div>
+    </div>
+    <div class="restriction">
+        <div class="fanyi__operations">
+            <div class="fanyi__operations--left">
+                <div id="toolbar">
+                    <select id="source" name="source" class="source_select">
+                        <option value="auto">自动检测</option>
+                        <option value="zh">Chinese</option>
+                        <option value="en">English</option>
+                        <option value="ja">Japanese</option>
+                    </select>
+                    <span class="mid">-></span>
+                    <select id="target" name="target" class="target_select">
+                        <option value="zh">Chinese</option>
+                        <option value="en">English</option>
+                        <option value="ja">Japanese</option>
+                    </select>
+                    <input type="button" class="fanyi__operations--machine" id="transMachine" value="翻译文本" onclick='myfunc()'>
+        
+                   
+                </div>
+            </div>
+    
+        </div>
+    
+        
+    
+        <div class="fanyi__input">
 
-<div id="copyright">
-    <span>Copyright 2021-2022 by Liu Xiaofeng</span>
-</div>
+
+            <div class="input__original">
+                <div class="fanyi__input__bg">
+                    <textarea id="q" name="q" rows="20" maxlength="500" cols="50" class="input__original__area" placeholder="请输入你要翻译的文字或网址"></textarea>
+
+                    <script>
+                        document.getElementById("q").oninput = function() {myFunction();getc_num()};
+                        function myFunction() {
+                            document.getElementById("inputDelete").style.visibility='visible';
+                            document.getElementById("target_copy").style.visibility='visible';
+                            document.getElementById("words_count").style.visibility='visible';
+                            if(document.getElementById("q").value=='')
+                            {
+                                document.getElementById("inputDelete").style.visibility='hidden';
+                                document.getElementById("target_copy").style.visibility='hidden';
+                                document.getElementById("words_count").style.visibility='hidden';
+
+                            }
+                        }
+                        function getc_num()
+                        {
+                            document.getElementById("c1").innerHTML=document.getElementById("q").value.length;
+                        }         
+                    </script>
+
+                    <a id="inputDelete" class="input__original_delete"></a>
+                    <div id="words_count" class="words_count" style="visibility: hidden;">
+                        <span id="c1"></span>/500
+                    </div>
+                    <script>
+                        function Function1()
+                        {
+                            document.getElementById("q").value='';
+                            getc_num();
+                        }    
+                        document.getElementById("inputDelete").addEventListener("click", Function1);
+                    </script>
+                </div>
+                
+                <input type="button" value="翻译文档" class="fanyi__operations--file" onclick="window.location.href='file.html'">
+    
+            </div>
+            <div class="input__target">
+                <div class="fanyi__input__bg">
+                    <textarea id="translation" name="translation" rows="20" cols="50" class="input__target__area"></textarea>
+                    <a id="target_copy" class="target_copy"></a>
+                </div>
+                <script>
+                    document.getElementById("target_copy").addEventListener("click", Function2);
+                    function Function2() 
+                    { 
+                        translation.select();
+                        document.execCommand("Copy");
+                    }
+                    
+                </script>
+    
+            </div>
+    
+    
+    
+        </div>
+    
+        <div class="inside__products" style="display: block;">
+            <div class="product1_area">
+                <div class="product1_image">
+                                      
+                </div>
+            </div>
+            <div class="product2_area">
+                <div class="product21_area">
+                    <div class="product21_image">
+
+                    </div>
+                    <div class="product2_head">
+                        翻译插件
+                    </div>
+                    <div class="product2_text">
+                        简单好用的插件，支持Edge、Chrome等各类浏览器使用。
+                    </div>
+                </div>
+                <div class="product22_area">
+                    <div class="product22_image">
+
+                    </div>
+                    <div class="product2_head">
+                        翻译APP
+                    </div>
+                    <div class="product2_text">
+                        高效便携的手机翻译APP，支持各类安卓手机，功能强大。
+                    </div>
+                </div>
+    
+            </div>
+        </div>
+    
+    </div>
+    <div class="fanyi__footer">
+        <div class="bottom__nav" style="display: block;">
+            <a target="_blank" class="nav"href="https://www.youdao.com/?keyfrom=fanyi-new.copyright">  成长计划  </a><span class="c_fnl">|</span><a target="_blank" class="nav" href="https://dsp.youdao.com/?keyfrom=fanyi-new.copyright">  关于YIMT  </a><span class="c_fnl">|</span><a target="_blank"class="nav" href="https://ke.youdao.com/?keyfrom=fanyi-new.copyright">  官方博客  </a>
+            <p>Copyright 2021-2022 by Liu Xiaofeng</p>
+        </div>   
+    </div>
+    
+
 </body>
 </html>
