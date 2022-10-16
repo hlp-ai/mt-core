@@ -9,7 +9,7 @@
         #inout {padding-top: 24pt;}
         #copyright {font-size: 12pt; padding-top: 24pt; padding-bottom: 24pt;}
     </style>
-    <link rel="stylesheet" type="text/css" href="file.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='file.css') }}">
 
     <script>
 		var xhr;
@@ -52,7 +52,7 @@
         <div class="fanyi__nav__container">
             <div class="fanyi__nav__logo"></div>
             <div class="nav_left">
-                <a target="_blank" class="nav"href="text.html">    文本翻译    </a><a target="_blank" class="nav" href="https://dsp.youdao.com/?keyfrom=fanyi-new.copyright">    翻译API    </a><a target="_blank"class="nav" href="https://ke.youdao.com/?keyfrom=fanyi-new.copyright">    登录  </a>
+                <a target="_blank" class="nav"href="/">    文本翻译    </a><a target="_blank" class="nav" href="https://dsp.youdao.com/?keyfrom=fanyi-new.copyright">    翻译API    </a><a target="_blank"class="nav" href="https://ke.youdao.com/?keyfrom=fanyi-new.copyright">    登录  </a>
             </div>
         </div>
         
