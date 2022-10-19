@@ -1,8 +1,7 @@
 translators:
   en-zh:
-    model_or_config_dir: D:\kidden\mt\exp\en-zh\ft\run\ct2
+    model_or_config_dir: D:\kidden\mt\mt-exp\en-zh\ccm1\run-29m-enzh-big\export\ct2
     # model_or_config_dir: D:\kidden\mt\open\OpenNMT-tf\ex\run-29m-enzh-big\deploy.yml
-    # model_or_config_dir: D:\kidden\mt\exp\en-zh\ft\data.yml
     sp_src_path: D:\kidden\mt\exp\sp\spm-bpe-en-32000.model
 
   zh-en:
