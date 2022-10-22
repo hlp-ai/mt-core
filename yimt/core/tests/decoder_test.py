@@ -1,5 +1,3 @@
-import math
-
 import tensorflow as tf
 
 from yimt.core import decoders
@@ -24,45 +22,6 @@ def _generate_source_context(batch_size, depth, num_sources=1, dtype=tf.float32)
 
 
 class DecoderTest(tf.test.TestCase):
-    def testSamplingProbability(self):
-        step = tf.constant(5, dtype=tf.int64)
-        large_step = tf.constant(1000, dtype=tf.int64)
-        self.assertIsNone(decoders.get_sampling_probability(step))
-        with self.assertRaises(ValueError):
-            decoders.get_sampling_probability(step, schedule_type="linear")
-        with self.assertRaises(ValueError):
-            decoders.get_sampling_probability(step, schedule_type="linear", k=1)
-        with self.assertRaises(TypeError):
-            decoders.get_sampling_probability(step, schedule_type="foo", k=1)
-
-        constant_sample_prob = decoders.get_sampling_probability(
-            step, read_probability=0.9
-        )
-        linear_sample_prob = decoders.get_sampling_probability(
-            step, read_probability=1.0, schedule_type="linear", k=0.1
-        )
-        linear_sample_prob_same = decoders.get_sampling_probability(
-            step, read_probability=2.0, schedule_type="linear", k=0.1
-        )
-        linear_sample_prob_inf = decoders.get_sampling_probability(
-            large_step, read_probability=1.0, schedule_type="linear", k=0.1
-        )
-        exp_sample_prob = decoders.get_sampling_probability(
-            step, schedule_type="exponential", k=0.8
-        )
-        inv_sig_sample_prob = decoders.get_sampling_probability(
-            step, schedule_type="inverse_sigmoid", k=1
-        )
-
-        self.assertAlmostEqual(0.1, constant_sample_prob)
-        self.assertAlmostEqual(0.5, self.evaluate(linear_sample_prob))
-        self.assertAlmostEqual(0.5, self.evaluate(linear_sample_prob_same))
-        self.assertAlmostEqual(1.0, self.evaluate(linear_sample_prob_inf))
-        self.assertAlmostEqual(1.0 - pow(0.8, 5), self.evaluate(exp_sample_prob))
-        self.assertAlmostEqual(
-            1.0 - (1.0 / (1.0 + math.exp(5.0 / 1.0))),
-            self.evaluate(inv_sig_sample_prob),
-        )
 
     def _testDecoder(
         self, decoder, initial_state_fn=None, num_sources=1, dtype=tf.float32

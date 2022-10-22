@@ -10,54 +10,6 @@ from yimt.core.layers import common
 from yimt.core.utils import decoding, misc
 
 
-def get_sampling_probability(step, read_probability=None, schedule_type=None, k=None):
-    """Returns the sampling probability as described in
-    https://arxiv.org/abs/1506.03099.
-
-    Args:
-      step: The training step.
-      read_probability: The probability to read from the inputs.
-      schedule_type: The type of schedule: "constant", "linear", "exponential",
-        or "inverse_sigmoid".
-      k: The convergence constant.
-
-    Returns:
-      The probability to sample from the output ids as a 0D ``tf.Tensor`` or
-      ``None`` if scheduled sampling is not configured.
-
-    Raises:
-      ValueError: if :obj:`schedule_type` is set but not :obj:`k` or if
-       :obj:`schedule_type` is ``linear`` but an initial :obj:`read_probability`
-       is not set.
-      TypeError: if :obj:`schedule_type` is invalid.
-    """
-    if read_probability is None and schedule_type is None:
-        return None
-
-    if schedule_type is not None and schedule_type != "constant":
-        if k is None:
-            raise ValueError(
-                "scheduled_sampling_k is required when scheduled_sampling_type is set"
-            )
-
-        step = tf.cast(step, tf.float32)
-        k = tf.constant(k, tf.float32)
-
-        if schedule_type == "linear":
-            if read_probability is None:
-                raise ValueError("Linear schedule requires an initial read probability")
-            read_probability = min(read_probability, 1.0)
-            read_probability = tf.maximum(read_probability - k * step, 0.0)
-        elif schedule_type == "exponential":
-            read_probability = tf.pow(k, step)
-        elif schedule_type == "inverse_sigmoid":
-            read_probability = k / (k + tf.exp(step / k))
-        else:
-            raise TypeError("Unknown scheduled sampling type: {}".format(schedule_type))
-
-    return 1.0 - read_probability
-
-
 class Decoder(tf.keras.layers.Layer):
     """Base class for decoders."""
 

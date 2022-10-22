@@ -5,7 +5,6 @@ import tensorflow_addons as tfa
 
 from yimt.core import inputters, config as config_util, constants
 from yimt.core.data import noise, text
-from yimt.core.decoders import decoder as decoder_util
 from yimt.core.layers import reducer
 from yimt.core.models import model
 from yimt.core.utils import decoding, losses, misc
@@ -208,13 +207,6 @@ class SequenceToSequence(model.SequenceGenerator):
         input_fn = lambda ids: self.labels_inputter({"ids": ids}, training=training)
 
         sampling_probability = None
-        if training:
-            sampling_probability = decoder_util.get_sampling_probability(
-                step,
-                read_probability=params.get("scheduled_sampling_read_probability"),
-                schedule_type=params.get("scheduled_sampling_type"),
-                k=params.get("scheduled_sampling_k"),
-            )
 
         initial_state = self.decoder.initial_state(
             memory=encoder_outputs,
