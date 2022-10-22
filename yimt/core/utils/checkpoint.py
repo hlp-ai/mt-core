@@ -133,22 +133,6 @@ def get_step_from_checkpoint_prefix(prefix):
     return int(prefix.split("-")[-1])
 
 
-def get_checkpoint_variables(checkpoint_path):
-    """Returns variables included in a checkpoint.
-
-    Args:
-      checkpoint_path: Path to the checkpoint.
-
-    Returns:
-      A dictionary mapping variables name to value.
-    """
-    reader = tf.train.load_checkpoint(checkpoint_path)
-    return {
-        name: reader.get_tensor(name)
-        for name in reader.get_variable_to_shape_map().keys()
-    }
-
-
 def average_checkpoints(
     model_dir, output_dir, trackables, max_count=8, model_key="model"
 ):
