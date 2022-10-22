@@ -13,7 +13,6 @@ from yimt.core.inputters.inputter import (
     ParallelInputter,
 )
 from yimt.core.inputters.text_inputter import (
-    CharEmbedder,
     TextInputter,
     WordEmbedder,
     add_sequence_controls,
