@@ -22,10 +22,10 @@ score:
 Predefined models declare default parameters that should give solid performance out of the box. To enable automatic configuration, use the `--auto_config` flag:
 
 ```bash
-onmt-main --model_type Transformer --config my_data.yml --auto_config train
+yimt.core.bin.main --model_type Transformer --config my_data.yml --auto_config train
 ```
 
-The user provided `my_data.yml` file will minimally require the data configuration (see [Quickstart](quickstart.md) for example). You might want to also configure checkpoint related settings, the logging frequency, and the number of training steps.
+The user provided `my_data.yml` file will minimally require the data configuration. You might want to also configure checkpoint related settings, the logging frequency, and the number of training steps.
 
 At the start of the training, the configuration values actually used will be logged. If you want to change some of them, simply add the parameter in your configuration file to override the default value.
 
@@ -33,24 +33,6 @@ At the start of the training, the configuration values actually used will be log
 
 * If you encounter GPU out of memory issues, try overriding `batch_size` to a lower value.
 * If you encounter CPU out of memory issues, try overriding `sample_buffer_size` to a fixed value.
-
-## Multiple configuration files
-
-The command line accepts multiple configuration files so that some parts can be made reusable, e.g:
-
-```bash
-onmt-main --config config/opennmt-defaults.yml config/optim/adam_with_decay.yml \
-    config/data/toy-ende.yml [...]
-```
-
-If a configuration key is duplicated, the value defined in the rightmost configuration file has priority.
-
-If you are unsure about the configuration that is actually used or simply prefer working with a single file, consider using the `merge_config` script:
-
-```bash
-onmt-merge-config config/opennmt-defaults.yml config/optim/adam_with_decay.yml \
-    config/data/toy-ende.yml > config/my_config.yml
-```
 
 ## Reference
 
@@ -112,21 +94,6 @@ data:
     case_insensitive: true
     trainable: false
 
-  # (optional) For language models, configure sequence control tokens (usually
-  # represented as <s> and </s>). For example, enabling "start" and disabling "end"
-  # allows nonconditional and unbounded generation (default: start=false, end=true).
-  #
-  # Advanced users could also configure this parameter for seq2seq models with e.g.
-  # source_sequence_controls and target_sequence_controls.
-  sequence_controls:
-    start: false
-    end: true
-
-  # (optional) For sequence tagging tasks, the tagging scheme that is used (e.g. BIOES).
-  # For supported schemes, additional evaluation metrics could be computed such as
-  # precision, recall, etc. (accepted values: bioes; default: null).
-  tagging_scheme: bioes
-
 # Model and optimization parameters.
 params:
   # The optimizer class name in tf.keras.optimizers or tfa.optimizers.
@@ -174,15 +141,6 @@ params:
 
   # (optional) The learning rate minimum value (default: 0).
   minimum_learning_rate: 0.0001
-
-  # (optional) Type of scheduled sampling (can be "constant", "linear", "exponential",
-  # or "inverse_sigmoid", default: "constant").
-  scheduled_sampling_type: constant
-  # (optional) Probability to read directly from the inputs instead of sampling categorically
-  # from the output ids (default: 1).
-  scheduled_sampling_read_probability: 1
-  # (optional unless scheduled_sampling_type is set) The constant k of the schedule.
-  scheduled_sampling_k: 0
 
   # (optional) The label smoothing value.
   label_smoothing: 0.1
