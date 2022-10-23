@@ -149,14 +149,6 @@ class FeedForwardNetwork(tf.keras.layers.Layer):
         inner = common.dropout(inner, self.dropout, training=training)
         return self.outer(inner)
 
-    def map_v1_weights(self, weights):
-        # V1 used conv1d layers that have a leading dimensions.
-        weights = tf.nest.map_structure(np.squeeze, weights)
-        m = []
-        m += self.inner.map_v1_weights(weights["conv1d"])
-        m += self.outer.map_v1_weights(weights["conv1d_1"])
-        return m
-
 
 class MultiHeadAttentionReduction(enum.Enum):
     """Enumeration defining how to reduce multi-head attention matrices into a
@@ -425,12 +417,6 @@ class TransformerLayerWrapper(common.LayerWrapper):
             **kwargs,
         )
 
-    def map_v1_weights(self, weights):
-        m = []
-        m += self.input_layer_norm.map_v1_weights(weights["LayerNorm"])
-        m += self.layer.map_v1_weights(weights)
-        return m
-
 
 class SelfAttentionEncoderLayer(tf.keras.layers.Layer):
     """Implements one self-attention encoding layer."""
@@ -490,12 +476,6 @@ class SelfAttentionEncoderLayer(tf.keras.layers.Layer):
         y, _ = self.self_attention(x, mask=mask, training=training)
         y = self.ffn(y, training=training)
         return y
-
-    def map_v1_weights(self, weights):
-        m = []
-        m += self.self_attention.map_v1_weights(weights["multi_head"])
-        m += self.ffn.map_v1_weights(weights["ffn"])
-        return m
 
 
 class SelfAttentionDecoderLayer(tf.keras.layers.Layer):
