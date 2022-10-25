@@ -84,18 +84,6 @@ class SelfAttentionDecoder(decoder.Decoder):
             for i in range(num_layers)
         ]
 
-    @property
-    def minimum_sources(self):
-        return 0
-
-    @property
-    def maximum_sources(self):
-        return 1e6  # An arbitrary large number.
-
-    @property
-    def support_alignment_history(self):
-        return True
-
     def _run(
         self,
         inputs,

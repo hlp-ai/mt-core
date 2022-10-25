@@ -38,12 +38,6 @@ class Decoder(tf.keras.layers.Layer):
           ValueError: if the number of source contexts :obj:`num_sources` is not
             supported by this decoder.
         """
-        if num_sources < self.minimum_sources or num_sources > self.maximum_sources:
-            raise ValueError(
-                "This decoder accepts between %d and %d source contexts, "
-                "but received %d"
-                % (self.minimum_sources, self.maximum_sources, num_sources)
-            )
         super().__init__(**kwargs)
         self.num_sources = num_sources
         self.output_layer = None
@@ -54,20 +48,10 @@ class Decoder(tf.keras.layers.Layer):
             self.initialize(vocab_size=vocab_size, output_layer=output_layer)
 
     @property
-    def minimum_sources(self):
-        """The minimum number of source contexts supported by this decoder."""
-        return 1
-
-    @property
-    def maximum_sources(self):
-        """The maximum number of source contexts supported by this decoder."""
-        return 1
-
-    @property
     def support_alignment_history(self):
         """Returns ``True`` if this decoder can return the attention as alignment
         history."""
-        return False
+        return True
 
     @property
     def initialized(self):
