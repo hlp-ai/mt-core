@@ -8,7 +8,6 @@ from yimt.core.inputters.inputter import (
     ExampleInputter,
     ExampleInputterAdapter,
     Inputter,
-    MixedInputter,
     MultiInputter,
     ParallelInputter,
 )
