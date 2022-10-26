@@ -50,7 +50,7 @@ class SentenceEmbeddingAligner(object):
             (c, di, dj) = align_trace[i, j]
             if di == dj == 0:  # reach the begining
                 break
-            print(c)
+            # print(c)
             yield ''.join(para1[i - di:i]), ''.join(para2[j - dj:j])  # the aligned sentences
             i -= di
             j -= dj
