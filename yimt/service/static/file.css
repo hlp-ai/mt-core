@@ -207,11 +207,12 @@ body {
 
     margin-top: 12px;
 
-    background: #ebebeb;
+    background: #441d1d;
     border-radius: 3px;
     border: none;
     font-size: 19px;
     color: #848484;
+    z-index: 5;
 }
 
 .inside__products{
