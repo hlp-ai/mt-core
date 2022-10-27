@@ -39,8 +39,11 @@ if __name__ == "__main__":
     out_f = open(out_fn, "a+", encoding="utf-8")
 
     aligner = SentenceEmbeddingAligner();
+    num_align = 0
     for sp, tp in zip(src_p, tgt_p):
         align = aligner.align(sp, tp)
         for a in align:
             out_f.write(a[0] + "\t" + a[1] + "\n")
+            num_align += 1
 
+    print("# of pairs aligned:", num_align)
