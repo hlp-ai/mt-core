@@ -95,37 +95,3 @@ def predict_dataset(
             tf.get_logger().info("Tokens per second: %f", total_tokens / total_time)
     if predictions_file:
         stream.close()
-
-
-def score_dataset(model, dataset, print_params=None, output_file=None):
-    """Outputs the model scores for the dataset.
-
-    Args:
-      model: A :class:`yimt.models.Model` instance.
-      dataset: A ``tf.data.Dataset`` instance outputting parallel features and
-        labels.
-      print_params: A dictionary of parameters passed to
-        :meth:`yimt.models.Model.print_score`.
-      output_file: If set, outputs are saved in this file, otherwise they are
-        printed on the standard output.
-    """
-    if output_file:
-        stream = open(output_file, encoding="utf-8", mode="w")
-    else:
-        stream = sys.stdout
-
-    write_fn = lambda batch: (
-        model.print_score(batch, params=print_params, stream=stream)
-    )
-    index_fn = lambda batch: batch.get("index")
-    ordered_writer = misc.OrderRestorer(index_fn, write_fn)
-
-    score_fn = tf.function(model.score, input_signature=dataset.element_spec)
-    for features, labels in dataset:
-        results = score_fn(features, labels)
-        results = tf.nest.map_structure(lambda t: t.numpy(), results)
-        for batch in misc.extract_batches(results):
-            ordered_writer.push(batch)
-
-    if output_file:
-        stream.close()

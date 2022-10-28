@@ -461,36 +461,6 @@ class Runner(object):
             raise AttributeError("Checkpoint path to restore was not found")
         model.export(export_dir, exporter=exporter)
 
-    def score(
-        self, features_file, predictions_file, checkpoint_path=None, output_file=None
-    ):
-        """Scores existing predictions.
-
-        Args:
-          features_file: The input file.
-          predictions_file: The predictions file to score.
-          checkpoint_path: Path to specific checkpoint to load. If ``None``,
-            the latest is used.
-          output_file: The file where the scores are saved. Otherwise, they will be
-            printed on the standard output.
-        """
-        config = self._finalize_config()
-        model = self._init_model(config)
-        checkpoint = checkpoint_util.Checkpoint.from_config(config, model)
-        checkpoint.restore(checkpoint_path=checkpoint_path, weights_only=True)
-        score_config = config["score"]
-        dataset = model.examples_inputter.make_evaluation_dataset(
-            features_file,
-            predictions_file,
-            score_config["batch_size"],
-            batch_type=score_config["batch_type"],
-            length_bucket_width=score_config["length_bucket_width"],
-            prefetch_buffer_size=score_config.get("prefetch_buffer_size"),
-        )
-        inference.score_dataset(
-            model, dataset, print_params=score_config, output_file=output_file
-        )
-
 
 def _forward_model_description(source, destination):
     source = os.path.join(source, MODEL_DESCRIPTION_FILENAME)
