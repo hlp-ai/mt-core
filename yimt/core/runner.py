@@ -358,54 +358,6 @@ class Runner(object):
         self._config["model_dir"] = output_dir
         return output_dir
 
-    def update_vocab(self, output_dir, src_vocab=None, tgt_vocab=None):
-        """Updates model vocabularies.
-
-        Args:
-          output_dir: Directory where the update checkpoint will be saved.
-          src_vocab: Path to the new source vocabulary.
-          tgt_vocab: Path to the new tagret vocabulary.
-
-        Returns:
-          Path to the new checkpoint directory.
-        """
-        if not isinstance(self._model, models.SequenceToSequence):
-            raise ValueError(
-                "Updating vocabularies is only supported for sequence to sequence models"
-            )
-        config = self._finalize_config()
-        if src_vocab is None and tgt_vocab is None:
-            return config["model_dir"]
-
-        model = self._init_model(config)
-        optimizer = model.get_optimizer()
-        cur_checkpoint = checkpoint_util.Checkpoint.from_config(
-            config, model, optimizer=optimizer
-        )
-        cur_checkpoint.restore()
-        model.create_variables(optimizer=optimizer)
-        source_dir = self.model_dir
-
-        self._config["model_dir"] = output_dir
-        if src_vocab is not None:
-            self._config["data"]["source_vocabulary"] = src_vocab
-        if tgt_vocab is not None:
-            self._config["data"]["target_vocabulary"] = tgt_vocab
-        new_config = self._finalize_config()
-        new_model = self._init_model(new_config)
-        new_optimizer = new_model.get_optimizer()
-        new_checkpoint = checkpoint_util.Checkpoint.from_config(
-            new_config, new_model, optimizer=new_optimizer
-        )
-        new_model.create_variables(optimizer=new_optimizer)
-
-        model.transfer_weights(
-            new_model, new_optimizer=new_optimizer, optimizer=optimizer
-        )
-        new_optimizer.iterations.assign(optimizer.iterations)
-        new_checkpoint.save()
-        _forward_model_description(source_dir, output_dir)
-        return output_dir
 
     def infer(
         self, features_file, predictions_file=None, checkpoint_path=None, log_time=False
