@@ -19,11 +19,6 @@ class Model(tf.keras.layers.Layer):
         self.params = {}
 
     @property
-    def unsupervised(self):
-        """Unsupervised model."""
-        return self.labels_inputter is None
-
-    @property
     def features_inputter(self):
         """The inputter producing features."""
         return getattr(
@@ -164,18 +159,6 @@ class Model(tf.keras.layers.Layer):
         outputs, predictions = self(features, labels=labels)
         loss = self.compute_loss(outputs, labels, training=False)
         return loss, predictions
-
-    def score(self, features, labels):
-        """Scores labels.
-
-        Args:
-          features: A nested structure of features ``tf.Tensor``.
-          labels: A nested structure of labels ``tf.Tensor``.
-
-        Returns:
-          The score results.
-        """
-        raise NotImplementedError("This model does not define a score function")
 
     def train(self, features, labels, optimizer, loss_scale=None):
         """Computes and applies the gradients for a batch of examples.
@@ -453,8 +436,8 @@ class Model(tf.keras.layers.Layer):
           log_dir: The log directory.
         """
         self.features_inputter.visualize(self, log_dir)
-        if not self.unsupervised:
-            self.labels_inputter.visualize(self, log_dir)
+
+        self.labels_inputter.visualize(self, log_dir)
 
     def format_prediction(self, prediction, params=None):
         """Formats the model prediction for file saving.
@@ -507,55 +490,3 @@ def _write_lines(lines, stream):
         lines = [lines]
     for line in lines:
         misc.print_as_bytes(line, stream=stream)
-
-
-class SequenceGenerator(Model):
-    """Base class for models generating sequences."""
-
-    @property
-    def decoder_inputter(self):
-        """The inputter used on the decoder side."""
-        return self.labels_inputter if not self.unsupervised else self.features_inputter
-
-    def score(self, features, labels):
-        outputs, _ = self(features, labels=labels)
-        cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(
-            labels["ids_out"], outputs["logits"]
-        )
-        weights = tf.sequence_mask(labels["length"], dtype=cross_entropy.dtype)
-        masked_cross_entropy = cross_entropy * weights
-        scores = tf.reduce_sum(masked_cross_entropy, axis=1)
-        results = {
-            "cross_entropy": cross_entropy,
-            "score": scores,
-            "tokens": labels["tokens"],
-            "length": self.decoder_inputter.get_length(
-                labels, ignore_special_tokens=True
-            ),
-        }
-        for key_to_forward in ("attention", "index"):
-            value = outputs.get(key_to_forward)
-            if value is not None:
-                results[key_to_forward] = value
-        return results
-
-    def format_score(self, score, params=None):
-        if params is None:
-            params = {}
-        length = score["length"]
-        tokens = score["tokens"][:length]
-        sentence = " ".join(token.decode("utf-8") for token in tokens)
-        token_level_scores = None
-        attention = None
-        if params.get("with_token_level"):
-            token_level_scores = score["cross_entropy"][:length]
-        if "attention" in score:
-            attention = score["attention"][:length]
-        alignment_type = params.get("with_alignments")
-        return misc.format_translation_output(
-            sentence,
-            score=score["score"],
-            token_level_scores=token_level_scores,
-            attention=attention,
-            alignment_type=alignment_type,
-        )

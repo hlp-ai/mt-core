@@ -40,7 +40,7 @@ class EmbeddingsSharingLevel(object):
         return level in (EmbeddingsSharingLevel.TARGET, EmbeddingsSharingLevel.ALL)
 
 
-class SequenceToSequence(model.SequenceGenerator):
+class SequenceToSequence(model.Model):
     """A sequence to sequence model."""
 
     def __init__(
@@ -120,6 +120,11 @@ class SequenceToSequence(model.SequenceGenerator):
                 },
             },
         )
+
+    @property
+    def decoder_inputter(self):
+        """The inputter used on the decoder side."""
+        return self.labels_inputter
 
     def initialize(self, data_config, params=None):
         super().initialize(data_config, params=params)
