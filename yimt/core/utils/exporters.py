@@ -6,8 +6,6 @@ import tempfile
 
 import tensorflow as tf
 
-import ctranslate2
-
 from yimt.core.utils import misc
 
 
@@ -162,10 +160,14 @@ class CTranslate2Exporter(Exporter):
         self._quantization = quantization
 
     def _export_model(self, model, export_dir):
+        # import ctranslate2
+        from yimt.core.utils.toct2 import YiMTConverterV2
+
         if not model.built:
             model.create_variables()
 
-        converter = ctranslate2.converters.OpenNMTTFConverterV2(model)
+        # converter = ctranslate2.converters.OpenNMTTFConverterV2(model)
+        converter = YiMTConverterV2(model)
         converter.convert(export_dir, quantization=self._quantization, force=True)
 
 
