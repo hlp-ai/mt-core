@@ -1,7 +1,7 @@
 """Detokenize file into file"""
 import argparse
 
-from yimt.core.ex import load_spm, detokenize_file
+from yimt.core.ex.sp import load_spm, detokenize_file
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
