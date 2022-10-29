@@ -121,7 +121,7 @@ body {
     border:none
 }
 
-.fanyi__input {
+.fanyi__input_file {
     position: relative;
     margin: 0 60px;
     margin-top: 18px; 
@@ -132,7 +132,7 @@ body {
     font-size: 0
 }
 
-.input__original {
+.input__original_file {
     display: inline-block;
     background: #ebebeb;
     width: 99.999999%;
@@ -142,7 +142,7 @@ body {
     border-radius: 3px;
 }
 
-.input_area{
+.input_area_file{
     position: relative;
     height: 180px;
     margin-top: 18px;
@@ -197,23 +197,7 @@ body {
 
 }
 
-.submit_button{
-    display: inline-block;
-    vertical-align: middle;
 
-    text-align: center;
-    width: 200px;
-    height: 30px;
-
-    margin-top: 12px;
-
-    background: #441d1d;
-    border-radius: 3px;
-    border: none;
-    font-size: 19px;
-    color: #848484;
-    z-index: 5;
-}
 
 .inside__products{
     display: block;
