@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <style>
+        body {text-align: center;}
+
+        #logo {font-size: 16pt; padding-top: 24pt; padding-bottom: 24pt;}
+        #inout {padding-top: 24pt;}
+        #copyright {font-size: 12pt; padding-top: 24pt; padding-bottom: 24pt;}
+    </style>
+    <link rel="stylesheet" type="text/css" href="../static/text.css">
+
+    <script>
+		var xhr;
+
+		function uploadFile() {
+          
+          document.getElementById("download").style.display = "none";
+
+		  var fileObj = document.getElementById("select_file").files[0];
+		  console.log(fileObj);
+		  var form = new FormData();
+		  form.append("file", fileObj);
+		  form.append("source", "en");
+		  form.append("target", "zh");
+
+		  var url = "http://127.0.0.1:5555/translate_file";
+		  xhr = new XMLHttpRequest();
+		  xhr.open("post", url, true);
+		  xhr.onload = uploadComplete;
+		  xhr.send(form);
+		}
+
+		function uploadComplete(evt) {
+			//alert(evt.target.responseText);
+			res_json = JSON.parse(evt.target.responseText);
+			if(res_json.error){
+			  alert(res_json.error);
+			  return;
+			}
+			//alert(res_json)
+			//alert(res_json.translatedFileUrl);
+			document.getElementById("download").style.display = "inline";
+			document.getElementById('download').innerHTML = "<a href=" + res_json.translatedFileUrl + ">下载翻译文件</a>";
+		}
+	</script>
+
+    <title>YiMT Doc Translation</title>
+</head>
+<body>
+    <div class="fanyi__nav">
+        <div class="fanyi__nav__container">
+            <a href="/" class="fanyi__nav__logo"></a>
+            <div class="nav_left">
+                <a target="_blank" class="nav"href="/">文本翻译</a><a target="_blank" class="nav" href="/">翻译API</a><a target="_blank"class="nav" href="/">登录</a>
+            </div>
+        </div>
+        
+
+    </div>
+    <div class="restriction">
+        <div class="fanyi__operations">
+            <div class="fanyi__operations--left">
+                <div id="toolbar">
+    
+                    <select id="source" name="source" class="source_select">
+                        <option value="auto">自动检测</option>
+                        <option value="zh">Chinese</option>
+                        <option value="en">English</option>
+                    </select>
+                    <span class="mid">-></span>
+                    <select id="target" name="target" class="target_select">
+                        <option value="zh">Chinese</option>
+                        <option value="en">English</option>
+                    </select>
+                    <input type="button" class="fanyi__operations--machine" id="transMachine" value="翻译" >
+                </div>
+    
+            </div>
+    
+        </div>
+    
+        <div class="fanyi__input_file">
+            <div class="input__original_file">
+                <div style=" display: inline-block;padding-top:12pt;text-align:center; font-size: 24px;color: #818181;">点 击 上 传</div>
+                <div class="input_area_file">
+                    <div class="image_container">
+                        <div class="image">
+                        </div>
+                        <input type="file" class="select_file" id="select_file" onchange="uploadFile()">
+                    </div> 
+                </div>
+                
+                <div style="padding-top:0pt;text-align:center;">
+                    <span id="download"></span>
+                </div>
+                <div style=" padding-bottom:10px;text-align:center; font-size: 14px;color: #848484;">支持以下类型文档：txt、pdf、docx、pptx、html/html/xml 等</div>
+    
+            </div>
+    
+        </div>
+    
+        <div class="inside__products" style="display: block;">
+            <div class="product1_area">
+                <div class="product1_image">
+                                      
+                </div>
+            </div>
+            <div class="product2_area">
+                <div class="product21_area">
+                    <div class="product21_image">
+    
+                    </div>
+                    <div class="product2_head">
+                        翻译插件
+                    </div>
+                    <div class="product2_text">
+                        简单好用的插件，支持Edge、Chrome等各类浏览器使用。
+                    </div>
+                </div>
+                <div class="product22_area">
+                    <div class="product22_image">
+    
+                    </div>
+                    <div class="product2_head">
+                        翻译APP
+                    </div>
+                    <div class="product2_text">
+                        高效便携的手机翻译APP，支持各类安卓手机，功能强大。
+                    </div>
+                </div>
+    
+            </div>
+        </div>
+        
+         
+    </div>
+    <div class="fanyi__footer">
+        <div class="bottom__nav" style="display: block;">
+            <a target="_blank" class="nav2"href="/">  成长计划  </a><span class="c_fnl">|</span><a target="_blank" class="nav2" href="/">  关于YIMT  </a><span class="c_fnl">|</span><a target="_blank"class="nav2" href="/">  官方博客  </a>
+            <p>Copyright 2021-2022 by Liu Xiaofeng</p>
+        </div>   
+    </div>
+</body>
+</html>
