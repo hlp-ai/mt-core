@@ -351,10 +351,7 @@ class BeamSearch(DecodingStrategy):
             "parent_ids": parent_ids,
             "sequence_lengths": sequence_lengths,
         }
-        if accumulated_attention is not None:
-            extra_vars["accumulated_attention"] = tf.gather(
-                accumulated_attention, beam_indices
-            )
+
         if state is not None:
             state = _reorder_state(
                 state, beam_indices, reorder_flags=self._state_reorder_flags
