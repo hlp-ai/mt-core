@@ -7,7 +7,7 @@ body {
     letter-spacing: 0;
     color: #460a0a;
     background-color: #fff;
-    min-width: 960px;
+    min-width: 1060px;
 
     text-align: center;
 
@@ -142,6 +142,16 @@ body {
     max-width: 1400px;
     font-size: 0
 }
+.fanyi__input_file {
+    position: relative;
+    margin: 0 60px;
+    margin-top: 18px; 
+    margin-bottom: 15px;
+    margin:auto;
+    max-width: 1400px;
+    min-width: 960px;
+    font-size: 0
+}
 
 .fanyi__input__bg {
     background: #f2f2f2;
@@ -192,6 +202,16 @@ body {
     color: rgba(102,102,102,.3)
 }
 
+.input__original_file {
+    display: inline-block;
+    background: #ebebeb;
+    width: 99.999999%;
+    font-size: 14px;
+    vertical-align: top;
+    border: none;
+    border-radius: 3px;
+}
+
 .input__target__area {
     display: block;
     font-family: ArialMT,"Microsoft YaHei",Arial,sans-serif,Helvetica,STHeiti;
@@ -240,6 +260,27 @@ body {
 }
 .input__original__area:focus {
     border: none
+}
+
+.input_area_file{
+    position: relative;
+    height: 180px;
+    margin-top: 18px;
+    background: #ebebeb;
+}
+.select_file{
+    opacity:0;/*透明关键*/
+    position: absolute;
+    height: 200px;
+    width:100%;
+    top:0px;
+    left: 0px;
+    background: #357aa1;
+    font-size: 14px;
+    color: #fff;
+    border:none;
+    cursor: pointer;
+    z-index: 3;
 }
 
 .inside__products{
@@ -423,7 +464,14 @@ body {
 }
 
 
+.image_container{
+    display: block;
+    position:relative;
+    height: 120px;
+    width:100%;
+    background-color: #130622;
 
+}
 
 .target_copy{
     position: absolute;
@@ -451,4 +499,21 @@ body {
 }
 .ad_delete-hover{
     visibility: visible;
+}
+
+.image{
+    display: block;
+    height: 100%;
+    width: auto;
+    margin:auto;
+    background: #ebebeb;
+    
+
+
+
+    background-image: url(../static/img/file.jpg);
+    background-repeat:no-repeat;
+    background-position:center;
+
+
 }

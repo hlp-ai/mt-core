@@ -9,15 +9,16 @@
         #inout {padding-top: 24pt;}
         #copyright {font-size: 12pt; padding-top: 24pt; padding-bottom: 24pt;}
     </style>
-    <link rel="stylesheet" type="text/css" href="../static/file.css">
+    <link rel="stylesheet" type="text/css" href="../static/text.css">
 
     <script>
 		var xhr;
 
 		function uploadFile() {
-		  document.getElementById("download").style.display = "none";
+          
+          document.getElementById("download").style.display = "none";
 
-		  var fileObj = document.getElementById("file").files[0];
+		  var fileObj = document.getElementById("select_file").files[0];
 		  console.log(fileObj);
 		  var form = new FormData();
 		  form.append("file", fileObj);
@@ -80,21 +81,16 @@
     
         </div>
     
-        <div class="fanyi__input">
-            <div class="input__original">
-                <div style=" display: inline-block;border-bottom-style: solid;border-color:#a8a8a8;padding-top:12pt;text-align:center; font-size: 24px;color: #292929;">文 件 上 传</div>
-                <div class="input_area">
+        <div class="fanyi__input_file">
+            <div class="input__original_file">
+                <div style=" display: inline-block;padding-top:12pt;text-align:center; font-size: 24px;color: #818181;">点 击 上 传</div>
+                <div class="input_area_file">
                     <div class="image_container">
                         <div class="image">
                         </div>
-                        <input type="file" class="select_file">
-                    </div>
-                    
-                    <div>
-                        <input type="submit" class="submit_button" value="点击上传" onclick="uploadFile()" />                
-                    </div>     
+                        <input type="file" class="select_file" id="select_file" onchange="uploadFile()">
+                    </div> 
                 </div>
-                
                 
                 <div style="padding-top:0pt;text-align:center;">
                     <span id="download"></span>
