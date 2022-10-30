@@ -277,14 +277,7 @@ class BeamSearch(DecodingStrategy):
             "parent_ids": parent_ids,
             "sequence_lengths": tf.zeros([batch_size * self.beam_size], dtype=tf.int32),
         }
-        if self.coverage_penalty != 0:
-            if attention_size is None:
-                raise ValueError(
-                    "The attention size should be known to support coverage penalty"
-                )
-            extra_vars["accumulated_attention"] = tf.zeros(
-                [batch_size * self.beam_size, attention_size]
-            )
+
         return start_ids, finished, initial_log_probs, extra_vars
 
     def _get_scores(
@@ -297,19 +290,7 @@ class BeamSearch(DecodingStrategy):
                 ((5.0 + tf.cast(expand_sequence_lengths + 1, scores.dtype)) / 6.0),
                 self.length_penalty,
             )
-        if self.coverage_penalty != 0:
-            # Mask out of range steps with ones (log(1) == 0).
-            accumulated_attention = tf.where(
-                tf.equal(accumulated_attention, 0.0),
-                x=tf.ones_like(accumulated_attention),
-                y=accumulated_attention,
-            )
-            coverage_penalty = tf.reduce_sum(
-                tf.math.log(tf.minimum(accumulated_attention, 1.0)), 1
-            )
-            # Apply coverage penalty to finished predictions.
-            coverage_penalty *= tf.cast(finished, coverage_penalty.dtype)
-            scores += self.coverage_penalty * tf.expand_dims(coverage_penalty, 1)
+
         return scores
 
     def step(
@@ -326,17 +307,7 @@ class BeamSearch(DecodingStrategy):
         parent_ids = kwargs["parent_ids"]
         sequence_lengths = kwargs["sequence_lengths"]
 
-        if self.coverage_penalty != 0:
-            if attention is None:
-                raise ValueError(
-                    "Coverage penalty is enabled but the model did not "
-                    "return an attention vector"
-                )
-            not_finished = tf.math.logical_not(finished)
-            attention *= tf.expand_dims(tf.cast(not_finished, attention.dtype), 1)
-            accumulated_attention = kwargs["accumulated_attention"] + attention
-        else:
-            accumulated_attention = None
+        accumulated_attention = None
 
         # Compute scores from log probabilities.
         vocab_size = log_probs.shape[-1]
