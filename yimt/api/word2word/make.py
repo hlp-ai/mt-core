@@ -21,7 +21,7 @@ Authors:
 
 import argparse
 
-from yimt.api.word.word2word import Word2word
+from yimt.api.word2word.word2word import Word2word
 
 
 def main():
