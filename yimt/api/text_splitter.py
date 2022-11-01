@@ -26,6 +26,7 @@ def _get_tokenizer(lang):
     if lang == "ko":
         # from konlpy.tag import Mecab
         # tokenizer = Mecab()
+        # TODO this tokenizer conflict with ctranslate2, because it uses CUDA
         from hangul.tokenizer import WordSegmenter
         tokenizer = WordSegmenter()
     elif lang == "ja":
