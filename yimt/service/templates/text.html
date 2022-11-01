@@ -34,7 +34,7 @@
           trans_json = await res.json(); 
           
           console.log(trans_json);
-          document.getElementById('translation').value= trans_json.translatedText.replace("\n", "<br>");  
+          document.getElementById('translation').value= trans_json.translatedText;
         }
         
     </script>
