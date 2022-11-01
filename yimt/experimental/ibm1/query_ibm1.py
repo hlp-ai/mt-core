@@ -7,7 +7,7 @@ class IBM1:
         with open(model_dir, "rb") as f:
             self.src_vocab, self.tgt_vocab, self.t_table = pickle.load(f)
 
-        print(self.src_vocab)
+        print(len(self.src_vocab), len(self.tgt_vocab))
 
     def lookup(self, w, topk=3):
         if w not in self.src_vocab:

@@ -7,6 +7,7 @@ def tokenize_tsv(corpus_fn, lang1, lang2="zh"):
     tok_fn = corpus_fn + ".tok"
 
     with open(corpus_fn, encoding="utf-8") as f, open(tok_fn, "w", encoding="utf-8") as out:
+        n = 0
         for line in f:
             pair = line.strip().split("\t")
             if len(pair) != 2:
@@ -18,6 +19,11 @@ def tokenize_tsv(corpus_fn, lang1, lang2="zh"):
             tokens_tgt = word_segment(tgt, lang2)
 
             out.write(" ".join(tokens_src) + "\t" + " ".join(tokens_tgt) + "\n")
+
+            n += 1
+            if n % 1000 == 0:
+                print(n)
+        print(n)
 
 
 if __name__ == "__main__":
