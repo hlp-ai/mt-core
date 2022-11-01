@@ -18,7 +18,7 @@ translators:
     sp_src_path: D:\kidden\mt\exp\ja-zh\ccm\ccm-ja-zh.zh.sp.model
 
   ko-zh:
-    model_or_config_dir: D:\kidden\mt\mt-exp\ko-zh\opus\run1\deploy.yml
+    model_or_config_dir: D:\kidden\mt\mt-exp\ko-zh\opus\run1\model\export\ct2
     sp_src_path: D:\kidden\mt\mt-exp\ko-zh\opus\tok\opus-kozh-sf.ko-sp-32000.model
 
   zh-ko:
