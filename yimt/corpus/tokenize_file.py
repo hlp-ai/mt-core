@@ -1,5 +1,6 @@
 from yimt.api.text_splitter import word_segment
 from yimt.api.utils import detect_lang
+from yimt.corpus.utils import is_ascii_char
 
 
 def tokenize_single(in_fn, lang=None, out_fn=None):
@@ -46,3 +47,30 @@ def tokenize_tsv(corpus_fn, lang1, lang2="zh"):
             if n % 1000 == 0:
                 print(n)
         print(n)
+
+
+def detok_zh_str(s):
+    result = ""
+    i = 0
+    while i < len(s):
+        if s[i] == " ":
+            if (i > 0 and is_ascii_char(s[i-1])) and (i < len(s)-1 and is_ascii_char(s[i+1])):
+                result += " "
+        else:
+            result += s[i]
+        i += 1
+
+    return result
+
+
+def detok_zh(in_file, out_file=None):
+    if out_file is None:
+        out_file = in_file + ".detok"
+
+    outf = open(out_file, "w", encoding="utf-8")
+
+    with open(in_file, encoding="utf-8") as inf:
+        for line in inf:
+            line = line.strip()
+            line = detok_zh_str(line)
+            outf.write(line + "\n")

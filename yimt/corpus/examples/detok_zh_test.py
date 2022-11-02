@@ -1,4 +1,5 @@
-from yimt.corpus.utils import detok_zh_str
+from yimt.corpus.tokenize_file import detok_zh_str
+
 
 if __name__ == "__main__":
     print(detok_zh_str("AK 地区 需要 支付 额外 "))

@@ -1,4 +1,5 @@
-from yimt.corpus.utils import is_ascii_char, hant_2_hans, detok_zh_str
+from yimt.corpus.tokenize_file import detok_zh_str
+from yimt.corpus.utils import is_ascii_char, hant_2_hans
 
 
 class Normalizer(object):
