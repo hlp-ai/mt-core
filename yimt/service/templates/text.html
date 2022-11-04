@@ -2,18 +2,7 @@
         "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-    <style>
-        body {text-align: center;}
-
-        #logo {font-size: 16pt; padding-top: 24pt; padding-bottom: 24pt;}
-        #inout {padding-top: 12pt;}
-        #copyright {font-size: 11pt; padding-top: 24pt; padding-bottom: 24pt;}
-        .ta {font-size: 11pt; line-height: 1.5; padding:8px;}
-
-    </style>
     <link rel="stylesheet" type="text/css" href="../static/text.css">
-
-
 
     <script>
         async function myfunc(){
@@ -36,10 +25,10 @@
           console.log(trans_json);
           document.getElementById('translation').value= trans_json.translatedText;
         }
-        
     </script>
     <title>YiMT Translation</title>
 </head>
+
 <body>
 
     <div class="fanyi__nav">
@@ -52,6 +41,7 @@
         </div>    
 
     </div>
+
     <div class="restriction">
         <div class="fanyi__operations">
             <div class="fanyi__operations--left">
@@ -69,18 +59,12 @@
                         <option value="ja">Japanese</option>
                     </select>
                     <input type="button" class="fanyi__operations--machine" id="transMachine" value="翻译文本" onclick='myfunc()'>
-        
-                   
+
                 </div>
             </div>
-    
         </div>
-    
-        
-    
+
         <div class="fanyi__input">
-
-
             <div class="input__original">
                 <div class="fanyi__input__bg">
                     <textarea id="q" name="q" rows="20" maxlength="500" cols="50" class="input__original__area" placeholder="请输入你要翻译的文字或网址"></textarea>
@@ -121,8 +105,8 @@
                 </div>
                 
                 <input type="button" value="翻译文档" class="fanyi__operations--file" onclick="window.location.href='file.html'">
-    
             </div>
+
             <div class="input__target">
                 <div class="fanyi__input__bg">
                     <textarea id="translation" name="translation" rows="20" cols="50" class="input__target__area"></textarea>
@@ -137,9 +121,7 @@
                     }
                     
                 </script>
-    
             </div>
-    
         </div>
     
         <div class="inside__products" style="display: block;">
@@ -171,18 +153,16 @@
                         高效便携的手机翻译APP，支持各类安卓手机，功能强大。
                     </div>
                 </div>
-    
             </div>
         </div>
-    
     </div>
+
     <div class="fanyi__footer">
         <div class="bottom__nav" style="display: block;">
             <a target="_blank" class="nav2"href="/">  成长计划  </a><span class="c_fnl">|</span><a target="_blank" class="nav2" href="/">  关于YIMT  </a><span class="c_fnl">|</span><a target="_blank"class="nav2" href="/">  官方博客  </a>
             <p>Copyright 2021-2022 by Liu Xiaofeng</p>
         </div>   
     </div>
-    
 
 </body>
 </html>
