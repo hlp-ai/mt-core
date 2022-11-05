@@ -10,7 +10,6 @@
 		function uploadFile() {
           
           document.getElementById("download").style.display = "none";
-
 		  var fileObj = document.getElementById("select_file").files[0];
 		  console.log(fileObj);
 		  var form = new FormData();
@@ -20,6 +19,28 @@
 
 		  var url = "http://127.0.0.1:5555/translate_file";
 		  xhr = new XMLHttpRequest();
+
+          /*以下为显示进度代码 */
+          document.getElementById("showProgress").style.display="block";
+          var $this= $(this);
+          xhr.upload.addEventListener("progress", function(evt){
+          if (evt.lengthComputable) 
+          {
+            var percentComplete = Math.round(evt.loaded * 100 / evt.total);
+            if (percentComplete == 100){
+                setTimeout(function () {
+                    document.getElementById("showProgress").innerHTML = '已上传'+percentComplete+"%";
+                },1500)
+            }else{
+                document.getElementById("showProgress").innerHTML = '已上传'+percentComplete+"%";
+            }
+         }
+         else {
+            document.getElementById("showProgress").innerHTML = '无法计算';
+         }
+        }, false);
+
+          /*以上为显示进度代码*/
 		  xhr.open("post", url, true);
 		  xhr.onload = uploadComplete;
 		  xhr.send(form);
@@ -37,6 +58,8 @@
 			document.getElementById("download").style.display = "inline";
 			document.getElementById('download').innerHTML = "<a href=" + res_json.translatedFileUrl + ">下载翻译文件</a>";
 		}
+
+
 	</script>
 
     <title>YiMT Doc Translation</title>
@@ -88,6 +111,7 @@
                         <input type="file" class="select_file" id="select_file" onchange="uploadFile()">
                     </div> 
                 </div>
+                <a id="showProgress" style="display:none ;" href="#">111</a> 
 
                 <div style=" padding-bottom:10px;text-align:center; font-size: 14px;color: #848484;">支持以下类型文档：txt、pdf、docx、pptx、html/html/xml 等</div>
     
