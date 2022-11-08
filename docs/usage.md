@@ -29,6 +29,24 @@ yimt/core/bin/build_vocab.py [-h] [--from_vocab FROM_VOCAB]
                       [data [data ...]]
 ```
 
+### 4. Make config file
+The document for config file is [here](./configuration.md). The minimum config file is as follows.
+```yaml
+model_dir: toy-enzh/model
+
+data:
+  # (required for train run type).
+  train_features_file: data/en.train.tok
+  train_labels_file: data/zh.train.tok
+
+  # (optional) (required for train_end_eval run types).
+  eval_features_file: data/en.dev.tok
+  eval_labels_file: data/zh.dev.tok
+
+  source_vocabulary: data/en-vocab.txt
+  target_vocabulary: data/zh-vocab.txt
+```
+
 ### Export model
 ```shell script
 python yimt.core.bin.main.py 
