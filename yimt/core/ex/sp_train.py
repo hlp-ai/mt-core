@@ -1,7 +1,6 @@
 """Train SentencePiece model from corpus"""
 import argparse
 
-from yimt.core.ex.pre_train import get_sp_prefix
 from yimt.core.ex.sp import train_spm
 
 if __name__ == "__main__":
@@ -14,7 +13,7 @@ if __name__ == "__main__":
     args = argparser.parse_args()
 
     if args.sp_prefix is None:
-        sp_prefix = get_sp_prefix(args.corpus, args.vocab_size)
+        sp_prefix = "{}-sp-{}".format(args.corpus, args.vocab_size)
 
     train_spm(args.corpus, sp_prefix, args.vocab_size,
               coverage=args.coverage, num_sentences=args.max_sentences)
