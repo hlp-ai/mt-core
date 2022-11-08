@@ -12,7 +12,13 @@ yimt/core/ex/sp_train.py [-h] --corpus CORPUS [--sp_prefix SP_PREFIX]
                    [--coverage COVERAGE]
 ```
 
-### 2. Export model
+### 2. Tokenize corpus
+Tokenize training and development corpora (if provided).
+```shell script
+yimt/core/ex/sp_tokenize.py [-h] --sp_model SP_MODEL --in_fn IN_FN [--out_fn OUT_FN]
+```
+
+### Export model
 ```shell script
 python yimt.core.bin.main.py 
 --config <config_file_path> --auto_config 
