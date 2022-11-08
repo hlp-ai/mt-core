@@ -2,16 +2,19 @@ import argparse
 import io
 
 from yimt.api.utils import get_logger
-from yimt.corpus.filters import JK2ZhFilter
+from yimt.corpus.filters import JK2ZhFilter, LatinZhFilter
 
 
-def main(in_path, out_path, lang="en-zh"):
+def main(in_path, out_path, from_lang):
     in_f = io.open(in_path, encoding="utf-8")
     out_f = io.open(out_path, "w", encoding="utf-8")
 
     logger = get_logger("filter")
 
-    filters = [JK2ZhFilter()]
+    if from_lang == "latin":
+        filters = [LatinZhFilter()]
+    else:
+        filters = [JK2ZhFilter()]
 
     print(filters)
 
@@ -47,10 +50,10 @@ if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
     argparser.add_argument("in_fn")
     argparser.add_argument("out_fn")
-    # argparser.add_argument("lang")
+    argparser.add_argument("from_lang", default="latin")
     args = argparser.parse_args()
 
     fn = args.in_fn
     out_fn = args.out_fn
 
-    main(fn, out_fn)
+    main(fn, out_fn, args.from_lang)
