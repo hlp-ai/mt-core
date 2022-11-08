@@ -14,6 +14,8 @@ if __name__ == "__main__":
 
     if args.sp_prefix is None:
         sp_prefix = "{}-sp-{}".format(args.corpus, args.vocab_size)
+    else:
+        sp_prefix = args.sp_prefix
 
     train_spm(args.corpus, sp_prefix, args.vocab_size,
               coverage=args.coverage, num_sentences=args.max_sentences)
