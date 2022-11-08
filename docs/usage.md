@@ -18,6 +18,17 @@ Tokenize training and development corpora (if provided).
 yimt/core/ex/sp_tokenize.py [-h] --sp_model SP_MODEL --in_fn IN_FN [--out_fn OUT_FN]
 ```
 
+### 3. Build vocabulary
+Build source and target vocabularies from tokenized corpora
+```shell script
+yimt/core/bin/build_vocab.py [-h] [--from_vocab FROM_VOCAB]
+                      [--from_format {default,sentencepiece}] --save_vocab
+                      SAVE_VOCAB [--min_frequency MIN_FREQUENCY] [--size SIZE]
+                      [--size_multiple SIZE_MULTIPLE]
+                      [--without_sequence_tokens]
+                      [data [data ...]]
+```
+
 ### Export model
 ```shell script
 python yimt.core.bin.main.py 
