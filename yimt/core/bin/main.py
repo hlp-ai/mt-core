@@ -35,7 +35,7 @@ def main():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
     parser.add_argument(
-        "-v", "--version", action="version", version="OpenNMT-tf %s" % __version__
+        "-v", "--version", action="version", version="YiMT %s" % __version__
     )
     parser.add_argument(
         "--config", required=True, nargs="+", help="List of configuration files."
