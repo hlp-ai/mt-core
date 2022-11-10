@@ -1,4 +1,5 @@
 import pickle
+import sys
 
 
 class IBM1:
@@ -19,7 +20,8 @@ class IBM1:
 
 
 if __name__ == "__main__":
-    ibm1 = IBM1("../weiber-cmn.txt.tok.ibm1")
+    trans_file = sys.argv[1]
+    ibm1 = IBM1(trans_file)
 
     while True:
         w = input("input word: ")

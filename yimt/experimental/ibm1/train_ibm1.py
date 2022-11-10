@@ -1,4 +1,5 @@
 import pickle
+import sys
 
 from nltk import AlignedSent, IBMModel1
 
@@ -17,11 +18,11 @@ def get_bitext(tok_fn):
     return bitext
 
 
-def train_ibm1(tok_fn, outpu_fn=None):
+def train_ibm1(tok_fn, outpu_fn=None, iterations=5):
     corpus = get_bitext(tok_fn)
 
     print("Training...")
-    ibm1 = IBMModel1(corpus, 10)
+    ibm1 = IBMModel1(corpus, iterations)
 
     print(len(ibm1.src_vocab), len(ibm1.trg_vocab))
 
@@ -44,4 +45,5 @@ def train_ibm1(tok_fn, outpu_fn=None):
 
 
 if __name__ == "__main__":
-    train_ibm1("../weiber-cmn.txt.tok")
+    tok_fn = sys.argv[1]
+    train_ibm1(tok_fn)
