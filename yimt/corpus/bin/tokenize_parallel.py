@@ -7,6 +7,7 @@ if __name__ == "__main__":
     fn = sys.argv[1]
     lang1 = sys.argv[2]
 
+    max_sentences = None
     if len(sys.argv) > 3:
         max_sentences = int(sys.argv[3])
 
