@@ -26,7 +26,7 @@ def tokenize_single(in_fn, lang=None, out_fn=None):
     print(n)
 
 
-def tokenize_tsv(corpus_fn, lang1, lang2="zh"):
+def tokenize_tsv(corpus_fn, lang1, lang2="zh", max_sentences=None):
     tok_fn = corpus_fn + ".tok"
 
     with open(corpus_fn, encoding="utf-8") as f, open(tok_fn, "w", encoding="utf-8") as out:
@@ -46,6 +46,8 @@ def tokenize_tsv(corpus_fn, lang1, lang2="zh"):
             n += 1
             if n % 1000 == 0:
                 print(n)
+            if max_sentences is not None and n >= max_sentences:
+                break
         print(n)
 
 
