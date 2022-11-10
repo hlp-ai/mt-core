@@ -4,7 +4,7 @@ import sys
 from nltk import AlignedSent, IBMModel1
 
 
-def get_bitext(tok_fn):
+def get_bitext(tok_fn, revert=False):
     bitext = []
 
     with open(tok_fn, encoding="utf-8") as f:
@@ -13,13 +13,16 @@ def get_bitext(tok_fn):
             src = pair[0].split()
             tgt = pair[1].split()
 
-            bitext.append(AlignedSent(tgt, src))
+            if not revert:
+                bitext.append(AlignedSent(tgt, src))
+            else:
+                bitext.append(AlignedSent(src, tgt))
 
     return bitext
 
 
-def train_ibm1(tok_fn, outpu_fn=None, iterations=5):
-    corpus = get_bitext(tok_fn)
+def train_ibm1(tok_fn, outpu_fn=None, iterations=5, revert=False):
+    corpus = get_bitext(tok_fn, revert)
 
     print("Training...")
     ibm1 = IBMModel1(corpus, iterations)
@@ -46,4 +49,10 @@ def train_ibm1(tok_fn, outpu_fn=None, iterations=5):
 
 if __name__ == "__main__":
     tok_fn = sys.argv[1]
-    train_ibm1(tok_fn)
+
+    out_fn = None
+    if len(sys.argv) > 2:
+        out_fn = sys.argv[2]
+
+    train_ibm1(tok_fn, out_fn)
+    train_ibm1(tok_fn, out_fn + "-r", revert=True)
