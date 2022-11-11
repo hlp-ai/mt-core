@@ -26,8 +26,11 @@ def tokenize_single(in_fn, lang=None, out_fn=None):
     print(n)
 
 
-def tokenize_tsv(corpus_fn, lang1, lang2="zh", max_sentences=None):
-    tok_fn = corpus_fn + ".tok"
+def tokenize_tsv(corpus_fn, lang1, lang2="zh", out=None, max_sentences=None):
+    if out is None:
+        tok_fn = corpus_fn + ".seg"
+    else:
+        tok_fn = out
 
     with open(corpus_fn, encoding="utf-8") as f, open(tok_fn, "w", encoding="utf-8") as out:
         n = 0
