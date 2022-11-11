@@ -14,9 +14,9 @@ class IBM1:
         if w not in self.src_vocab:
             return None
         else:
-            tt = [(t, p) for t, p in self.t_table[w].items()]
-            tt = sorted(tt, reverse=True, key=lambda r: r[1])
-            return tt[:topk]
+            # tt = [(t, p) for t, p in self.t_table[w].items()]
+            # tt = sorted(tt, reverse=True, key=lambda r: r[1])
+            return self.t_table[w][:topk]
 
 
 if __name__ == "__main__":
