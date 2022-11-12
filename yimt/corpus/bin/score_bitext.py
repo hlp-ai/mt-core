@@ -4,11 +4,11 @@ from yimt.corpus.bitext_scorers import LaBSEScorer
 
 
 def main(in_path, out_path):
-    scorer = LaBSEScorer("D:/kidden/mt/open/mt-ex/mt/data/labse1", 72)
+    scorer = LaBSEScorer("D:/kidden/mt/open/mt-ex/mt/data/labse1", 48)
 
     srcs = []
     tgts = []
-    n_buf = 256
+    n_buf = 32
     cnt = 0
     with open(in_path, encoding="utf-8") as in_f, open(out_path, "w", encoding="utf-8") as out_f:
         lines = in_f.readlines()
