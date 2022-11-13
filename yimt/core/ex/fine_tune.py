@@ -28,7 +28,7 @@ if __name__ == "__main__":
     argparser.add_argument("--ckpt_dir", required=True, help="checkpoint directory containing checkpoint to be fine-tuned")
     argparser.add_argument("--output_dir", required=True, help="output directory")
     argparser.add_argument("--steps", type=int, required=True, help="steps for fine-tuning")
-    argparser.add_argument("--config", help="additional config file")
+    argparser.add_argument("--config", default=None, help="additional config file")
     args = argparser.parse_args()
 
     corpus_fn = args.corpus_fn  # r"D:\kidden\mt\exp\en-zh\ft\data\pe.tsv"
@@ -70,12 +70,12 @@ if __name__ == "__main__":
     sp_tgt = copy_to_dir(sp_tgt, output_dir)
     tgt_vocab = copy_to_dir(tgt_vocab, output_dir)
 
-    split_cmd_str = "python ../data/split_tsv.py {} {} {}"
+    split_cmd_str = "python -m yimt.corpus.bin.to_single {} {} {}"
     print("Splitting {} into {} and {}...".format(corpus_fn, corpus_fn_src, corpus_fn_tgt))
     os.popen(split_cmd_str.format(corpus_fn, corpus_fn_src, corpus_fn_tgt)).readlines()
     print()
 
-    tok_cmd_str = "python sp_tokenize.py {} {} {}"
+    tok_cmd_str = "python -m yimt.core.ex.sp_tokenize --sp_model {} --in_fn {} --out_fn {}"
     corpus_fn_src_tok = corpus_fn_src + ".tok"
     corpus_fn_tgt_tok = corpus_fn_tgt + ".tok"
     print("Tokenizing {} into {}...".format(corpus_fn_src, corpus_fn_src_tok))
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     with open(config_fn, "w") as f:
         yaml.safe_dump(config, f, encoding='utf-8', allow_unicode=True)
 
-    train_cmd_str = "python ../bin/main.py --model_type TransformerBig --config {} --auto_config --mixed_precision train"
+    train_cmd_str = "python -m yimt.core.bin.main --config {} --auto_config --mixed_precision train"
     print("Training...")
     os.popen(train_cmd_str.format(config_fn)).readlines()
     print()

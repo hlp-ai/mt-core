@@ -76,9 +76,12 @@ def create_ft(parent):
             tk.messagebox.showinfo(title="Info", message="Some parameter empty.")
             return
 
-        pretrain_cmd = "python ../core/ex/fine-tune.py --corpus_fn {} --src_sp_model {} -tgt_sp_model {} --src_vocab {} --tgt_vocab {} -ckpt_dir {} --output_dir {} --steps {} --config {}"
+        pretrain_cmd = "python ../core/ex/fine_tune.py --corpus_fn {} --src_sp_model {} --tgt_sp_model {} --src_vocab {} --tgt_vocab {} --ckpt_dir {} --output_dir {} --steps {}"
+        cmd_str = pretrain_cmd.format(corpus_train, sp_src, sp_tgt, vocab_src, vocab_tgt, chkpt_dir, output_path, steps)
+        if len(ex_config) > 0:
+            cmd_str += " --config " + ex_config
 
-        os.popen(pretrain_cmd.format(corpus_train, sp_src, sp_tgt, vocab_src, vocab_tgt, chkpt_dir, output_path, steps, ex_config)).readlines()
+        os.popen(cmd_str).readlines()
 
         tk.messagebox.showinfo(title="Info", message="Fine-tuning Done.")
 
