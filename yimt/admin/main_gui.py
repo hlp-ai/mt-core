@@ -4,6 +4,7 @@ from functools import partial
 from tkinter import *
 
 from yimt.admin.app_frame import create_average, create_export, create_eval, create_infer, create_translate
+from yimt.admin.continue_frame import create_ft
 from yimt.admin.train_frame import create_sp_train, create_sp_tokenize, create_build_vocab, create_edit_config, \
     create_train, create_pretrain
 
@@ -55,6 +56,11 @@ if __name__ == "__main__":
     create_train(train_frame)
     frames.append(train_frame)
 
+    ft_frame = tk.Frame(win_main)
+    ft_frame.pack()
+    create_ft(ft_frame)
+    frames.append(ft_frame)
+
     average_frame = tk.Frame(win_main)
     average_frame.pack()
     create_average(average_frame)
@@ -92,6 +98,7 @@ if __name__ == "__main__":
     train_menu.add_command(label="Edit Config", command=partial(on_menu, edit_config_frame))
     train_menu.add_separator()
     train_menu.add_command(label="Train MT", command=partial(on_menu, train_frame))
+    train_menu.add_command(label="Fine-tune", command=partial(on_menu, ft_frame))
     train_menu.add_separator()
     train_menu.add_command(label="Exit", command=win_main.quit)
 
