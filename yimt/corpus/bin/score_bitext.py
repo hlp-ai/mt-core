@@ -8,7 +8,7 @@ def main(in_path, out_path):
 
     srcs = []
     tgts = []
-    n_buf = 32
+    n_buf = 8  # consume GPU very much
     cnt = 0
     with open(in_path, encoding="utf-8") as in_f, open(out_path, "w", encoding="utf-8") as out_f:
         lines = in_f.readlines()
