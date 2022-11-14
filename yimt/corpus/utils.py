@@ -73,6 +73,7 @@ def single_to_pair(src_path, tgt_path, pair_path):
         if cnt % 100000 == 0:
             print(cnt)
     print(cnt)
+    out_f.close()
 
 
 def pair_to_single(pair_path, src_path, tgt_path):
@@ -96,6 +97,8 @@ def pair_to_single(pair_path, src_path, tgt_path):
             print(cnt)
 
     print(cnt)
+    src_f.close()
+    tgt_f.close()
 
 
 def sample(files, n):
@@ -112,6 +115,9 @@ def sample(files, n):
             sampled += 1
             if sampled >= n:
                 break
+
+    for f in out_files:
+        f.close()
 
 
 def split(files, num_per_file):
@@ -166,6 +172,7 @@ def merge(data_root, out_fn):
                     print(cnt)
 
     print(cnt)
+    out_f.close()
 
 
 def hant_2_hans(hant_str: str):
@@ -193,6 +200,7 @@ def dedup(in_path, out_path):
             out_f.write(p + "\n")
 
     print("Total:", total, "Unique:", n)
+    out_f.close()
 
 
 def from_sgm(sgm_path, out_path):
@@ -206,6 +214,8 @@ def from_sgm(sgm_path, out_path):
     for m in re.finditer(pattern, lines):
         print(m.group(1))
         out_f.write(m.group(1) + "\n")
+
+    out_f.close()
 
 
 def from_xml(xml_file):

@@ -14,3 +14,5 @@ if __name__ == "__main__":
             segs = line.split("\t")
             if segs[1] in tgt_lang:
                 outf.write(segs[2] + "\t" + segs[3] + "\n")
+
+    outf.close()

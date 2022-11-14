@@ -47,3 +47,4 @@ if __name__ == "__main__":
             num_align += 1
 
     print("# of pairs aligned:", num_align)
+    out_f.close()

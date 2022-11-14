@@ -44,6 +44,7 @@ def main(in_path, out_path, from_lang):
             out_f.write(line + "\n")
 
     print("# pairs:", total, "# valid pairs:", passed)
+    out_f.close()
 
 
 if __name__ == "__main__":

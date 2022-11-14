@@ -34,6 +34,7 @@ def main(in_path, out_path):
             print(cnt)
 
     print(cnt)
+    out_f.close()
 
 
 if __name__ == "__main__":

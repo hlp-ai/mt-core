@@ -1,6 +1,6 @@
 import argparse
 
-from yimt.corpus.utils import detok_zh
+from yimt.corpus.tokenize_file import detok_zh
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()

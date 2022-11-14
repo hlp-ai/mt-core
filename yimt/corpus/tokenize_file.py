@@ -24,6 +24,7 @@ def tokenize_single(in_fn, lang=None, out_fn=None):
             if n % 50000 == 0:
                 print(n)
     print(n)
+    out_f.close()
 
 
 def tokenize_tsv(corpus_fn, lang1, lang2="zh", out=None, max_sentences=None):
@@ -79,3 +80,5 @@ def detok_zh(in_file, out_file=None):
             line = line.strip()
             line = detok_zh_str(line)
             outf.write(line + "\n")
+
+    outf.close()
