@@ -11,7 +11,7 @@ def main(in_path, out_path):
 
     out_f = open(out_path, "w", encoding="utf-8")
 
-    block = 4
+    block = 6
     n = 0
     for i in range(0, len(lines), block):
         buf = lines[i:i+block]
