@@ -29,6 +29,9 @@ if __name__ == "__main__":
     argparser.add_argument("--output_dir", required=True, help="output directory")
     argparser.add_argument("--steps", type=int, required=True, help="steps for fine-tuning")
     argparser.add_argument("--config", default=None, help="additional config file")
+    argparser.add_argument("--continue_from_checkpoint", default=False,
+        action="store_true",
+        help="Continue the training from the checkpoint.")
     args = argparser.parse_args()
 
     corpus_fn = args.corpus_fn  # r"D:\kidden\mt\exp\en-zh\ft\data\pe.tsv"
@@ -105,6 +108,8 @@ if __name__ == "__main__":
         yaml.safe_dump(config, f, encoding='utf-8', allow_unicode=True)
 
     train_cmd_str = "python -m yimt.core.bin.main --config {} --auto_config --mixed_precision train"
+    if args.continue_from_checkpoint:
+        train_cmd_str += " --continue_from_checkpoint"
     print("Training...")
     os.popen(train_cmd_str.format(config_fn)).readlines()
     print()

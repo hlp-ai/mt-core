@@ -59,6 +59,10 @@ def create_ft(parent):
     tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_ex_config)).grid(row=8, column=2, padx=10,
                                                                                               pady=5)
 
+    var_con_ckpt = IntVar()
+    check_con_ckpt = Checkbutton(parent, text="Continue form checkpoint", variable=var_con_ckpt, onvalue=1, offvalue=0)
+    check_con_ckpt.grid(row=9, column=1, padx=10, pady=5)
+
     def go():
         corpus_train = entry_corpus_train.get().strip()
         sp_src = entry_sp_src.get().strip()
@@ -81,8 +85,11 @@ def create_ft(parent):
         if len(ex_config) > 0:
             cmd_str += " --config " + ex_config
 
+        if var_con_ckpt.get() == 1:
+            cmd_str += " --continue_from_checkpoint"
+
         os.popen(cmd_str).readlines()
 
         tk.messagebox.showinfo(title="Info", message="Fine-tuning Done.")
 
-    tk.Button(parent, text="Fine-tune Model", command=go).grid(row=9, column=1, padx=10, pady=5)
+    tk.Button(parent, text="Fine-tune Model", command=go).grid(row=10, column=1, padx=10, pady=5)
