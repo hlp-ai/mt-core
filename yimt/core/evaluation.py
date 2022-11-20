@@ -85,10 +85,6 @@ class Evaluator(object):
         if scorers:
             save_predictions = True
         if save_predictions:
-            if model.unsupervised:
-                raise ValueError(
-                    "This model does not support saving evaluation predictions"
-                )
             if not tf.io.gfile.exists(eval_dir):
                 tf.io.gfile.makedirs(eval_dir)
         self._model = model
@@ -158,16 +154,10 @@ class Evaluator(object):
           A :class:`yimt.evaluation.Evaluator` instance.
 
         Raises:
-          ValueError: for supervised models, if one of :obj:`features_file` and
+          ValueError: if one of :obj:`features_file` and
             :obj:`labels_file` is set but not the other.
-          ValueError: for unsupervised models, if :obj:`labels_file` is set.
         """
-        if model.unsupervised:
-            if labels_file is not None:
-                raise ValueError(
-                    "labels_file can not be set when evaluating unsupervised models"
-                )
-        elif (features_file is None) != (labels_file is None):
+        if (features_file is None) != (labels_file is None):
             raise ValueError(
                 "features_file and labels_file should be both set for evaluation"
             )

@@ -540,9 +540,9 @@ class TrainingStats:
         """
         self._update_words_counter("source", source)
         self._record_oov_tokens("source", source, self._model.features_inputter)
-        if not self._model.unsupervised:
-            self._update_words_counter("target", target)
-            self._record_oov_tokens("target", target, self._model.labels_inputter)
+
+        self._update_words_counter("target", target)
+        self._record_oov_tokens("target", target, self._model.labels_inputter)
 
     def update_on_step(self, step, loss):
         """Updates the training statistics on a new training step.
