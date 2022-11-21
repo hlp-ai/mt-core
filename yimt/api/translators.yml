@@ -25,8 +25,17 @@ translators:
     model_or_config_dir: D:\kidden\mt\mt-exp\zh-ko\opus\run1\deploy.yml
     sp_src_path: D:\kidden\mt\mt-exp\ko-zh\opus\tok\opus-kozh-sf.zh-sp-32000.model
 
+  zh-de:
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-de\run1\model\export\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\de-zh\tok\opus-dezh-sf.zh-sp-32000.model
+
+  de-zh:
+    model_or_config_dir: D:\kidden\mt\mt-exp\de-zh\run1\model\export\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\de-zh\tok\opus-dezh-sf.de-sp-32000.model
+
 languages:
   - {code: en, name: English}
   - {code: zh, name: Chinese}
   - {code: ja, name: Japanese}
   - {code: ko, name: Korean}
+  - {code: de, name: German}
