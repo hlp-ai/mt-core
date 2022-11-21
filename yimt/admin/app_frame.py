@@ -217,6 +217,7 @@ def create_translate(parent):
     tk.Label(parent, text="Config File or Model Dir").grid(row=1, column=0, padx=10, pady=5, sticky="e")
     entry_config = tk.Entry(parent, width=50)
     entry_config.grid(row=1, column=1, padx=10, pady=5, sticky="w")
+    # TODO: Problem for setting command handler
     if checkboc_format.get() == "Checkpoint":
         cmd = partial(ask_open_file, entry=entry_config)
     else:
