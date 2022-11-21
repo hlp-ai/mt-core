@@ -7,6 +7,8 @@ from yimt.admin.app_frame import create_average, create_export, create_eval, cre
 from yimt.admin.continue_frame import create_ft, create_mix_ft
 from yimt.admin.train_frame import create_sp_train, create_sp_tokenize, create_build_vocab, create_edit_config, \
     create_train, create_pretrain
+from yimt.admin.corpus_frame import create_tsv2mono_corpus,create_mono2tsv_corpus,create_merge_corpus,\
+    create_normalize_corpus,create_filter_corpus
 
 
 def on_menu(frame):
@@ -25,6 +27,31 @@ if __name__ == "__main__":
     ##########################################################
 
     frames = []
+
+    tsv2mono_frame=tk.Frame(win_main)
+    tsv2mono_frame.pack()
+    create_tsv2mono_corpus(tsv2mono_frame)
+    frames.append(tsv2mono_frame)
+
+    mono2tsv_frame = tk.Frame(win_main)
+    mono2tsv_frame.pack()
+    create_mono2tsv_corpus(mono2tsv_frame)
+    frames.append(mono2tsv_frame)
+
+    merge_frame = tk.Frame(win_main)
+    merge_frame.pack()
+    create_merge_corpus(merge_frame)
+    frames.append(merge_frame)
+
+    normalize_frame = tk.Frame(win_main)
+    normalize_frame.pack()
+    create_normalize_corpus(normalize_frame)
+    frames.append(normalize_frame)
+
+    filter_frame=tk.Frame(win_main)
+    filter_frame.pack()
+    create_filter_corpus(filter_frame)
+    frames.append(filter_frame)
 
     sp_train_frame = tk.Frame(win_main)
     sp_train_frame.pack()
@@ -93,7 +120,20 @@ if __name__ == "__main__":
 
     ####################################################################
 
+
     mainmenu = Menu(win_main)
+
+    corpus_menu = Menu(mainmenu, tearoff=False)
+    corpus_menu.add_command(label="TSV2Mono",command=partial(on_menu, tsv2mono_frame))
+    corpus_menu.add_command(label="Mono2TSV",command=partial(on_menu,mono2tsv_frame))
+    corpus_menu.add_command(label="Merge Files",command=partial(on_menu,merge_frame))
+    corpus_menu.add_separator()
+    corpus_menu.add_command(label="Normalize",command=partial(on_menu,normalize_frame))
+    corpus_menu.add_command(label="Filter",command=partial(on_menu,filter_frame))
+
+
+    mainmenu.add_cascade(label="Corpus", menu=corpus_menu)
+
     train_menu = Menu(mainmenu, tearoff=False)
     train_menu.add_command(label="Train SP", command=partial(on_menu, sp_train_frame))
     train_menu.add_command(label="Tokenize with SP", command=partial(on_menu, sp_tokenize_frame))
