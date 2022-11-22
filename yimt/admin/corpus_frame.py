@@ -1,9 +1,7 @@
 import os
 import tkinter as tk
 from tkinter import *
-import tkinter.filedialog
 import tkinter.messagebox
-from tkinter import ttk
 from functools import partial
 
 from yimt.admin.win_utils import ask_open_file, ask_dir
@@ -163,3 +161,4 @@ def create_filter_corpus(parent):
         tk.messagebox.showinfo(title="Info", message="done")
 
     tk.Button(parent, text="Filter",command=go).grid(row=5, column=1, padx=10, pady=5)
+
