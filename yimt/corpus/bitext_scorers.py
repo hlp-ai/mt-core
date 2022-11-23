@@ -44,7 +44,7 @@ class LaserScorer(BiTextScorer):
 
 class LaBSEScorer(object):
 
-    def __init__(self, model_url, max_seq_length=128):
+    def __init__(self, model_url, max_seq_length=48):
         self.max_seq_length = max_seq_length
         self.labse_model, labse_layer = self._get_model(model_url, max_seq_length)
 
@@ -60,13 +60,13 @@ class LaBSEScorer(object):
         # print(np.argmax(sm, axis=-1))
         return np.diagonal(sm)
 
-    def _encode(self, input_text):
+    def encode(self, input_text):
         input_ids, input_mask, segment_ids = self._create_input(input_text, self.tokenizer, self.max_seq_length)
         return self.labse_model([input_ids, input_mask, segment_ids])
 
     def _sim(self, src, tgt):
-        src_embeddings = self._encode(src)
-        tgt_embeddings = self._encode(tgt)
+        src_embeddings = self.encode(src)
+        tgt_embeddings = self.encode(tgt)
 
         sim_mat = np.matmul(src_embeddings, np.transpose(tgt_embeddings))
 
