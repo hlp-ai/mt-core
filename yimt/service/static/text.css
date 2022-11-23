@@ -345,6 +345,8 @@ body {
     text-decoration:none;
     color: #999;
     white-space:pre;
+    margin-left: 11px;
+    margin-right: 11px;
 }
 
 .inside__products{
