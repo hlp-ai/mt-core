@@ -18,6 +18,11 @@
                     break;
                 }
             }
+            
+            var url = "http://127.0.0.1:5555/readdr_text";
+		            xhr = new XMLHttpRequest();
+                    xhr.open("post", url, true);
+		            xhr.send();
             if(!flag)
             {
                 window.location.href="mobile_text.html"
@@ -26,7 +31,11 @@
 		var xhr;
 
 		function uploadFile() {
-          
+          document.getElementById("masking").style.display ="block";
+          document.getElementById("showProgress").style.display ="block";
+          document.getElementById("progress_line").style.display ="block";
+          document.getElementById("cancel").style.display ="block";
+
           document.getElementById("download").style.display = "none";
 
 		  var fileObj = document.getElementById("select_file").files[0];
@@ -38,10 +47,37 @@
 
 		  var url = "http://127.0.0.1:5555/translate_file";
 		  xhr = new XMLHttpRequest();
+
+          xhr.upload.addEventListener("progress", function(evt){
+            if (evt.lengthComputable) {
+                var percentComplete = Math.round(evt.loaded * 100 / evt.total);
+                if (percentComplete == 100){
+                    setTimeout(function () {
+                    document.getElementById("showProgress").innerHTML = '上传完成'+percentComplete+"%";
+                    document.getElementById("progress_line").value=percentComplete;
+                },10)
+                }else{
+                    document.getElementById("showProgress").innerHTML = '已上传'+percentComplete+"%";
+                    document.getElementById("progress_line").value=percentComplete;
+                }
+             }else {
+                document.getElementById("showProgress").innerHTML = '无法计算';
+            }
+            }, false);
 		  xhr.open("post", url, true);
 		  xhr.onload = uploadComplete;
 		  xhr.send(form);
 		}
+        document.getElementById("cancel").addEventListener("click", reload);
+        function reload()
+        {
+            document.getElementById("masking").style.display ="none";
+            document.getElementById("showProgress").style.display ="none";
+            document.getElementById("progress_line").style.display ="none";
+            document.getElementById("cancel").style.display ="none";
+
+
+        }
 
 		function uploadComplete(evt) {
 			//alert(evt.target.responseText);
@@ -98,18 +134,22 @@
     
         <div class="fanyi__input_file">
             <div class="input__original_file">
+                <div class="masking" id="masking">
+                </div>
                 <div style=" display: inline-block;padding-top:12pt;text-align:center; font-size: 14px;color: #818181;">点 击 上 传</div>
                 <div class="input_area_file">
                     <div class="image_container">
                         <div class="image">
                         </div>
+                        <progress id="progress_line" class="progress_line" value="0" max="100"> </progress>
                         <input type="file" class="select_file" id="select_file" onchange="uploadFile()">
                     </div> 
-                </div>
-
+                </div>             
+                <a id="showProgress" style="display:none;text-align:center; font-size: 19px;color: #357aa1;z-index: 6;">11</a>
+                <a id="cancel"class="cancel" style="display:none;text-align:center; font-size: 19px;color: #6a3030;" onclick="reload()">重新上传</a> 
                 <div style=" padding-bottom:10px;text-align:center; font-size: 14px;color: #848484;">支持以下类型文档：txt、pdf、docx、pptx、html/html/xml 等</div>
-    
             </div>
+       
         </div>
 
         <div style="padding-top:0pt;text-align:center;">
