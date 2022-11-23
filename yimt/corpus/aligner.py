@@ -3,9 +3,10 @@ from yimt.corpus.bitext_scorers import LaBSEScorer
 
 
 class SentenceEmbeddingAligner(object):
-    """Sentence aligner based on LaBSE"""
+    """Sentence aligner based on LaBSE
+    """
 
-    def __init__(self, labse_dir="D:/kidden/mt/open/mt-ex/mt/data/labse1", max_len=72):
+    def __init__(self, labse_dir="D:/kidden/mt/open/mt-ex/mt/data/labse1", max_len=48):
         self.match = {(1, 1): 0.9422141119221411,
                       (1, 2): 0.023114355231143552,
                       (2, 1): 0.0267639902676399,
@@ -23,11 +24,14 @@ class SentenceEmbeddingAligner(object):
         return -s
 
     def align(self, para1, para2):
-        """
+        """Align sentences in two paragraphs
 
-        :param para1: list of sentences
-        :param para2: list of sentences
-        :return:
+        Args:
+            para1: list of sentences
+            para2: list of sentences
+
+        Returns:
+            generator with type of aligned sentences tuple
         """
         align_trace = {}  # (cost, di, dj)
         for i in range(len(para1) + 1):
