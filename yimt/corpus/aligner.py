@@ -58,3 +58,12 @@ class SentenceEmbeddingAligner(object):
             yield ''.join(para1[i - di:i]), ''.join(para2[j - dj:j])  # the aligned sentences
             i -= di
             j -= dj
+
+    def align_paragraphs(self, paras1, paras2):
+        pairs = []
+        for sp, tp in zip(paras1, paras2):
+            align = self.align(sp, tp)
+            for a in align:
+                pairs.append((a[0], a[1]))
+
+        return pairs
