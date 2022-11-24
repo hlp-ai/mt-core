@@ -18,14 +18,9 @@
                     break;
                 }
             }
-            
-            var url = "http://127.0.0.1:5555/readdr_text";
-		            xhr = new XMLHttpRequest();
-                    xhr.open("post", url, true);
-		            xhr.send();
             if(!flag)
             {
-                window.location.href="mobile_text.html"
+                window.location.href="{{url_for('mobile')}}"
             }    
         }
 		var xhr;
