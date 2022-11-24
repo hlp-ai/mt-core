@@ -217,6 +217,7 @@ body {
     vertical-align: top;
     border: none;
     border-radius: 3px;
+    z-index: 1;
 }
 
 .input__target__area {
@@ -277,6 +278,7 @@ body {
     height: 180px;
     margin-top: 18px;
     background: #ebebeb;
+    z-index: 0;
 }
 
 .select_file{
@@ -286,14 +288,23 @@ body {
     width:100%;
     top:0px;
     left: 0px;
-    background: #357aa1;
+    background: #dc0000;
     font-size: 14px;
     color: #fff;
     border:none;
     cursor: pointer;
-    z-index: 3;
+    z-index: 1;
 }
-
+.progress_line{
+    display: none;
+    top:33px;
+    margin-left: 20%;
+    height: 40px;
+    width:60%;
+    position: absolute;
+    color: #357aa1;
+    z-index: 5;
+}
 .inside__products{
     display: none;
     font-family: PingFangSC-Semibold;
@@ -489,6 +500,7 @@ body {
     height: 120px;
     width:100%;
     background-color: #130622;
+    z-index: 0;
 
 }
 
@@ -533,7 +545,16 @@ body {
     background-repeat:no-repeat;
     background-position:center;
 }
-
+.masking{
+    opacity: 0.3;
+    display: none;
+    position:absolute;
+    height: 100%;
+    width: 100%;
+    margin:auto;
+    background: #050505;
+    z-index: 2;
+}
 .download{
     display: block;
     top: 0px;
@@ -541,4 +562,18 @@ body {
     font-size: 14px;
     color: rgb(7, 71, 209);
     text-align: center;
+}
+.cancel{
+    position: absolute;
+    width: 10%;
+    text-align: center;
+    margin-left: 45%;
+    top: 180px;
+    z-index: 10;
+}
+.cancel:hover{
+    display:block;
+    cursor: pointer;
+
+
 }
