@@ -19,7 +19,7 @@
                 }
                 if(flag)
                 {
-                    window.location.href="{{url_for('text')}}"
+                    window.location.href="text.html"
                 }    
             }
         </script>
@@ -39,16 +39,12 @@
         </div>
 
 
-        <form action="http://127.0.0.1/readdr_text" method="POST" enctype="multipart/form-data">
-            <input type="file" name="file"  />
-        <input type="submit" value="提交" />
-        </form>
+
         <div class="input__original">
             <div class="fanyi__input__bg">
                 <textarea id="q" name="q" rows="20" cols="50" class="input__original__area" placeholder="请输入你要翻译的文字或网址"></textarea>
             </div>
         </div>
-        
 
         <div class="fanyi__operations">
             <div class="fanyi__operations--left">
