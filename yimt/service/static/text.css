@@ -297,11 +297,9 @@ body {
 }
 .progress_line{
     display: none;
-    top:33px;
     margin-left: 20%;
     height: 40px;
     width:60%;
-    position: absolute;
     color: #357aa1;
     z-index: 5;
 }
@@ -545,35 +543,12 @@ body {
     background-repeat:no-repeat;
     background-position:center;
 }
-.masking{
-    opacity: 0.3;
-    display: none;
-    position:absolute;
-    height: 100%;
-    width: 100%;
-    margin:auto;
-    background: #050505;
-    z-index: 2;
-}
+
 .download{
-    display: block;
+    display: none;
     top: 0px;
     z-index: 5;
     font-size: 14px;
     color: rgb(7, 71, 209);
     text-align: center;
-}
-.cancel{
-    position: absolute;
-    width: 10%;
-    text-align: center;
-    margin-left: 45%;
-    top: 180px;
-    z-index: 10;
-}
-.cancel:hover{
-    display:block;
-    cursor: pointer;
-
-
 }
