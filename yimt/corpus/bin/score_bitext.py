@@ -1,4 +1,5 @@
 import sys
+import time
 
 from yimt.corpus.bitext_scorers import LaBSEScorer
 
@@ -11,8 +12,9 @@ def main(in_path, out_path):
 
     out_f = open(out_path, "w", encoding="utf-8")
 
-    block = 6
+    block = 8
     n = 0
+    start = time.time()
     for i in range(0, len(lines), block):
         buf = lines[i:i+block]
         srcs = []
@@ -30,7 +32,9 @@ def main(in_path, out_path):
             out_f.write("{:.4f}\t{}\t{}\n".format(ss[j], srcs[j], tgts[j]))
 
         n += len(buf)
-        print(n)
+        if n % (40*block) == 0:
+            t = time.time() - start
+            print(n, n/t)
 
     print(n)
     out_f.close()
