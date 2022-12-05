@@ -26,11 +26,16 @@
 		var xhr;
 
 		function uploadFile() {
+		  var fileObj = document.getElementById("select_file").files[0];
+          var files = document.getElementById("select_file").files;
+          if(files.length==0)
+          {
+            return;
+          }
           document.getElementById("showProgress").style.display ="block";
           document.getElementById("progress_line").style.display ="block";
           document.getElementById("download").style.display = "none";
 
-		  var fileObj = document.getElementById("select_file").files[0];
 		  console.log(fileObj);
 		  var form = new FormData();
 		  form.append("file", fileObj);
