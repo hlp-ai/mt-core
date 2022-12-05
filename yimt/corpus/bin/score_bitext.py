@@ -12,7 +12,7 @@ def main(in_path, out_path):
 
     out_f = open(out_path, "w", encoding="utf-8")
 
-    block = 8
+    block = 12
     n = 0
     start = time.time()
     for i in range(0, len(lines), block):
