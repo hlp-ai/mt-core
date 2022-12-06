@@ -175,6 +175,15 @@ def create_app(args):
             abort(404)
 
         return render_template('file.html')
+    
+    @app.route('/text')
+    def text():
+        return render_template('text.html')
+
+    @app.route('/mobile')
+    def mobile():
+        return render_template('mobile_text.html')
+
 
     @app.get("/languages")
     @limiter.exempt

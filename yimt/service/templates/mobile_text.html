@@ -3,6 +3,44 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="../static/moblie.css">
+        <script>
+            window.onload = function()
+            {
+                var userAgentInfo = navigator.userAgent;
+                var Agents = ["Android","iPhone","SymbianOS","Windows Phone","iPad","iPod"];
+                var flag = true;
+                for(var v=0;v<Agents.length;v++)
+                {
+                    if(userAgentInfo.indexOf(Agents[v])>0)
+                    {
+                        flag=false;
+                        break;
+                    }
+                }
+                if(flag)
+                {
+                    window.location.href="{{url_for('text')}}"
+                }    
+            }
+
+            async function translate_func(){
+            qstr = document.getElementById('q').value;
+            qstr = qstr.trim();
+            if(qstr.length==0) return;
+            source_lang = document.getElementById('source').value
+            target_lang = document.getElementById('target').value
+          
+            const res = await fetch("http://127.0.0.1:5555/translate", {
+                method: "POST",
+                body: JSON.stringify({q: qstr, source: source_lang, target: target_lang, format: "text"}),
+                headers: { "Content-Type": "application/json" }
+            }
+            );
+          
+            trans_json = await res.json();
+            document.getElementById('translation').value= trans_json.translatedText;
+        }
+        </script>
     </head>
 
 
@@ -12,19 +50,16 @@
             <div class="fanyi__nav__container">
                     <a href="https://fanyi.youdao.com/?keyfrom=fanyi-new.logo" class="fanyi__nav__logo"></a>                 
                 <div class="nav_left">
-                    <a target="_blank" class="nav1" href="https://www.youdao.com/?keyfrom=fanyi-new.copyright"> 词典  </a><a target="_blank" class="nav1"  href="https://dsp.youdao.com/?keyfrom=fanyi-new.copyright">  翻译 </a><a target="_blank" class="nav1" href="https://ke.youdao.com/?keyfrom=fanyi-new.copyright">  笔记 </a>
+                    <a target="_blank" class="nav1" href="{{url_for('text')}}">切换至电脑版</a>
                 </div>
-                    
             </div>    
         </div>
-
-
-
         <div class="input__original">
             <div class="fanyi__input__bg">
                 <textarea id="q" name="q" rows="20" cols="50" class="input__original__area" placeholder="请输入你要翻译的文字或网址"></textarea>
             </div>
         </div>
+        
 
         <div class="fanyi__operations">
             <div class="fanyi__operations--left">
@@ -44,7 +79,7 @@
                 
                 </div>
             </div>
-            <input type="button" class="fanyi__operations--machine" id="transMachine" value="翻译文本" onclick='myfunc()'>
+            <input type="button" class="fanyi__operations--machine" id="transMachine" value="翻译文本" onclick='translate_func()'>
     
         </div>
 

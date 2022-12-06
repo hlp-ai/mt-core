@@ -1,17 +1,41 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<head>
+<head> 
     <link rel="stylesheet" type="text/css" href="../static/text.css">
 
     <script>
+        window.onload = function()
+        {
+            var userAgentInfo = navigator.userAgent;
+            var Agents = ["Android","iPhone","SymbianOS","Windows Phone","iPad","iPod"];
+            var flag = true;
+            for(var v=0;v<Agents.length;v++)
+            {
+                if(userAgentInfo.indexOf(Agents[v])>0)
+                {
+                    flag=false;
+                    break;
+                }
+            }
+            if(!flag)
+            {
+                window.location.href="{{url_for('mobile')}}"
+            }    
+        }
 		var xhr;
 
 		function uploadFile() {
-          
+		  var fileObj = document.getElementById("select_file").files[0];
+          var files = document.getElementById("select_file").files;
+          if(files.length==0)
+          {
+            return;
+          }
+          document.getElementById("showProgress").style.display ="block";
+          document.getElementById("progress_line").style.display ="block";
           document.getElementById("download").style.display = "none";
 
-		  var fileObj = document.getElementById("select_file").files[0];
 		  console.log(fileObj);
 		  var form = new FormData();
 		  form.append("file", fileObj);
@@ -20,6 +44,23 @@
 
 		  var url = "http://127.0.0.1:5555/translate_file";
 		  xhr = new XMLHttpRequest();
+
+          xhr.upload.addEventListener("progress", function(evt){
+            if (evt.lengthComputable) {
+                var percentComplete = Math.round(evt.loaded * 100 / evt.total);
+                if (percentComplete == 100){
+                    setTimeout(function () {
+                    document.getElementById("showProgress").innerHTML = '上传完成，正在翻译...';
+                    document.getElementById("progress_line").value=percentComplete;
+                },10)
+                }else{
+                    document.getElementById("showProgress").innerHTML = '已上传'+percentComplete+"%";
+                    document.getElementById("progress_line").value=percentComplete;
+                }
+             }else {
+                document.getElementById("showProgress").innerHTML = '无法计算';
+            }
+            }, false);
 		  xhr.open("post", url, true);
 		  xhr.onload = uploadComplete;
 		  xhr.send(form);
@@ -35,6 +76,7 @@
 			//alert(res_json)
 			//alert(res_json.translatedFileUrl);
 			document.getElementById("download").style.display = "inline";
+            document.getElementById("showProgress").innerHTML = '翻译完成';
 			document.getElementById('download').innerHTML = "<a href=" + res_json.translatedFileUrl + ">下载翻译文件</a>";
 		}
 	</script>
@@ -89,15 +131,16 @@
                         </div>
                         <input type="file" class="select_file" id="select_file" onchange="uploadFile()">
                     </div> 
-                </div>
-
+                </div>             
                 <div style=" padding-bottom:10px;text-align:center; font-size: 14px;color: #848484;">支持以下类型文档：txt、pdf、docx、pptx、html/html/xml 等</div>
-    
             </div>
+       
         </div>
+        <progress id="progress_line" class="progress_line" value="0" max="100"> </progress>
+        <a id="showProgress" style="display:none;text-align:center; font-size: 19px;color: #357aa1;z-index: 6;">11</a>
 
         <div style="padding-top:0pt;text-align:center;">
-            <span id="download" class="download"></span>
+            <span id="download" class="download">下载链接link</span>
         </div>
     
         <div class="inside__products" style="display: block;">
@@ -136,7 +179,7 @@
     </div>
     <div class="fanyi__footer">
         <div class="bottom__nav" style="display: block;">
-            <a target="_blank" class="nav2" href="/">  成长计划  </a><span class="c_fnl">|</span><a target="_blank" class="nav2" href="/">  关于YIMT  </a><span class="c_fnl">|</span><a target="_blank" class="nav2" href="/">  官方博客  </a>
+            <a target="_blank" class="nav2" href="/">成长计划</a><span class="c_fnl">|</span><a target="_blank" class="nav2" href="/">关于YIMT</a><span class="c_fnl">|</span><a target="_blank" class="nav2" href="/">官方博客</a>
             <p>Copyright 2021-2022 by Liu Xiaofeng</p>
         </div>   
     </div>

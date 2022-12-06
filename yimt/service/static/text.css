@@ -217,6 +217,7 @@ body {
     vertical-align: top;
     border: none;
     border-radius: 3px;
+    z-index: 1;
 }
 
 .input__target__area {
@@ -277,6 +278,7 @@ body {
     height: 180px;
     margin-top: 18px;
     background: #ebebeb;
+    z-index: 0;
 }
 
 .select_file{
@@ -286,14 +288,21 @@ body {
     width:100%;
     top:0px;
     left: 0px;
-    background: #357aa1;
+    background: #dc0000;
     font-size: 14px;
     color: #fff;
     border:none;
     cursor: pointer;
-    z-index: 3;
+    z-index: 1;
 }
-
+.progress_line{
+    display: none;
+    margin-left: 20%;
+    height: 40px;
+    width:60%;
+    color: #357aa1;
+    z-index: 5;
+}
 .inside__products{
     display: none;
     font-family: PingFangSC-Semibold;
@@ -345,6 +354,8 @@ body {
     text-decoration:none;
     color: #999;
     white-space:pre;
+    margin-left: 11px;
+    margin-right: 11px;
 }
 
 .inside__products{
@@ -487,6 +498,7 @@ body {
     height: 120px;
     width:100%;
     background-color: #130622;
+    z-index: 0;
 
 }
 
@@ -533,7 +545,7 @@ body {
 }
 
 .download{
-    display: block;
+    display: none;
     top: 0px;
     z-index: 5;
     font-size: 14px;
