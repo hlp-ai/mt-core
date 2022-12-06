@@ -50,7 +50,7 @@
                 var percentComplete = Math.round(evt.loaded * 100 / evt.total);
                 if (percentComplete == 100){
                     setTimeout(function () {
-                    document.getElementById("showProgress").innerHTML = '上传完成,正在翻译';
+                    document.getElementById("showProgress").innerHTML = '上传完成，正在翻译...';
                     document.getElementById("progress_line").value=percentComplete;
                 },10)
                 }else{
