@@ -8,7 +8,7 @@ from html import unescape
 from flask import (Flask, abort, jsonify, render_template, request, send_file, url_for)
 from werkzeug.utils import secure_filename
 from yimt.api.translators import Translators
-from yimt.api.utils import detect_lang
+from yimt.api.utils import detect_lang, get_logger
 from yimt.api.text_splitter import word_segment
 
 from yimt.files.translate_files import support, translate_doc
@@ -19,7 +19,7 @@ from yimt.service import remove_translated_files
 from yimt.service.api_keys import Database
 from yimt.service.utils import path_traversal_check, SuspiciousFileOperation
 
-# log_service = get_logger(log_filename="service.log", name="service")
+log_service = get_logger(log_filename="service.log", name="service")
 
 
 def get_upload_dir():
@@ -189,7 +189,7 @@ def create_app(args):
     @limiter.exempt
     def languages():
         """Retrieve list of supported languages"""
-        # log_service.info("/languages")
+        log_service.info("/languages")
         supported_languages = langs_api
         return jsonify(supported_languages)
 
@@ -285,8 +285,8 @@ def create_app(args):
         else:
             translation = translator.translate_paragraph(src)
 
-        # log_service.info("/translate: " + q + "; " + source_lang + "-" + target_lang + "; " + text_format
-        #                  + "-->" + translation)
+        log_service.info("/translate: " + q + "; " + source_lang + "-" + target_lang + "; " + text_format
+                         + "-->" + translation)
 
         resp = {
             'translatedText': translation
@@ -314,7 +314,7 @@ def create_app(args):
         if file.filename == '':
             abort(400, description="Invalid request: empty file")
 
-        # log_service.info("/translate_file: " + file.filename)
+        log_service.info("/translate_file: " + file.filename)
 
         file_type = os.path.splitext(file.filename)[1]
 
@@ -353,7 +353,7 @@ def create_app(args):
         except SuspiciousFileOperation:
             abort(400, description="Invalid filename")
 
-        # log_service.info("/download_file: " + filepath)
+        log_service.info("/download_file: " + filepath)
 
         return_data = io.BytesIO()
         with open(filepath, 'rb') as fo:
