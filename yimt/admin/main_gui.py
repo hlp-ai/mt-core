@@ -8,8 +8,9 @@ from yimt.admin.continue_frame import create_ft, create_mix_ft
 from yimt.admin.train_frame import create_sp_train, create_sp_tokenize, create_build_vocab, create_edit_config, \
     create_train, create_pretrain
 from yimt.admin.corpus_frame import create_tsv2mono_corpus,create_mono2tsv_corpus,create_merge_corpus,\
-    create_normalize_corpus,create_filter_corpus
-
+    create_normalize_corpus,create_filter_corpus,create_dedup_corpus,create_han2hans_corpus,create_sample_corpus,\
+    create_split_corpus
+from yimt.admin.Transcompare_frame import create_trans,create_sarcebleu_trans
 def on_menu(frame):
     for f in frames:
         if f == frame:
@@ -51,6 +52,26 @@ if __name__ == "__main__":
     filter_frame.pack()
     create_filter_corpus(filter_frame)
     frames.append(filter_frame)
+
+    dedup_frame = tk.Frame(win_main)
+    dedup_frame.pack()
+    create_dedup_corpus(dedup_frame)
+    frames.append(dedup_frame)
+
+    han2Hans_frame = tk.Frame(win_main)
+    han2Hans_frame.pack()
+    create_han2hans_corpus(han2Hans_frame)
+    frames.append(han2Hans_frame)
+
+    sample_frame = tk.Frame(win_main)
+    sample_frame.pack()
+    create_sample_corpus(sample_frame)
+    frames.append(sample_frame)
+
+    split_frame = tk.Frame(win_main)
+    split_frame.pack()
+    create_split_corpus(split_frame)
+    frames.append(split_frame)
 
     sp_train_frame = tk.Frame(win_main)
     sp_train_frame.pack()
@@ -117,8 +138,17 @@ if __name__ == "__main__":
     create_translate(translate_frame)
     frames.append(translate_frame)
 
-    ####################################################################
+    translate_frame = tk.Frame(win_main)
+    translate_frame.pack()
+    create_trans(translate_frame)
+    frames.append(translate_frame)
 
+    bleu_frame = tk.Frame(win_main)
+    bleu_frame.pack()
+    create_sarcebleu_trans(bleu_frame)
+    frames.append(bleu_frame)
+
+    ####################################################################
 
     mainmenu = Menu(win_main)
 
@@ -129,6 +159,10 @@ if __name__ == "__main__":
     corpus_menu.add_separator()
     corpus_menu.add_command(label="Normalize",command=partial(on_menu,normalize_frame))
     corpus_menu.add_command(label="Filter",command=partial(on_menu,filter_frame))
+    corpus_menu.add_command(label="Dedup", command=partial(on_menu, dedup_frame))
+    corpus_menu.add_command(label="Han2Hans", command=partial(on_menu, han2Hans_frame))
+    corpus_menu.add_command(label="Sample", command=partial(on_menu, sample_frame))
+    corpus_menu.add_command(label="Split", command=partial(on_menu, split_frame))
 
 
     mainmenu.add_cascade(label="Corpus", menu=corpus_menu)
@@ -159,6 +193,12 @@ if __name__ == "__main__":
     app_menu.add_command(label="Translate", command=partial(on_menu, translate_frame))
 
     mainmenu.add_cascade(label="Application", menu=app_menu)
+
+    Trans_menu = Menu(mainmenu, tearoff=False)
+    Trans_menu.add_command(label="Other APIs", command=partial(on_menu, translate_frame))
+    Trans_menu.add_command(label="Calculate Bleu", command=partial(on_menu, bleu_frame))
+
+    mainmenu.add_cascade(label="Compare", menu=Trans_menu)
 
     win_main.config(menu=mainmenu)
 

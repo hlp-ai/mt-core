@@ -1,11 +1,11 @@
-import os
+import io
 import tkinter as tk
 from tkinter import *
 import tkinter.messagebox
 from functools import partial
 
 from yimt.admin.win_utils import ask_open_file, ask_dir,ask_save_file
-from yimt.corpus.utils import pair_to_single,single_to_pair,merge
+from yimt.corpus.utils import pair_to_single,single_to_pair,merge,dedup,hant_2_hans,sample,split
 import yimt.corpus.bin.normalize as norm
 import yimt.corpus.bin.filter as filt
 
@@ -162,3 +162,145 @@ def create_filter_corpus(parent):
 
     tk.Button(parent, text="Filter",command=go).grid(row=5, column=1, padx=10, pady=5)
 
+def create_dedup_corpus(parent):
+    tk.Label(parent, text="input").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    entry_dedup_in = tk.Entry(parent, width=50)
+    entry_dedup_in.grid(row=0, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_dedup_in)).grid(row=0, column=2,
+                                                                                              padx=10, pady=5)
+
+    tk.Label(parent, text="output").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    entry_dedup_out = tk.Entry(parent, width=50)
+    entry_dedup_out.grid(row=1, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_save_file, entry=entry_dedup_out)).grid(row=1, column=2,
+                                                                                               padx=10, pady=5)
+    def go():
+        corpus_dedup_in = entry_dedup_in.get().strip()
+        corpus_dedup_out = entry_dedup_out.get().strip()
+
+
+        if len(corpus_dedup_in) == 0 or len(corpus_dedup_out) == 0:
+            tk.messagebox.showinfo(title="Info", message="Some parameter empty.")
+            return
+
+        dedup(corpus_dedup_in, corpus_dedup_out)
+
+        tk.messagebox.showinfo(title="Info", message="done")
+
+    tk.Button(parent, text="Write unique inputs", command=go).grid(row=5, column=1, padx=10, pady=5)
+
+def create_han2hans_corpus(parent):
+
+    tk.Label(parent, text="input").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    entry_han2hans_in = tk.Entry(parent, width=50)
+    entry_han2hans_in.grid(row=0, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_han2hans_in)).grid(row=0, column=2,
+                                                                                             padx=10, pady=5)
+
+    tk.Label(parent, text="output").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    entry_han2hans_out = tk.Entry(parent, width=50)
+    entry_han2hans_out.grid(row=1, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_save_file, entry=entry_han2hans_out)).grid(row=1, column=2,
+                                                                                              padx=10, pady=5)
+
+    def go():
+        corpus_han2hans_in = entry_han2hans_in.get().strip()
+        corpus_han2hans_out = entry_han2hans_out.get().strip()
+        if len(corpus_han2hans_in) == 0 or len(corpus_han2hans_out) == 0:
+            tk.messagebox.showinfo(title="Info", message="Some parameter empty.")
+            return
+        in_f = io.open(corpus_han2hans_in, encoding="utf-8")
+        out_f = io.open(corpus_han2hans_out, "w", encoding="utf-8")
+        cnt = 0
+        for line in in_f:
+            line = line.strip()
+            line_s = hant_2_hans(line)
+            out_f.write(line_s + "\n")
+
+            cnt += 1
+            if cnt % 100000 == 0:
+                print(cnt)
+            print(cnt)
+
+        tk.messagebox.showinfo(title="Info", message="done")
+
+    tk.Button(parent, text="Convert file in traditional Chinese into file in simplified Chinese", \
+              command=go).grid(row=5, column=1, padx=10, pady=5)
+
+def create_sample_corpus(parent):
+    tk.Label(parent, text="file1").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    entry_sample_in1 = tk.Entry(parent, width=50)
+    entry_sample_in1.grid(row=0, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_sample_in1)).grid(row=0, column=2,
+                                                                                                padx=10, pady=5)
+
+    tk.Label(parent, text="file2").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    entry_sample_in2 = tk.Entry(parent, width=50)
+    entry_sample_in2.grid(row=1, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_sample_in2)).grid(row=1, column=2,
+                                                                                                 padx=10, pady=5)
+
+    tk.Label(parent, text="number of samples").grid(row=2, column=0, padx=10, pady=5, sticky="e")
+    entry_sample_number = tk.Entry(parent, width=50)
+    entry_sample_number.grid(row=2, column=1, padx=10, pady=5)
+
+    def go():
+        corpus_sample_in1 = entry_sample_in1.get().strip()
+        corpus_sample_in2 = entry_sample_in2.get().strip()
+        corpus_sample_number = entry_sample_number.get().strip()
+        if len(corpus_sample_in1) != 0 and len(corpus_sample_in2) != 0:
+            files=[corpus_sample_in1,corpus_sample_in2]
+        elif len(corpus_sample_in1) != 0 and len(corpus_sample_in2) == 0:
+            files = [corpus_sample_in1]
+        elif len(corpus_sample_in1) == 0 and len(corpus_sample_in2) != 0:
+            files = [corpus_sample_in2]
+        else:
+            tk.messagebox.showinfo(title="Info", message="Some parameter empty.")
+            return
+        if len(corpus_sample_number)==0:
+            tk.messagebox.showinfo(title="Info", message="Some parameter empty.")
+            return
+        sample(files, int(corpus_sample_number))
+        tk.messagebox.showinfo(title="Info", message="done")
+
+    tk.Button(parent, text="Sample sentences from bitext or source and target file", command=go).grid(\
+        row=5, column=1, padx=10, pady=5)
+
+def create_split_corpus(parent):
+    tk.Label(parent, text="file1").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    entry_split_in1 = tk.Entry(parent, width=50)
+    entry_split_in1.grid(row=0, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_split_in1)).grid(row=0, column=2,
+                                                                                               padx=10, pady=5)
+
+    tk.Label(parent, text="file2").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    entry_split_in2 = tk.Entry(parent, width=50)
+    entry_split_in2.grid(row=1, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_split_in2)).grid(row=1, column=2,
+                                                                                               padx=10, pady=5)
+
+    tk.Label(parent, text="the number of samples in each file").grid(row=2, column=0, padx=10, pady=5, sticky="e")
+    entry_split_number = tk.Entry(parent, width=50)
+    entry_split_number.grid(row=2, column=1, padx=10, pady=5)
+
+    def go():
+        corpus_split_in1 = entry_split_in1.get().strip()
+        corpus_split_in2 = entry_split_in2.get().strip()
+        corpus_split_number = entry_split_number.get().strip()
+        if len(corpus_split_in1) != 0 and len(corpus_split_in2) != 0:
+            files=[corpus_split_in1,corpus_split_in2]
+        elif len(corpus_split_in1) != 0 and len(corpus_split_in2) == 0:
+            files = [corpus_split_in1]
+        elif len(corpus_split_in1) == 0 and len(corpus_split_in2) != 0:
+            files = [corpus_split_in2]
+        else:
+            tk.messagebox.showinfo(title="Info", message="Some parameter empty.")
+            return
+        if len(corpus_split_number)==0:
+            tk.messagebox.showinfo(title="Info", message="Some parameter empty.")
+            return
+        split(files, int(corpus_split_number))
+        tk.messagebox.showinfo(title="Info", message="done")
+
+    tk.Button(parent, text="Split corpus into multiple files with the same lines", command=go).grid(\
+        row=5, column=1, padx=10, pady=5)
