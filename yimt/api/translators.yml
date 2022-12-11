@@ -41,6 +41,14 @@ translators:
     model_or_config_dir: D:\kidden\mt\mt-exp\zh-vi\run\model\export\ct2
     sp_src_path: D:\kidden\mt\mt-exp\vi-zh\tok\vi-zh-opus-sf.zh-sp-32000.model
 
+  ru-zh:
+    model_or_config_dir: D:\kidden\mt\mt-exp\ru-zh\run\model\export\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\ru-zh\tok\opus-ruzh-sf.ru-sp-32000.model
+
+  zh-ru:
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-ru\run\model\export\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\ru-zh\tok\opus-ruzh-sf.zh-sp-32000.model
+
 languages:
   - {code: en, name: English, cname: 英文}
   - {code: zh, name: Chinese, cname: 中文}
@@ -48,3 +56,4 @@ languages:
   - {code: ko, name: Korean, cname: 韩文}
   - {code: de, name: German, cname: 德文}
   - {code: vi, name: Vietnamese, cname: 越南文}
+  - {code: ru, name: Russian, cname: 俄文}
