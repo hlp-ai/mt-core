@@ -50,10 +50,16 @@ def WinAzuretrans(str4,slanguage,tlanguage):
     if (slanguage == '英文'): slanguage = 'en'
     if (slanguage == '日文'): slanguage = 'ja'
     if (slanguage == '韩文'): slanguage = 'ko'
+    if (slanguage == '越南语'): slanguage = 'vi'
+    if (slanguage == '俄语'): slanguage = 'ru'
+    if (slanguage == '德语'): slanguage = 'de'
     if (tlanguage == '中文'): tlanguage = 'zh-Hans'
     if (tlanguage == '英文'): tlanguage = 'en'
     if (tlanguage == '日文'): tlanguage = 'ja'
     if (tlanguage == '韩文'): tlanguage = 'ko'
+    if (tlanguage == '越南语'): tlanguage = 'vi'
+    if (tlanguage == '俄语'): tlanguage = 'ru'
+    if (tlanguage == '德语'): tlanguage = 'de'
     key = "e29ce19c977b45b9b29051e6c4577ae7"
     endpoint = "https://api.cognitive.microsofttranslator.com/"
 
@@ -100,10 +106,16 @@ def baidutrans(str1,slanguage,tlanguage):
     if(slanguage=='英文'):slanguage='en'
     if(slanguage=='日文'): slanguage = 'jp'
     if(slanguage=='韩文'): slanguage = 'kor'
+    if(slanguage == '越南语'): slanguage = 'vie'
+    if(slanguage == '德语'): slanguage = 'de'
+    if(slanguage == '俄语'): slanguage = 'ru'
     if(tlanguage=='中文'):tlanguage='zh'
     if(tlanguage=='英文'):tlanguage='en'
     if(tlanguage=='日文'): tlanguage = 'jp'
     if(tlanguage=='韩文'): tlanguage = 'kor'
+    if(tlanguage == '越南语'): tlanguage = 'vie'
+    if(tlanguage == '德语'): tlanguage = 'de'
+    if(tlanguage == '俄语'): tlanguage = 'ru'
     fromLang = slanguage  # 原文语种，中zh 英en 日 韩
     toLang = tlanguage  # 译文语种
     salt = random.randint(32768, 65536)
@@ -154,10 +166,16 @@ def youdaotrans(str2,slanguage,tlanguage):
     if (slanguage == '英文'): slanguage = 'en'
     if (slanguage == '日文'): slanguage = 'ja'
     if (slanguage == '韩文'): slanguage = 'ko'
+    if (slanguage == '俄语'): slanguage = 'ru'
+    if (slanguage == '德语'): slanguage = 'de'
+    if (slanguage == '越南语'): slanguage = 'vi'
     if (tlanguage == '中文'): tlanguage = 'zh-CHS'
     if (tlanguage == '英文'): tlanguage = 'en'
     if (tlanguage == '日文'): tlanguage = 'ja'
     if (tlanguage == '韩文'): tlanguage = 'ko'
+    if (tlanguage == '俄语'): tlanguage = 'ru'
+    if (tlanguage == '德语'): tlanguage = 'de'
+    if (tlanguage == '越南语'): tlanguage = 'vi'
     data = {
         'q': translate_text,  # 翻译文本
         'from': slanguage,  # 源语言参数
@@ -181,10 +199,16 @@ def tencenttrans(str3,slanguage,tlanguage):
         if (slanguage == '英文'): slanguage = 'en'
         if (slanguage == '日文'): slanguage = 'ja'
         if (slanguage == '韩文'): slanguage = 'ko'
+        if (slanguage == '德语'): slanguage = 'de'
+        if (slanguage == '越南语'): slanguage = 'vi'
+        if (slanguage == '俄语'): slanguage = 'ru'
         if (tlanguage == '中文'): tlanguage = 'zh'
         if (tlanguage == '英文'): tlanguage = 'en'
         if (tlanguage == '日文'): tlanguage = 'ja'
         if (tlanguage == '韩文'): tlanguage = 'ko'
+        if (tlanguage == '德语'): tlanguage = 'de'
+        if (tlanguage == '越南语'): tlanguage = 'vi'
+        if (tlanguage == '俄语'): tlanguage = 'ru'
         clientProfile = ClientProfile()
         clientProfile.httpProfile = httpProfile
         client = tmt_client.TmtClient(cred, "ap-beijing", clientProfile)
