@@ -5,7 +5,7 @@ import tkinter.messagebox
 from functools import partial
 
 from yimt.admin.win_utils import ask_open_file, ask_dir,ask_save_file
-from yimt.corpus.utils import pair_to_single,single_to_pair,merge,dedup,hant_2_hans,sample,split
+from yimt.corpus.utils import pair_to_single,single_to_pair,merge,dedup,hant_2_hans,sample,split,merge_moses
 import yimt.corpus.bin.normalize as norm
 import yimt.corpus.bin.filter as filt
 
@@ -101,6 +101,39 @@ def create_merge_corpus(parent):
         tk.messagebox.showinfo(title="Info", message="done")
     tk.Button(parent, text="Merge files in a directory into one file", command=go).grid(row=5, column=1,
                                                                                                   padx=10, pady=5)
+
+def create_merge_moses_corpus(parent):
+    tk.Label(parent, text="input dir").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    entry_mergemoses_datapath = tk.Entry(parent, width=50)
+    entry_mergemoses_datapath.grid(row=0, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_dir, entry=entry_mergemoses_datapath)).grid(row=0, column=2,
+                                                                                               padx=10, pady=5)
+
+    tk.Label(parent, text="output dir").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    entry_mergemoses_tgt = tk.Entry(parent, width=50)
+    entry_mergemoses_tgt.grid(row=1, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_dir, entry=entry_mergemoses_tgt)).grid(row=1, column=2, padx=10,
+                                                                                               pady=5)
+
+    tk.Label(parent, text="source language").grid(row=2, column=0, padx=10, pady=5, sticky="e")
+    entry_mergemoses_sl = tk.Entry(parent, width=50)
+    entry_mergemoses_sl.grid(row=2, column=1, padx=10, pady=5)
+
+    tk.Label(parent, text="target language").grid(row=3, column=0, padx=10, pady=5, sticky="e")
+    entry_mergemoses_tl = tk.Entry(parent, width=50)
+    entry_mergemoses_tl.grid(row=3, column=1, padx=10, pady=5)
+
+
+    def go():
+        corpus_mergemoses_datapath = entry_mergemoses_datapath.get().strip()
+        corpus_mergemoses_tgt = entry_mergemoses_tgt.get().strip()
+        corpus_mergemoses_sl=entry_mergemoses_sl.get().strip()
+        corpus_mergemoses_tl=entry_mergemoses_tl.get().strip()
+
+        merge_moses(corpus_mergemoses_datapath,corpus_mergemoses_sl,corpus_mergemoses_tl,corpus_mergemoses_tgt)
+        tk.messagebox.showinfo(title="Info", message="done")
+    tk.Button(parent, text="Merge", command=go).grid(row=5, column=1,padx=10, pady=5)
+
 
 def create_normalize_corpus(parent):
     tk.Label(parent, text="in_fn").grid(row=0, column=0, padx=10, pady=5, sticky="e")
@@ -304,3 +337,4 @@ def create_split_corpus(parent):
 
     tk.Button(parent, text="Split corpus into multiple files with the same lines", command=go).grid(\
         row=5, column=1, padx=10, pady=5)
+

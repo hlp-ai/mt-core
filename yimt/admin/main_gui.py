@@ -9,7 +9,7 @@ from yimt.admin.train_frame import create_sp_train, create_sp_tokenize, create_b
     create_train, create_pretrain
 from yimt.admin.corpus_frame import create_tsv2mono_corpus,create_mono2tsv_corpus,create_merge_corpus,\
     create_normalize_corpus,create_filter_corpus,create_dedup_corpus,create_han2hans_corpus,create_sample_corpus,\
-    create_split_corpus
+    create_split_corpus,create_merge_moses_corpus
 from yimt.admin.Transcompare_frame import create_trans,create_sarcebleu_trans
 def on_menu(frame):
     for f in frames:
@@ -42,6 +42,11 @@ if __name__ == "__main__":
     merge_frame.pack()
     create_merge_corpus(merge_frame)
     frames.append(merge_frame)
+
+    merge_moses_frame = tk.Frame(win_main)
+    merge_moses_frame.pack()
+    create_merge_moses_corpus(merge_moses_frame)
+    frames.append(merge_moses_frame)
 
     normalize_frame = tk.Frame(win_main)
     normalize_frame.pack()
@@ -138,10 +143,10 @@ if __name__ == "__main__":
     create_translate(translate_frame)
     frames.append(translate_frame)
 
-    translate_frame = tk.Frame(win_main)
-    translate_frame.pack()
-    create_trans(translate_frame)
-    frames.append(translate_frame)
+    translation_frame = tk.Frame(win_main)
+    translation_frame.pack()
+    create_trans(translation_frame)
+    frames.append(translation_frame)
 
     bleu_frame = tk.Frame(win_main)
     bleu_frame.pack()
@@ -156,6 +161,7 @@ if __name__ == "__main__":
     corpus_menu.add_command(label="TSV2Mono",command=partial(on_menu, tsv2mono_frame))
     corpus_menu.add_command(label="Mono2TSV",command=partial(on_menu,mono2tsv_frame))
     corpus_menu.add_command(label="Merge Files",command=partial(on_menu,merge_frame))
+    corpus_menu.add_command(label="Merge_moses", command=partial(on_menu, merge_moses_frame))
     corpus_menu.add_separator()
     corpus_menu.add_command(label="Normalize",command=partial(on_menu,normalize_frame))
     corpus_menu.add_command(label="Filter",command=partial(on_menu,filter_frame))
@@ -195,7 +201,7 @@ if __name__ == "__main__":
     mainmenu.add_cascade(label="Application", menu=app_menu)
 
     Trans_menu = Menu(mainmenu, tearoff=False)
-    Trans_menu.add_command(label="Other APIs", command=partial(on_menu, translate_frame))
+    Trans_menu.add_command(label="Other APIs", command=partial(on_menu, translation_frame))
     Trans_menu.add_command(label="Calculate Bleu", command=partial(on_menu, bleu_frame))
 
     mainmenu.add_cascade(label="Compare", menu=Trans_menu)
