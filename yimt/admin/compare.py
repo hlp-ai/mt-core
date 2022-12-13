@@ -1,3 +1,5 @@
+import sacrebleu
+
 import http.client
 import hashlib
 import urllib
@@ -7,45 +9,47 @@ import requests
 import uuid
 import time
 from tqdm import *
-from tencentcloud.common import credential#这里需要安装腾讯翻译sdk pip install tencentcloud-sdk-python
+from tencentcloud.common import credential  # 这里需要安装腾讯翻译sdk pip install tencentcloud-sdk-python
 from tencentcloud.common.profile.client_profile import ClientProfile
 from tencentcloud.common.profile.http_profile import HttpProfile
 from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
 from tencentcloud.tmt.v20180321 import tmt_client, models
 
-def main(sf,tf,sl,tl,ifbaidu,ifyoudao,iftencent,ifWin):
+
+def main(sf, tf, sl, tl, ifbaidu, ifyoudao, iftencent, ifWin):
     fo = open(sf, "r", encoding='utf-8')  # 编码必须是utf-8
     if (ifbaidu):
-        f1= open(tf+"\\"+"baiduresult.txt", mode="w",encoding='utf-8')
+        f1 = open(tf + "\\" + "baiduresult.txt", mode="w", encoding='utf-8')
         f1.truncate()
     if (ifyoudao):
-        f2= open(tf+"\\"+"youdaoresult.txt", mode="w",encoding='utf-8')
+        f2 = open(tf + "\\" + "youdaoresult.txt", mode="w", encoding='utf-8')
         f2.truncate()
     if (iftencent):
-        f3= open(tf+"\\"+"tencentresult.txt", mode="w",encoding='utf-8')
+        f3 = open(tf + "\\" + "tencentresult.txt", mode="w", encoding='utf-8')
         f3.truncate()
-    if(ifWin):
-        f4= open(tf+"\\"+"WinAzureresult.txt", mode="w",encoding='utf-8')
+    if (ifWin):
+        f4 = open(tf + "\\" + "WinAzureresult.txt", mode="w", encoding='utf-8')
         f4.truncate()
 
-    for line in tqdm(fo):               #循环读取与读入
-        line = line.strip('\n')#读取不带换行符号，避免最后一行出问题
-        if(ifbaidu):
-            f1.write(line+'\t')
+    for line in tqdm(fo):  # 循环读取与读入
+        line = line.strip('\n')  # 读取不带换行符号，避免最后一行出问题
+        if (ifbaidu):
+            f1.write(line + '\t')
             f1.write(baidutrans(line, sl, tl) + '\n')
         if (ifyoudao):
             f2.write(line + '\t')
-            f2.write(youdaotrans(line,sl,tl) + '\n')
+            f2.write(youdaotrans(line, sl, tl) + '\n')
         if (iftencent):
             f3.write(line + '\t')
-            f3.write(tencenttrans(line,sl,tl)+ '\n')
-        if(ifWin):
+            f3.write(tencenttrans(line, sl, tl) + '\n')
+        if (ifWin):
             f4.write(line + '\t')
             f4.write(WinAzuretrans(line, sl, tl) + '\n')
-        time.sleep(1)#避免产生api过频调用
+        time.sleep(1)  # 避免产生api过频调用
     print('翻译结束！')
 
-def WinAzuretrans(str4,slanguage,tlanguage):
+
+def WinAzuretrans(str4, slanguage, tlanguage):
     if (slanguage == '中文'): slanguage = 'zh-Hans'
     if (slanguage == '英文'): slanguage = 'en'
     if (slanguage == '日文'): slanguage = 'ja'
@@ -92,30 +96,31 @@ def WinAzuretrans(str4,slanguage,tlanguage):
     request = requests.post(constructed_url, params=params, headers=headers, json=body)
     response = request.json()
 
-    data=json.dumps(response, sort_keys=True, ensure_ascii=False, indent=4, separators=(',', ': '))
-    result=json.loads(data)
+    data = json.dumps(response, sort_keys=True, ensure_ascii=False, indent=4, separators=(',', ': '))
+    result = json.loads(data)
     return result[0]['translations'][0]['text']
 
-def baidutrans(str1,slanguage,tlanguage):
+
+def baidutrans(str1, slanguage, tlanguage):
     appid = '20220808001298811'  # 填写你的appid
     secretKey = 'BlvcEoyjf41q7TrJJfeQ'  # 填写你的密钥
 
     httpClient = None
     myurl = '/api/trans/vip/translate'  # 通用翻译API HTTP地址
-    if(slanguage=='中文'):slanguage='zh'
-    if(slanguage=='英文'):slanguage='en'
-    if(slanguage=='日文'): slanguage = 'jp'
-    if(slanguage=='韩文'): slanguage = 'kor'
-    if(slanguage == '越南语'): slanguage = 'vie'
-    if(slanguage == '德语'): slanguage = 'de'
-    if(slanguage == '俄语'): slanguage = 'ru'
-    if(tlanguage=='中文'):tlanguage='zh'
-    if(tlanguage=='英文'):tlanguage='en'
-    if(tlanguage=='日文'): tlanguage = 'jp'
-    if(tlanguage=='韩文'): tlanguage = 'kor'
-    if(tlanguage == '越南语'): tlanguage = 'vie'
-    if(tlanguage == '德语'): tlanguage = 'de'
-    if(tlanguage == '俄语'): tlanguage = 'ru'
+    if (slanguage == '中文'): slanguage = 'zh'
+    if (slanguage == '英文'): slanguage = 'en'
+    if (slanguage == '日文'): slanguage = 'jp'
+    if (slanguage == '韩文'): slanguage = 'kor'
+    if (slanguage == '越南语'): slanguage = 'vie'
+    if (slanguage == '德语'): slanguage = 'de'
+    if (slanguage == '俄语'): slanguage = 'ru'
+    if (tlanguage == '中文'): tlanguage = 'zh'
+    if (tlanguage == '英文'): tlanguage = 'en'
+    if (tlanguage == '日文'): tlanguage = 'jp'
+    if (tlanguage == '韩文'): tlanguage = 'kor'
+    if (tlanguage == '越南语'): tlanguage = 'vie'
+    if (tlanguage == '德语'): tlanguage = 'de'
+    if (tlanguage == '俄语'): tlanguage = 'ru'
     fromLang = slanguage  # 原文语种，中zh 英en 日 韩
     toLang = tlanguage  # 译文语种
     salt = random.randint(32768, 65536)
@@ -141,7 +146,8 @@ def baidutrans(str1,slanguage,tlanguage):
             httpClient.close()
     return result['trans_result'][0]['dst']
 
-def youdaotrans(str2,slanguage,tlanguage):
+
+def youdaotrans(str2, slanguage, tlanguage):
     youdao_url = 'https://openapi.youdao.com/api'  # 有道api地址
     # 需要翻译的文本'
     translate_text = str2
@@ -161,7 +167,8 @@ def youdaotrans(str2,slanguage,tlanguage):
     salt = str(uu_id)
     app_key = 'le6A4etmjineVBDegcbGAYxclqeDvAlE'  # 应用密钥
 
-    sign = hashlib.sha256((app_id + input_text + salt + str(time_curtime) + app_key).encode('utf-8')).hexdigest()  # sign生成
+    sign = hashlib.sha256(
+        (app_id + input_text + salt + str(time_curtime) + app_key).encode('utf-8')).hexdigest()  # sign生成
     if (slanguage == '中文'): slanguage = 'zh-CHS'
     if (slanguage == '英文'): slanguage = 'en'
     if (slanguage == '日文'): slanguage = 'ja'
@@ -190,7 +197,8 @@ def youdaotrans(str2,slanguage,tlanguage):
     r = requests.get(youdao_url, params=data).json()  # 获取返回的json()内容
     return r["translation"][0]  # 获取翻译内容
 
-def tencenttrans(str3,slanguage,tlanguage):
+
+def tencenttrans(str3, slanguage, tlanguage):
     try:
         cred = credential.Credential("AKIDeCZiJfmdEZeS0HI5cdOvBALfojQyMUO6", "XopcAUZR7bpqmaClAMNAi04uhFafV4NP")
         httpProfile = HttpProfile()
@@ -215,14 +223,30 @@ def tencenttrans(str3,slanguage,tlanguage):
 
         req = models.TextTranslateRequest()
         req.SourceText = str3
-        req.Source =slanguage
-        req.Target =tlanguage
+        req.Source = slanguage
+        req.Target = tlanguage
         req.ProjectId = 0
 
         resp = client.TextTranslate(req)
-        data=json.loads(resp.to_json_string())
+        data = json.loads(resp.to_json_string())
         return data['TargetText']
 
 
     except TencentCloudSDKException as err:
         print(err)
+
+
+def calculatebleu_sacre(path_r, path_t, token):
+    res = []
+    tat = []
+    with open(path_r, 'r', encoding='utf-8') as f:
+        for line in f:
+            res.append(line.strip().split('\r')[0])
+
+    with open(path_t, 'r', encoding='utf-8') as f:
+        for line in f:
+            tat.append(line.strip().split('\r')[0])
+    print(res)
+    print(tat)
+    bleu = sacrebleu.corpus_bleu(res, [tat], tokenize=token)
+    return bleu.score

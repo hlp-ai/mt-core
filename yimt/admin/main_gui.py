@@ -10,7 +10,7 @@ from yimt.admin.train_frame import create_sp_train, create_sp_tokenize, create_b
 from yimt.admin.corpus_frame import create_tsv2mono_corpus,create_mono2tsv_corpus,create_merge_corpus,\
     create_normalize_corpus,create_filter_corpus,create_dedup_corpus,create_han2hans_corpus,create_sample_corpus,\
     create_split_corpus,create_merge_moses_corpus
-from yimt.admin.Transcompare_frame import create_trans,create_sarcebleu_trans
+from yimt.admin.compare_frame import create_trans,create_sarcebleu_trans
 def on_menu(frame):
     for f in frames:
         if f == frame:
