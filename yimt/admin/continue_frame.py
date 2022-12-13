@@ -1,9 +1,7 @@
 import os
 import tkinter as tk
 from tkinter import *
-import tkinter.filedialog
 import tkinter.messagebox
-from tkinter import ttk
 from functools import partial
 
 from yimt.admin.win_utils import ask_open_file, ask_dir

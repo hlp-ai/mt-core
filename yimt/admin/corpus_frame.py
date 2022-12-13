@@ -1,6 +1,5 @@
-import io
+import os
 import tkinter as tk
-from tkinter import *
 import tkinter.messagebox
 from functools import partial
 
@@ -211,7 +210,6 @@ def create_dedup_corpus(parent):
         corpus_dedup_in = entry_dedup_in.get().strip()
         corpus_dedup_out = entry_dedup_out.get().strip()
 
-
         if len(corpus_dedup_in) == 0 or len(corpus_dedup_out) == 0:
             tk.messagebox.showinfo(title="Info", message="Some parameter empty.")
             return
@@ -242,18 +240,9 @@ def create_han2hans_corpus(parent):
         if len(corpus_han2hans_in) == 0 or len(corpus_han2hans_out) == 0:
             tk.messagebox.showinfo(title="Info", message="Some parameter empty.")
             return
-        in_f = io.open(corpus_han2hans_in, encoding="utf-8")
-        out_f = io.open(corpus_han2hans_out, "w", encoding="utf-8")
-        cnt = 0
-        for line in in_f:
-            line = line.strip()
-            line_s = hant_2_hans(line)
-            out_f.write(line_s + "\n")
 
-            cnt += 1
-            if cnt % 100000 == 0:
-                print(cnt)
-            print(cnt)
+        convert_cmd = "python ../corpus/bin/hant2hans.py {} {}"
+        os.popen(convert_cmd.format(corpus_han2hans_in, corpus_han2hans_out)).readlines()
 
         tk.messagebox.showinfo(title="Info", message="done")
 
