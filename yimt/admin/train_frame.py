@@ -252,7 +252,7 @@ def create_edit_config(parent):
     tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_src_train)).grid(row=1, column=2, padx=10,
                                                                                               pady=5)
 
-    tk.Label(parent, text="Target File for Traning").grid(row=2, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Target File for Training").grid(row=2, column=0, padx=10, pady=5, sticky="e")
     entry_tgt_train = tk.Entry(parent, width=50)
     entry_tgt_train.grid(row=2, column=1, padx=10, pady=5, sticky="w")
     tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_tgt_train)).grid(row=2, column=2, padx=10,

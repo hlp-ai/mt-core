@@ -198,7 +198,7 @@ if __name__ == "__main__":
     app_menu.add_command(label="Inference", command=partial(on_menu, infer_frame))
     app_menu.add_command(label="Evaluate", command=partial(on_menu, eval_frame))
     app_menu.add_separator()
-    app_menu.add_command(label="Translate", command=partial(on_menu, translate_frame))
+    app_menu.add_command(label="Translate interactively", command=partial(on_menu, translate_frame))
 
     mainmenu.add_cascade(label="Application", menu=app_menu)
 
