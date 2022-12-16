@@ -34,3 +34,5 @@ installation methods and basic operations.
     print(split_sentences(t5, lang="ko"))
 
     print(word_segment("Viện trưởng Vương xử sự ngay thẳng, làm việc công minh, chưa từng gây khó dễ cho ai, mọi người đều tôn kính ông ấy.", lang="vi"))
+
+    print(word_segment("في 11 مارس 2020، أعلنت منظمة الصحة العالمية مرض فيروس كورونا 2019 (كوفيد-19) كجائحة.", lang="ar"))
