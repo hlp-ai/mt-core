@@ -219,7 +219,7 @@ def from_sgm(sgm_path, out_path):
     out_f.close()
 
 
-def from_xml(xml_file):
+def from_xml(xml_file, attr="[@translator='A']"):
     """Convert XML file of WMT into plain text"""
     output_stem = xml_file[:-4]
 
@@ -234,7 +234,7 @@ def from_xml(xml_file):
             print(seg.text, file=ofh)
 
     with open(output_stem + "." + tgt, "w", encoding="utf-8") as ofh:
-        for seg in tree.getroot().findall(".//ref//seg"):
+        for seg in tree.getroot().findall(".//ref" + attr + "//seg" ):
             print(seg.text, file=ofh)
 
 
