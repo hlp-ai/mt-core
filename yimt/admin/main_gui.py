@@ -162,15 +162,17 @@ if __name__ == "__main__":
     corpus_menu = Menu(mainmenu, tearoff=False)
     corpus_menu.add_command(label="TSV2Mono",command=partial(on_menu, tsv2mono_frame))
     corpus_menu.add_command(label="Mono2TSV",command=partial(on_menu,mono2tsv_frame))
-    corpus_menu.add_command(label="Merge Files",command=partial(on_menu,merge_frame))
-    corpus_menu.add_command(label="Merge_moses", command=partial(on_menu, merge_moses_frame))
     corpus_menu.add_separator()
+    corpus_menu.add_command(label="Merge Moses Files", command=partial(on_menu, merge_moses_frame))
+    corpus_menu.add_command(label="Merge Files", command=partial(on_menu, merge_frame))
     corpus_menu.add_command(label="Normalize",command=partial(on_menu,normalize_frame))
-    corpus_menu.add_command(label="Filter",command=partial(on_menu,filter_frame))
     corpus_menu.add_command(label="Dedup", command=partial(on_menu, dedup_frame))
+    corpus_menu.add_command(label="Filter",command=partial(on_menu,filter_frame))
+    corpus_menu.add_command(label="Split", command=partial(on_menu, split_frame))
+    corpus_menu.add_separator()
     corpus_menu.add_command(label="Hant2Hans", command=partial(on_menu, han2Hans_frame))
     corpus_menu.add_command(label="Sample", command=partial(on_menu, sample_frame))
-    corpus_menu.add_command(label="Split", command=partial(on_menu, split_frame))
+
 
 
     mainmenu.add_cascade(label="Corpus", menu=corpus_menu)
