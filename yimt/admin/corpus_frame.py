@@ -148,13 +148,13 @@ def create_merge_moses_corpus(parent):
 
 
 def create_normalize_corpus(parent):
-    tk.Label(parent, text="in_fn").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Input TSV file").grid(row=0, column=0, padx=10, pady=5, sticky="e")
     entry_normalize_in = tk.Entry(parent, width=50)
     entry_normalize_in.grid(row=0, column=1, padx=10, pady=5)
     tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_normalize_in)).grid(row=0, column=2,
                                                                                                  padx=10, pady=5)
 
-    tk.Label(parent, text="out_fn").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Output file").grid(row=1, column=0, padx=10, pady=5, sticky="e")
     entry_normalize_out = tk.Entry(parent, width=50)
     entry_normalize_out.grid(row=1, column=1, padx=10, pady=5)
     tk.Button(parent, text="...", command=partial(ask_save_file, entry=entry_normalize_out)).grid(row=1, column=2,
