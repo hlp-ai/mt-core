@@ -308,19 +308,19 @@ def create_sample_corpus(parent):
 
 
 def create_split_corpus(parent):
-    tk.Label(parent, text="file1").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Input File 1").grid(row=0, column=0, padx=10, pady=5, sticky="e")
     entry_split_in1 = tk.Entry(parent, width=50)
     entry_split_in1.grid(row=0, column=1, padx=10, pady=5)
     tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_split_in1)).grid(row=0, column=2,
                                                                                               padx=10, pady=5)
 
-    tk.Label(parent, text="file2").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Input File2 (Optional)").grid(row=1, column=0, padx=10, pady=5, sticky="e")
     entry_split_in2 = tk.Entry(parent, width=50)
     entry_split_in2.grid(row=1, column=1, padx=10, pady=5)
     tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_split_in2)).grid(row=1, column=2,
                                                                                               padx=10, pady=5)
 
-    tk.Label(parent, text="the number of samples in each file").grid(row=2, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Number of Samples in each File").grid(row=2, column=0, padx=10, pady=5, sticky="e")
     entry_split_number = tk.Entry(parent, width=50)
     entry_split_number.grid(row=2, column=1, padx=10, pady=5)
 
