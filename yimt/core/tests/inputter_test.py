@@ -9,7 +9,6 @@ from google.protobuf import text_format
 from parameterized import parameterized
 from tensorboard.plugins import projector
 
-from yimt.core import tokenizers
 from yimt.core import inputters
 from yimt.core.data import dataset as dataset_util
 from yimt.core.data import noise
@@ -632,24 +631,6 @@ class InputterTest(tf.test.TestCase):
         self.assertListEqual(source["inputter_1_ids"].shape.as_list(), [8, 110])
         self.assertListEqual(target["ids"].shape.as_list(), [8, 120])
         self.assertListEqual(target["ids_out"].shape.as_list(), [8, 120])
-
-    def testExampleInputterAsset(self):
-        vocab_file = self._makeTextFile("vocab.txt", ["the", "world", "hello", "toto"])
-        source_inputter = text_inputter.WordEmbedder(embedding_size=10)
-        target_inputter = text_inputter.WordEmbedder(embedding_size=10)
-        example_inputter = inputter.ExampleInputter(source_inputter, target_inputter)
-        example_inputter.initialize(
-            {
-                "source_vocabulary": vocab_file,
-                "target_vocabulary": vocab_file,
-                "source_tokenization": {"mode": "conservative"},
-            }
-        )
-        self.assertIsInstance(source_inputter.tokenizer, tokenizers.OpenNMTTokenizer)
-        self.assertTrue(example_inputter.has_prepare_step())
-        asset_dir = self.get_temp_dir()
-        example_inputter.export_assets(asset_dir)
-        self.assertIn("source_tokenizer_config.yml", set(os.listdir(asset_dir)))
 
 
 if __name__ == "__main__":

@@ -3,7 +3,6 @@ import shutil
 import unittest
 
 import tensorflow as tf
-import yaml
 
 from yimt.core import tokenizers
 from yimt.core.tests import test_util
@@ -169,73 +168,6 @@ class TokenizerTest(tf.test.TestCase):
         outputs = tf.RaggedTensor.from_tensor(outputs, padding="").to_list()
         self.assertAllEqual(outputs, tf.nest.map_structure(tf.compat.as_bytes, tokens))
 
-    def testOpenNMTTokenizer(self):
-        self._testTokenizer(
-            tokenizers.OpenNMTTokenizer(),
-            ["Hello world!", "", "How are you?"],
-            [["Hello", "world", "!"], [], ["How", "are", "you", "?"]],
-        )
-        self._testDetokenizer(
-            tokenizers.OpenNMTTokenizer(),
-            [["Hello", "world", "￭!"], ["Test"], [], ["My", "name"]],
-            ["Hello world!", "Test", "", "My name"],
-        )
-
-    def testOpenNMTTokenizerInFunction(self):
-        tokenizer = tokenizers.OpenNMTTokenizer()
-
-        @tf.function
-        def _tokenize(text):
-            return tokenizer.tokenize(text)
-
-        tokens = _tokenize(tf.constant("Hello world!"))
-        self.assertAllEqual(self.evaluate(tokens), [b"Hello", b"world", b"!"])
-
-    def testOpenNMTTokenizerArguments(self):
-        with self.assertRaises(ValueError):
-            tokenizers.OpenNMTTokenizer(case_feature=True)
-        tokenizer = tokenizers.OpenNMTTokenizer(
-            mode="aggressive", spacer_annotate=True, spacer_new=True, case_feature=False
-        )
-        self._testTokenizer(
-            tokenizer, ["Hello World-s"], [["Hello", "▁", "World", "-", "s"]]
-        )
-
-    @unittest.skipIf(not os.path.isfile(sp_model), "Missing SentencePiece model")
-    def testOpenNMTTokenizerInferenceMode(self):
-        tokenizer = tokenizers.OpenNMTTokenizer(
-            mode="none",
-            sp_model_path=sp_model,
-            sp_nbest_size=64,
-            sp_alpha=0.1,
-        )
-        self._testTokenizer(tokenizer, ["appealing"], [["▁appealing"]], training=False)
-
-    def testOpenNMTTokenizerAssets(self):
-        asset_dir = self.get_temp_dir()
-        # Write a dummy BPE model.
-        bpe_model_path = os.path.join(asset_dir, "model.bpe")
-        with open(bpe_model_path, "w") as bpe_model_file:
-            bpe_model_file.write("#version: 0.2\ne s</w>\n")
-
-        tokenizer = tokenizers.OpenNMTTokenizer(
-            mode="conservative", bpe_model_path=bpe_model_path
-        )
-
-        # Generated assets are prefixed but not existing resources.
-        assets = tokenizer.export_assets(asset_dir, asset_prefix="source_")
-        self.assertIn("source_tokenizer_config.yml", assets)
-        self.assertTrue(os.path.exists(assets["source_tokenizer_config.yml"]))
-        self.assertIn("model.bpe", assets)
-        self.assertTrue(os.path.exists(assets["model.bpe"]))
-
-        # The tokenization configuration should not contain absolute paths to resources.
-        with open(assets["source_tokenizer_config.yml"]) as config_file:
-            asset_config = yaml.safe_load(config_file.read())
-        self.assertDictEqual(
-            asset_config, {"mode": "conservative", "bpe_model_path": "model.bpe"}
-        )
-
     def testMakeTokenizer(self):
         tokenizer = tokenizers.make_tokenizer()
         self.assertIsInstance(tokenizer, tokenizers.SpaceTokenizer)
@@ -243,26 +175,7 @@ class TokenizerTest(tf.test.TestCase):
         tokenizer = tokenizers.make_tokenizer({"type": "SpaceTokenizer"})
         self.assertIsInstance(tokenizer, tokenizers.SpaceTokenizer)
         self.assertTrue(tokenizer.in_graph)
-        self.assertIsInstance(
-            tokenizers.make_tokenizer({"mode": "conservative"}),
-            tokenizers.OpenNMTTokenizer,
-        )
-        self.assertIsInstance(
-            tokenizers.make_tokenizer('{"mode": "conservative"}'),
-            tokenizers.OpenNMTTokenizer,
-        )
-        self.assertIsInstance(
-            tokenizers.make_tokenizer(
-                {"type": "OpenNMTTokenizer", "params": {"mode": "conservative"}}
-            ),
-            tokenizers.OpenNMTTokenizer,
-        )
-        config_path = os.path.join(self.get_temp_dir(), "tok_config.yml")
-        with open(config_path, "w") as config_file:
-            yaml.dump({"mode": "conservative"}, config_file)
-        self.assertIsInstance(
-            tokenizers.make_tokenizer(config_path), tokenizers.OpenNMTTokenizer
-        )
+
         with self.assertRaisesRegex(ValueError, "is not in list of"):
             tokenizers.make_tokenizer({"type": "UnknownTokenizer"})
         with self.assertRaisesRegex(ValueError, "is not in list of"):
