@@ -1,7 +1,6 @@
 from yimt.core.optimizers.utils import make_optimizer, register_optimizer
 
 from yimt.core.optimizers.lr_schedules import (
-    CosineAnnealing,
     InvSqrtDecay,
     NoamDecay,
     RsqrtDecay,

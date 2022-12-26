@@ -80,11 +80,6 @@ class LRSchedulesTest(tf.test.TestCase):
         self.assertNotEqual(schedule(0), initial_learning_rate)
         self.assertEqual(schedule(warmup_steps - 1), learning_rate)
 
-    def testCosineAnnealing(self):
-        self._testNoError(
-            lr_schedules.CosineAnnealing(2.5e-4, max_step=1000000, warmup_steps=4000)
-        )
-
 
 if __name__ == "__main__":
     tf.test.main()
