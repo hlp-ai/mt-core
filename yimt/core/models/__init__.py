@@ -5,6 +5,7 @@ from yimt.core.models.catalog import (
     TransformerBaseRelative,
     TransformerBaseSharedEmbeddings,
     TransformerBig,
+    TransformerBig2,
     TransformerBigRelative,
     TransformerBigSharedEmbeddings,
     TransformerTiny,
