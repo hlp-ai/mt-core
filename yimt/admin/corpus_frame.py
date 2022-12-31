@@ -4,6 +4,7 @@ import tkinter.messagebox
 from functools import partial
 
 from yimt.admin.win_utils import ask_open_file, ask_dir, ask_save_file
+from yimt.corpus.tokenize_file import tokenize_single, detok_zh
 from yimt.corpus.utils import pair_to_single, single_to_pair, merge, dedup, hant_2_hans, sample, split, merge_moses
 import yimt.corpus.bin.normalize as norm
 import yimt.corpus.bin.filter as filt
@@ -345,3 +346,69 @@ def create_split_corpus(parent):
 
     tk.Button(parent, text="Split corpus into multiple files with the same lines", command=go).grid( \
         row=5, column=1, padx=10, pady=5)
+
+
+def create_tok_mono(parent):
+    tk.Label(parent, text="Input File").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    entry_in = tk.Entry(parent, width=50)
+    entry_in.grid(row=0, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_in)).grid(row=0, column=2,
+                                                                                                padx=10, pady=5)
+
+    tk.Label(parent, text="Output File").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    entry_out = tk.Entry(parent, width=50)
+    entry_out.grid(row=1, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_save_file, entry=entry_out)).grid(row=1, column=2,
+                                                                                                 padx=10, pady=5)
+
+    tk.Label(parent, text="Input Language").grid(row=2, column=0, padx=10, pady=5, sticky="e")
+    entry_lang = tk.Entry(parent, width=50)
+    entry_lang.grid(row=2, column=1, padx=10, pady=5)
+    entry_lang.insert(0, "zh")
+
+    def go():
+        corpus_in = entry_in.get().strip()
+        corpus_out = entry_out.get().strip()
+        if len(corpus_in) == 0:
+            tk.messagebox.showinfo(title="Info", message="Some parameter empty.")
+            return
+
+        if len(corpus_out) == 0:
+            corpus_out = None
+
+        lang = entry_lang.get().strip()
+        tokenize_single(corpus_in, lang, corpus_out)
+
+        tk.messagebox.showinfo(title="Info", message="done")
+
+    tk.Button(parent, text="Tokenize File", command=go).grid(row=3, column=1, padx=10, pady=5)
+
+
+def create_detok_zh(parent):
+    tk.Label(parent, text="Input File").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    entry_in = tk.Entry(parent, width=50)
+    entry_in.grid(row=0, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_in)).grid(row=0, column=2,
+                                                                                                padx=10, pady=5)
+
+    tk.Label(parent, text="Output File").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    entry_out = tk.Entry(parent, width=50)
+    entry_out.grid(row=1, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_save_file, entry=entry_out)).grid(row=1, column=2,
+                                                                                                 padx=10, pady=5)
+
+    def go():
+        corpus_in = entry_in.get().strip()
+        corpus_out = entry_out.get().strip()
+        if len(corpus_in) == 0:
+            tk.messagebox.showinfo(title="Info", message="Some parameter empty.")
+            return
+
+        if len(corpus_out) == 0:
+            corpus_out = None
+
+        detok_zh(corpus_in, corpus_out)
+
+        tk.messagebox.showinfo(title="Info", message="done")
+
+    tk.Button(parent, text="Detokenize Chinese Text", command=go).grid(row=2, column=1, padx=10, pady=5)

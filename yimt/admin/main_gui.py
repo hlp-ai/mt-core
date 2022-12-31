@@ -7,9 +7,9 @@ from yimt.admin.app_frame import create_average, create_export, create_eval, cre
 from yimt.admin.continue_frame import create_ft, create_mix_ft
 from yimt.admin.train_frame import create_sp_train, create_sp_tokenize, create_build_vocab, create_edit_config, \
     create_train, create_pretrain
-from yimt.admin.corpus_frame import create_tsv2mono_corpus,create_mono2tsv_corpus,create_merge_corpus,\
-    create_normalize_corpus,create_filter_corpus,create_dedup_corpus,create_han2hans_corpus,create_sample_corpus,\
-    create_split_corpus,create_merge_moses_corpus
+from yimt.admin.corpus_frame import create_tsv2mono_corpus, create_mono2tsv_corpus, create_merge_corpus, \
+    create_normalize_corpus, create_filter_corpus, create_dedup_corpus, create_han2hans_corpus, create_sample_corpus, \
+    create_split_corpus, create_merge_moses_corpus, create_tok_mono, create_detok_zh
 from yimt.admin.compare_frame import create_trans,create_sarcebleu_trans
 
 
@@ -79,6 +79,16 @@ if __name__ == "__main__":
     split_frame.pack()
     create_split_corpus(split_frame)
     frames.append(split_frame)
+
+    tokenize_frame = tk.Frame(win_main)
+    tokenize_frame.pack()
+    create_tok_mono(tokenize_frame)
+    frames.append(tokenize_frame)
+
+    detokenize_frame = tk.Frame(win_main)
+    detokenize_frame.pack()
+    create_detok_zh(detokenize_frame)
+    frames.append(detokenize_frame)
 
     sp_train_frame = tk.Frame(win_main)
     sp_train_frame.pack()
@@ -172,6 +182,11 @@ if __name__ == "__main__":
     corpus_menu.add_separator()
     corpus_menu.add_command(label="Hant2Hans", command=partial(on_menu, han2Hans_frame))
     corpus_menu.add_command(label="Sample", command=partial(on_menu, sample_frame))
+    corpus_menu.add_separator()
+    corpus_menu.add_command(label="Tokenize File", command=partial(on_menu, tokenize_frame))
+    corpus_menu.add_command(label="DeTokenize Chinese Text", command=partial(on_menu, detokenize_frame))
+    corpus_menu.add_separator()
+    corpus_menu.add_command(label="Exit", command=win_main.quit)
 
 
 
@@ -188,8 +203,6 @@ if __name__ == "__main__":
     train_menu.add_command(label="Train MT", command=partial(on_menu, train_frame))
     train_menu.add_command(label="Fine-tune", command=partial(on_menu, ft_frame))
     train_menu.add_command(label="Mixed Fine-tune", command=partial(on_menu, mix_ft_frame))
-    train_menu.add_separator()
-    train_menu.add_command(label="Exit", command=win_main.quit)
 
     mainmenu.add_cascade(label="Train", menu=train_menu)
 
