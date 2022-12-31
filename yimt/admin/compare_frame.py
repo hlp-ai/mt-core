@@ -1,10 +1,12 @@
+import os
 import tkinter as tk
 import tkinter.filedialog
 from tkinter import ttk
 from tkinter import *
 from functools import partial
 
-from yimt.admin.compare import main, calculatebleu_sacre
+from yimt.admin.compare import main
+from yimt.admin.win_utils import ask_open_file
 
 
 def create_trans(parent):
@@ -119,44 +121,36 @@ def create_trans(parent):
 
 
 def create_sarcebleu_trans(parent):
-    def selectPath(entry):
-        path_ = tk.filedialog.askopenfilename()
-        if path_ != '':
-            entry.delete(0, tk.END)
-            entry.insert(0, path_)
-
-    tokenize_get = tk.StringVar()
-
-    tk.Label(parent, text="path of res file").grid(row=0, column=0, padx=10, pady=5, sticky="e")
-    entry_bleu_src = tk.Entry(parent, width=50)
-    entry_bleu_src.grid(row=0, column=1, padx=10, pady=5)
-    tk.Button(parent, text="...", command=partial(selectPath, entry=entry_bleu_src)).grid(row=0, column=2,
+    tk.Label(parent, text="Reference File").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    entry_ref = tk.Entry(parent, width=50)
+    entry_ref.grid(row=0, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_ref)).grid(row=0, column=2,
                                                                                           padx=10, pady=5)
 
-    tk.Label(parent, text="path of tgt file").grid(row=1, column=0, padx=10, pady=5, sticky="e")
-    entry_bleu_tgt = tk.Entry(parent, width=50)
-    entry_bleu_tgt.grid(row=1, column=1, padx=10, pady=5)
-    tk.Button(parent, text="...", command=partial(selectPath, entry=entry_bleu_tgt)).grid(row=1, column=2, padx=10,
+    tk.Label(parent, text="Hyp File").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    entry_sys = tk.Entry(parent, width=50)
+    entry_sys.grid(row=1, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_sys)).grid(row=1, column=2, padx=10,
                                                                                           pady=5)
 
-    tk.Label(parent, text="tokenize").grid(row=2, column=0, padx=10, pady=5)
-    tokenize_choose = ttk.Combobox(parent, textvariable=tokenize_get)
-    tokenize_choose.grid(row=2, column=1, padx=10, pady=5, sticky="w")
-    tokenize_choose["value"] = ('none', 'zh', '13a', 'char', 'intl', 'ja-mecab')
-    tokenize_choose.current(2)
+    tk.Label(parent, text="Language Pair").grid(row=2, column=0, padx=10, pady=5, sticky="e")
+    entry_lang = tk.Entry(parent, width=50)
+    entry_lang.grid(row=2, column=1, padx=10, pady=5)
+    entry_lang.insert(0, "en-zh")
 
     def go():
-        src_path = entry_bleu_src.get().strip()
-        tgt_path = entry_bleu_tgt.get().strip()
+        ref_path = entry_ref.get().strip()
+        sys_path = entry_sys.get().strip()
 
-        if len(src_path) == 0 or len(tgt_path) == 0:
+        if len(ref_path) == 0 or len(sys_path) == 0:
             tk.messagebox.showwarning(title="Info", message="Some parameter empty.")
             return
 
-        calculatebleu_sacre(src_path, tgt_path, str(tokenize_get.get()))
-        tk.messagebox.showinfo(title="Info",
-                               message="Bleu:" + str(calculatebleu_sacre(src_path, tgt_path, str(tokenize_get.get()))))
+        cal_cmd = "sacrebleu {} -i {} -l {} -f text"
+        cf = os.popen(cal_cmd.format(ref_path, sys_path, entry_lang.get().strip()))
+        print(cf.readlines())
 
-    button_start = tk.Button(parent, text="计算bleu",
-                             command=go)
-    button_start.grid(padx=5, pady=10, row=10, column=1)
+        tk.messagebox.showinfo(title="Info", message="done")
+
+    button_start = tk.Button(parent, text="Calculate Metric", command=go)
+    button_start.grid(padx=5, pady=10, row=3, column=1)
