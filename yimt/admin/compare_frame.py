@@ -138,6 +138,15 @@ def create_sarcebleu_trans(parent):
     entry_lang.grid(row=2, column=1, padx=10, pady=5)
     entry_lang.insert(0, "en-zh")
 
+    tk.Label(parent, text="Additional Metrics").grid(row=3, column=0, padx=10, pady=5, sticky="e")
+    var_ter = IntVar()
+    check_ter = Checkbutton(parent, text="TER", variable=var_ter, onvalue=1, offvalue=0)
+    check_ter.grid(row=3, column=1, padx=10, pady=5)
+
+    var_chrf = IntVar()
+    check_chrf = Checkbutton(parent, text="ChrF", variable=var_chrf, onvalue=1, offvalue=0)
+    check_chrf.grid(row=4, column=1, padx=10, pady=5)
+
     def go():
         ref_path = entry_ref.get().strip()
         sys_path = entry_sys.get().strip()
@@ -147,10 +156,18 @@ def create_sarcebleu_trans(parent):
             return
 
         cal_cmd = "sacrebleu {} -i {} -l {} -f text"
+        if var_ter.get() == 1 or var_chrf.get() == 1:
+            cal_cmd += " -m bleu"
+            if var_ter.get() == 1:
+                cal_cmd += " ter"
+            if var_chrf.get() == 1:
+                cal_cmd += " chrf"
         cf = os.popen(cal_cmd.format(ref_path, sys_path, entry_lang.get().strip()))
-        print(cf.readlines())
+        lines = cf.readlines()
+        for line in lines:
+            print(line.strip())
 
         tk.messagebox.showinfo(title="Info", message="done")
 
     button_start = tk.Button(parent, text="Calculate Metric", command=go)
-    button_start.grid(padx=5, pady=10, row=3, column=1)
+    button_start.grid(padx=5, pady=10, row=5, column=1)
