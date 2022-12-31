@@ -1,3 +1,5 @@
+import re
+
 from yimt.api.text_splitter import word_segment
 from yimt.api.utils import detect_lang
 from yimt.corpus.utils import is_ascii_char
@@ -77,6 +79,8 @@ def detok_zh(in_file, out_file=None):
 
     with open(in_file, encoding="utf-8") as inf:
         for line in inf:
+            line = line.strip()
+            line = re.sub(r"\s{2,}", " ", line)
             line = line.strip()
             line = detok_zh_str(line)
             outf.write(line + "\n")
