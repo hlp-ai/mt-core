@@ -82,6 +82,8 @@ class Vocab(object):
           filename: The file to load from.
           tokenizer: A callable to tokenize a line of text.
         """
+        n_lines = 0
+        report_interval = 100000
         with tf.io.gfile.GFile(filename) as text:
             for line in text:
                 line = line.rstrip("\r\n")
@@ -91,6 +93,12 @@ class Vocab(object):
                     tokens = line.split()
                 for token in tokens:
                     self.add(token)
+
+                n_lines += 1
+                if n_lines % report_interval == 0:
+                    tf.get_logger().info("%d lines processed", n_lines)
+
+            tf.get_logger().info("%d lines processed", n_lines)
 
     def serialize(self, path):
         """Writes the vocabulary on disk.
