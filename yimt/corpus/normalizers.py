@@ -149,3 +149,18 @@ class ToZhNormalizer(Normalizer):
             s = normalizer.normalize(s)
 
         return s
+
+
+class NoZhNormalizer(Normalizer):
+
+    def __init__(self):
+        self.normalizers = [SpaceNormalizer(), NoPrintNormalizer(), PairPunctNormalizer()]
+
+    def normalize(self, s):
+        for normalizer in self.normalizers:
+            if len(s.strip()) == 0:
+                continue
+            s = normalizer.normalize(s)
+
+        return s
+

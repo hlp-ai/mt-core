@@ -2,14 +2,16 @@
 import argparse
 import io
 
-from yimt.corpus.normalizers import ToZhNormalizer
+from yimt.corpus.normalizers import ToZhNormalizer, NoZhNormalizer
 
 
-def main(in_path, out_path):
+def main(in_path, out_path, nozh=False):
     in_f = io.open(in_path, encoding="utf-8")
     out_f = io.open(out_path, "w", encoding="utf-8")
 
     normalizers = [ToZhNormalizer()]
+    if nozh:
+        normalizers = [NoZhNormalizer()]
 
     print(normalizers)
 
@@ -39,8 +41,9 @@ def main(in_path, out_path):
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
-    argparser.add_argument("in_fn")
-    argparser.add_argument("out_fn")
+    argparser.add_argument("--input", required=True, help="Input file path")
+    argparser.add_argument("--output", required=True, help="Ouput file path")
+    argparser.add_argument("--nozh", default=False, action="store_true", help="Non-Chinese")
     args = argparser.parse_args()
 
-    main(args.in_fn, args.out_fn)
+    main(args.input, args.output, args.nozh)
