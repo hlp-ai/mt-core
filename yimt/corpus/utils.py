@@ -295,9 +295,17 @@ def merge_moses(in_dir, source_lang=None, target_lang=None, out_dir=None):
         outf = os.path.join(out_dir, bname + ".tsv")
         f1 = os.path.join(in_dir, f1)
         f2 = os.path.join(in_dir, f2)
-        if source_lang is not None and f1.endswith(source_lang):
-            print(f1, f2, outf)
-            single_to_pair(f1, f2, outf)
-        elif target_lang is not None and f1.endswith(target_lang):
-            print(f2, f1, outf)
-            single_to_pair(f2, f1, outf)
+        if source_lang is not None:
+            if f1.endswith(source_lang):
+                print(f1, f2, outf)
+                single_to_pair(f1, f2, outf)
+            elif f2.endswith(source_lang):
+                print(f2, f1, outf)
+                single_to_pair(f2, f1, outf)
+        elif target_lang is not None:
+            if f1.endswith(target_lang):
+                print(f2, f1, outf)
+                single_to_pair(f2, f1, outf)
+            elif f2.endswith(target_lang):
+                print(f1, f2, outf)
+                single_to_pair(f1, f2, outf)
