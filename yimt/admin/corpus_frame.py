@@ -190,10 +190,10 @@ def create_filter_corpus(parent):
     tk.Button(parent, text="...", command=partial(ask_save_file, entry=entry_filter_out)).grid(row=1, column=2,
                                                                                                padx=10, pady=5)
 
-    tk.Label(parent, text="Source language").grid(row=2, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Language Pair").grid(row=2, column=0, padx=10, pady=5, sticky="e")
     entry_filter_fromlang = tk.Entry(parent, width=50)
     entry_filter_fromlang.grid(row=2, column=1, padx=10, pady=5)
-    entry_filter_fromlang.insert(0, "latin")
+    entry_filter_fromlang.insert(0, "en-zh")
 
     def go():
         corpus_filter_in = entry_filter_in.get().strip()
