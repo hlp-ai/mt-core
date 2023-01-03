@@ -186,7 +186,7 @@ def dedup(in_path, out_path):
     f = io.open(in_path, encoding="utf-8")
     out_f = io.open(out_path, "w", encoding="utf-8")
 
-    pairs = dict()
+    pairs = set()
     n = 0
     total = 0
     for p in f:
@@ -196,7 +196,7 @@ def dedup(in_path, out_path):
             print("Total:", total, "Unique:", n)
         h = hash(p.lower())
         if h not in pairs:
-            pairs[h] = n
+            pairs.add(h)
             n += 1
             out_f.write(p + "\n")
 
