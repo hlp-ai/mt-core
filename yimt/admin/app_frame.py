@@ -131,7 +131,6 @@ def create_infer(parent):
             return
 
         out = run_infer(config_fn, src, src_sp, tgt_sp)
-        os.startfile(out)
 
         tk.messagebox.showinfo(title="Info", message="Eval Done.")
 
