@@ -355,7 +355,7 @@ def create_tok_mono(parent):
     tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_in)).grid(row=0, column=2,
                                                                                                 padx=10, pady=5)
 
-    tk.Label(parent, text="Output File").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Output File (Optional)").grid(row=1, column=0, padx=10, pady=5, sticky="e")
     entry_out = tk.Entry(parent, width=50)
     entry_out.grid(row=1, column=1, padx=10, pady=5)
     tk.Button(parent, text="...", command=partial(ask_save_file, entry=entry_out)).grid(row=1, column=2,
@@ -391,7 +391,7 @@ def create_detok_zh(parent):
     tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_in)).grid(row=0, column=2,
                                                                                                 padx=10, pady=5)
 
-    tk.Label(parent, text="Output File").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Output File (Optional)").grid(row=1, column=0, padx=10, pady=5, sticky="e")
     entry_out = tk.Entry(parent, width=50)
     entry_out.grid(row=1, column=1, padx=10, pady=5)
     tk.Button(parent, text="...", command=partial(ask_save_file, entry=entry_out)).grid(row=1, column=2,
