@@ -181,12 +181,14 @@ def hant_2_hans(hant_str: str):
     return zhconv.convert(hant_str, 'zh-hans')
 
 
-def dedup(in_path, out_path):
+def dedup(in_path, out_path, dedup_srctgt=True, dedup_src=False, dedup_tgt=False):
     """Write unique inputs"""
     f = io.open(in_path, encoding="utf-8")
     out_f = io.open(out_path, "w", encoding="utf-8")
 
     pairs = set()
+    srcs = set()
+    tgts = set()
     n = 0
     total = 0
     for p in f:
@@ -194,9 +196,32 @@ def dedup(in_path, out_path):
         total += 1
         if total % 100000 == 0:
             print("Total:", total, "Unique:", n)
-        h = hash(p.lower())
-        if h not in pairs:
-            pairs.add(h)
+
+        if dedup_src or dedup_tgt:
+            pp = p.split("\t")
+            if len(pp) != 2:
+                continue
+            src = pp[0].strip()
+            tgt = pp[1].strip()
+            if dedup_src:
+                hs = hash(src.lower())
+                if hs in srcs:
+                    continue
+                else:
+                    srcs.add(hs)
+            if dedup_tgt:
+                ht = hash(tgt.lower())
+                if ht in tgts:
+                    continue
+                else:
+                    tgts.add(ht)
+            if dedup_srctgt:
+                h = hash(p.lower())
+                if h in pairs:
+                    continue
+                else:
+                    pairs.add(h)
+
             n += 1
             out_f.write(p + "\n")
 
