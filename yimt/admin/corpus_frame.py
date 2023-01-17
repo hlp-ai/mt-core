@@ -1,5 +1,6 @@
 import os
 import tkinter as tk
+from tkinter import *
 import tkinter.messagebox
 from functools import partial
 
@@ -224,6 +225,20 @@ def create_dedup_corpus(parent):
     tk.Button(parent, text="...", command=partial(ask_save_file, entry=entry_dedup_out)).grid(row=1, column=2,
                                                                                               padx=10, pady=5)
 
+    tk.Label(parent, text="Dedup condition").grid(row=2, column=0, padx=10, pady=5, sticky="e")
+    var_srctgt = IntVar()
+    check_srctgt = Checkbutton(parent, text="Source and Target", variable=var_srctgt, onvalue=1, offvalue=0)
+    check_srctgt.grid(row=2, column=1, padx=10, pady=5)
+    check_srctgt.select()
+
+    var_src = IntVar()
+    check_src = Checkbutton(parent, text="Source", variable=var_src, onvalue=1, offvalue=0)
+    check_src.grid(row=3, column=1, padx=10, pady=5)
+
+    var_tgt = IntVar()
+    check_tgt = Checkbutton(parent, text="Target", variable=var_tgt, onvalue=1, offvalue=0)
+    check_tgt.grid(row=4, column=1, padx=10, pady=5)
+
     def go():
         corpus_dedup_in = entry_dedup_in.get().strip()
         corpus_dedup_out = entry_dedup_out.get().strip()
@@ -232,7 +247,11 @@ def create_dedup_corpus(parent):
             tk.messagebox.showinfo(title="Info", message="Some parameter empty.")
             return
 
-        dedup(corpus_dedup_in, corpus_dedup_out)
+        dedup_srctgt = True if var_srctgt.get() == 1 else False
+        dedup_src = True if var_src.get() == 1 else False
+        dedup_tgt = True if var_tgt.get() == 1 else False
+
+        dedup(corpus_dedup_in, corpus_dedup_out, dedup_srctgt, dedup_src, dedup_tgt)
 
         tk.messagebox.showinfo(title="Info", message="done")
 
