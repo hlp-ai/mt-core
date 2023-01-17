@@ -5,11 +5,17 @@ from yimt.corpus.utils import dedup
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
-    argparser.add_argument("--input", type=str, required=True, help="input file")
-    argparser.add_argument("--output", type=str, required=True, help="output file")
+    argparser.add_argument("-i", "--input", type=str, required=True, help="input file")
+    argparser.add_argument("-o", "--output", type=str, required=True, help="output file")
+    argparser.add_argument("-s", "--dedup_src", action="store_true", help="dedup based on source")
+    argparser.add_argument("-t", "--dedup_tgt", action="store_true", help="dedup based on target")
+    argparser.add_argument("-st", "--dedup_srctgt", action="store_true", help="dedup based on source and target")
     args = argparser.parse_args()
 
     corpus_fn = args.input
     out_fn = args.output
 
-    dedup(corpus_fn, out_fn)
+    if args.dedup_srctgt or args.dedup_src or args.dedup_tgt:
+        dedup(corpus_fn, out_fn, args.dedup_srctgt, args.dedup_src, args.dedup_tgt)
+    else:
+        print("Missing dedup condition.")
