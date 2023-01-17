@@ -209,21 +209,21 @@ def dedup(in_path, out_path, dedup_srctgt=True, dedup_src=False, dedup_tgt=False
                     continue
                 else:
                     srcs.add(hs)
-            if dedup_tgt:
-                ht = hash(tgt.lower())
-                if ht in tgts:
-                    continue
-                else:
-                    tgts.add(ht)
-            if dedup_srctgt:
-                h = hash(p.lower())
-                if h in pairs:
-                    continue
-                else:
-                    pairs.add(h)
+        if dedup_tgt:
+            ht = hash(tgt.lower())
+            if ht in tgts:
+                continue
+            else:
+                tgts.add(ht)
+        if dedup_srctgt:
+            h = hash(p.lower())
+            if h in pairs:
+                continue
+            else:
+                pairs.add(h)
 
-            n += 1
-            out_f.write(p + "\n")
+        n += 1
+        out_f.write(p + "\n")
 
     print("Total:", total, "Unique:", n)
     out_f.close()
