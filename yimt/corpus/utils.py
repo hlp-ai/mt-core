@@ -262,6 +262,9 @@ def extract_gzips(zips_dir, out_dir=None):
     if out_dir is None:
         out_dir = os.path.join(zips_dir, "unzip")
 
+    if not os.path.exists(out_dir):
+        os.mkdir(out_dir)
+
     zips = os.listdir(zips_dir)
     for zipf in zips:
         if not zipf.endswith(".gz"):
