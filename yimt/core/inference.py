@@ -84,6 +84,15 @@ def predict_dataset(
                     length = length[:, 0]
                 total_tokens += sum(length)
 
+            end_time = time.time()
+            total_time = end_time - start_time
+            tf.get_logger().info("Total prediction time (s): %f", total_time)
+            tf.get_logger().info(
+                "Average prediction time (s): %f", total_time / total_examples
+            )
+            if total_tokens > 0:
+                tf.get_logger().info("Tokens per second: %f", total_tokens / total_time)
+
     if log_time:
         end_time = time.time()
         total_time = end_time - start_time
