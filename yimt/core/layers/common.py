@@ -81,12 +81,6 @@ class Dense(tf.keras.layers.Dense):
             outputs = tf.reshape(outputs, shape[:-1] + [self.units])
         return outputs
 
-    def map_v1_weights(self, weights):
-        m = [(self.kernel, weights["kernel"])]
-        if self.use_bias:
-            m.append((self.bias, weights["bias"]))
-        return m
-
 
 class LayerNorm(tf.keras.layers.LayerNormalization):
     """Layer normalization."""
