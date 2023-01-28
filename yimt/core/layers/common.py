@@ -85,9 +85,6 @@ class Dense(tf.keras.layers.Dense):
 class LayerNorm(tf.keras.layers.LayerNormalization):
     """Layer normalization."""
 
-    def map_v1_weights(self, weights):
-        return [(self.beta, weights["beta"]), (self.gamma, weights["gamma"])]
-
 
 class LayerWrapper(tf.keras.layers.Layer):
     """Layer wrapper for input/output normalization, input/output dropout and
