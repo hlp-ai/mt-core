@@ -237,30 +237,6 @@ class MultiHeadAttention(tf.keras.layers.Layer):
         self.return_attention = return_attention
         self.maximum_relative_position = maximum_relative_position
 
-    def map_v1_weights(self, weights):
-        # V1 used conv1d layers that have a leading dimensions.
-        weights = tf.nest.map_structure(np.squeeze, weights)
-
-        # V1 used fused linear projections, so the weights should be split accordingly.
-        def _partial_weights(key, num_splits, index):
-            return tf.nest.map_structure(
-                lambda w: np.split(w, num_splits, axis=0 if w.ndim == 1 else 1)[index],
-                weights[key],
-            )
-
-        m = []
-        if "conv1d_2" not in weights:  # Case self-attention.
-            m += self.linear_queries.map_v1_weights(_partial_weights("conv1d", 3, 0))
-            m += self.linear_keys.map_v1_weights(_partial_weights("conv1d", 3, 1))
-            m += self.linear_values.map_v1_weights(_partial_weights("conv1d", 3, 2))
-            m += self.linear_output.map_v1_weights(weights["conv1d_1"])
-        else:
-            m += self.linear_queries.map_v1_weights(weights["conv1d"])
-            m += self.linear_keys.map_v1_weights(_partial_weights("conv1d_1", 2, 0))
-            m += self.linear_values.map_v1_weights(_partial_weights("conv1d_1", 2, 1))
-            m += self.linear_output.map_v1_weights(weights["conv1d_2"])
-        return m
-
     def build(self, input_shape):
         if self.maximum_relative_position is not None:
             relative_window_size = self.maximum_relative_position * 2 + 1
