@@ -1,7 +1,7 @@
 import os
 import yaml
 
-from yimt.api.translator import WordTranslator, load_translator, Translator
+from yimt.api.translator import load_translator, Translator
 
 
 class Translators(object):
@@ -69,16 +69,16 @@ class Translators(object):
                                                           lang_pair=lang_pair)
             return self.translators[lang_pair]
 
-    def get_word_translator(self, source_lang, target_lang):
-        if source_lang == "zh":
-            source_lang = "zh_cn"
-
-        if target_lang == "zh":
-            target_lang = "zh_cn"
-
-        lang = source_lang + "-" + target_lang
-        if lang not in self.word_translators:
-            print("Loading WordTranslator {}-{}".format(source_lang, target_lang))
-            self.word_translators[lang] = WordTranslator(source_lang, target_lang)
-
-        return self.word_translators.get(lang)
+    # def get_word_translator(self, source_lang, target_lang):
+    #     if source_lang == "zh":
+    #         source_lang = "zh_cn"
+    #
+    #     if target_lang == "zh":
+    #         target_lang = "zh_cn"
+    #
+    #     lang = source_lang + "-" + target_lang
+    #     if lang not in self.word_translators:
+    #         print("Loading WordTranslator {}-{}".format(source_lang, target_lang))
+    #         self.word_translators[lang] = WordTranslator(source_lang, target_lang)
+    #
+    #     return self.word_translators.get(lang)
