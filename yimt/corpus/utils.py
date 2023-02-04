@@ -5,6 +5,7 @@ import random
 import re
 import zipfile
 
+import regex
 import zhconv
 import lxml.etree as ET
 
@@ -181,6 +182,15 @@ def hant_2_hans(hant_str: str):
     return zhconv.convert(hant_str, 'zh-hans')
 
 
+not_letter = regex.compile(r'[^\p{L}]')
+
+
+def norm(s):
+    s = s.lower()
+    s = regex.sub(not_letter, "", s)
+    return s
+
+
 def dedup(in_path, out_path, dedup_srctgt=True, dedup_src=False, dedup_tgt=False):
     """Write unique inputs"""
     f = io.open(in_path, encoding="utf-8")
@@ -204,19 +214,22 @@ def dedup(in_path, out_path, dedup_srctgt=True, dedup_src=False, dedup_tgt=False
             src = pp[0].strip()
             tgt = pp[1].strip()
             if dedup_src:
-                hs = hash(src.lower())
+                src = norm(src)
+                hs = hash(src)
                 if hs in srcs:
                     continue
                 else:
                     srcs.add(hs)
             if dedup_tgt:
-                ht = hash(tgt.lower())
+                tgt = norm(tgt)
+                ht = hash(tgt)
                 if ht in tgts:
                     continue
                 else:
                     tgts.add(ht)
         if dedup_srctgt:
-            h = hash(p.lower())
+            p = norm(p)
+            h = hash(p)
             if h in pairs:
                 continue
             else:
@@ -242,13 +255,16 @@ def dedup_rel(base_path, in_path, out_path, dedup_srctgt=True, dedup_src=False, 
                 continue
             src = pp[0].strip()
             tgt = pp[1].strip()
-            hs = hash(src.lower())
+            src = norm(src)
+            hs = hash(src)
             srcs.add(hs)
 
-            ht = hash(tgt.lower())
+            tgt = norm(tgt)
+            ht = hash(tgt)
             tgts.add(ht)
 
-            h = hash(p.lower())
+            p = norm(p)
+            h = hash(p)
             pairs.add(h)
 
     f = io.open(in_path, encoding="utf-8")
@@ -269,17 +285,20 @@ def dedup_rel(base_path, in_path, out_path, dedup_srctgt=True, dedup_src=False, 
             src = pp[0].strip()
             tgt = pp[1].strip()
             if dedup_src:
-                hs = hash(src.lower())
+                src = norm(src)
+                hs = hash(src)
                 if hs in srcs:
                     continue
 
             if dedup_tgt:
-                ht = hash(tgt.lower())
+                tgt = norm(tgt)
+                ht = hash(tgt)
                 if ht in tgts:
                     continue
 
         if dedup_srctgt:
-            h = hash(p.lower())
+            p = norm(p)
+            h = hash(p)
             if h in pairs:
                 continue
 

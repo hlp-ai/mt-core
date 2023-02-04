@@ -56,6 +56,7 @@ def tokenize_file(sp_model, in_fn, out_fn):
         if sentences % 100000 == 0:
             print("Sentences:", sentences, "Tokens:", tokens)
     print("Sentences:", sentences, "Tokens:", tokens)
+    out_f.close()
 
 
 def detokenize(sp_model, tokens):
@@ -78,3 +79,5 @@ def detokenize_file(sp_model, in_fn, out_fn):
     for tokens in tok_lines:
         detok_line = detokenize(sp_model, tokens.split())
         out_f.write(detok_line + "\n")
+
+    out_f.close()
