@@ -53,6 +53,8 @@ def tokenize_file(sp_model, in_fn, out_fn):
         tokens += len(tok_s)
         if len(tok_s) > 0:
             out_f.write(" ".join(tok_s) + "\n")
+        else:
+            out_f.write("\n")
         if sentences % 100000 == 0:
             print("Sentences:", sentences, "Tokens:", tokens)
     print("Sentences:", sentences, "Tokens:", tokens)
