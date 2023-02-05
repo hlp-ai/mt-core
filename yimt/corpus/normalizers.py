@@ -33,6 +33,8 @@ class SpaceNormalizer(Normalizer):
 
         if self.detok_tgt or self.detok_src:
             pair = s.split("\t")
+            if len(pair) != 2:
+                return ""
             src = pair[0]
             tgt = pair[1]
 
@@ -102,6 +104,8 @@ class PairPunctNormalizer(Normalizer):
 
     def normalize(self, s):
         pair = s.split("\t")
+        if len(pair) != 2:
+            return ""
         src = pair[0]
         tgt = pair[1]
 
@@ -123,8 +127,7 @@ class Hant2Hans(Normalizer):
 
         pair = s.split("\t")
         if len(pair) != 2:
-            print(s)
-            return s
+            return ""
         src = pair[0]
         tgt = pair[1]
         if self.norm_src:
