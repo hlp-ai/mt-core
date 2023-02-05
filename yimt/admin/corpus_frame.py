@@ -192,20 +192,20 @@ def create_filter_corpus(parent):
                                                                                                padx=10, pady=5)
 
     tk.Label(parent, text="Language Pair").grid(row=2, column=0, padx=10, pady=5, sticky="e")
-    entry_filter_fromlang = tk.Entry(parent, width=50)
-    entry_filter_fromlang.grid(row=2, column=1, padx=10, pady=5)
-    entry_filter_fromlang.insert(0, "en-zh")
+    entry_filter_langpair = tk.Entry(parent, width=50)
+    entry_filter_langpair.grid(row=2, column=1, padx=10, pady=5)
+    entry_filter_langpair.insert(0, "en-zh")
 
     def go():
         corpus_filter_in = entry_filter_in.get().strip()
         corpus_filter_out = entry_filter_out.get().strip()
-        corpus_filter_fromlang = entry_filter_fromlang.get().strip()
+        corpus_filter_langpair = entry_filter_langpair.get().strip()
 
         if len(corpus_filter_in) == 0 or len(corpus_filter_out) == 0:
             tk.messagebox.showinfo(title="Info", message="Some parameter empty.")
             return
 
-        filt.main(corpus_filter_in, corpus_filter_out, corpus_filter_fromlang)
+        filt.main(corpus_filter_in, corpus_filter_out, corpus_filter_langpair)
 
         tk.messagebox.showinfo(title="Info", message="done")
 
