@@ -1,7 +1,10 @@
 import regex
 
+from yimt.api.utils import get_logger
 
 not_letter = regex.compile(r'[^\p{L}]')
+
+logger = get_logger("dedup")
 
 
 def norm(s, lower=True, remove_noletter=True):
@@ -34,7 +37,7 @@ def dedup(in_path, out_path,
             if dedup_src or dedup_tgt:
                 pp = p.split("\t")
                 if len(pp) != 2:
-                    print("dedup: not tab for pair, ommitted:", p)
+                    logger.warn("dedup: not tab for pair, ommitted: {}".format(p))
                     continue
                 src = pp[0].strip()
                 tgt = pp[1].strip()
@@ -42,6 +45,7 @@ def dedup(in_path, out_path,
                     src = norm(src, lower, remove_noletter)
                     hs = hash(src)
                     if hs in srcs:
+                        logger.debug("Source duplicate: {}".format(p))
                         continue
                     else:
                         srcs.add(hs)
@@ -49,14 +53,16 @@ def dedup(in_path, out_path,
                     tgt = norm(tgt, lower, remove_noletter)
                     ht = hash(tgt)
                     if ht in tgts:
+                        logger.debug("Target duplicate: {}".format(p))
                         continue
                     else:
                         tgts.add(ht)
 
             if dedup_srctgt:
-                p = norm(p, lower, remove_noletter)
-                h = hash(p)
+                pn = norm(p, lower, remove_noletter)
+                h = hash(pn)
                 if h in pairs:
+                    logger.debug("Source-Target duplicate: {}".format(p))
                     continue
                 else:
                     pairs.add(h)
@@ -125,8 +131,8 @@ def dedup_rel(base_path, in_path, out_path,
                         continue
 
             if dedup_srctgt:
-                p = norm(p, lower, remove_noletter)
-                h = hash(p)
+                pn = norm(p, lower, remove_noletter)
+                h = hash(pn)
                 if h in pairs:
                     continue
 
