@@ -288,7 +288,6 @@ def make_tokenizer(config=None):
         if isinstance(config, dict):
             tokenizer_type = config.get("type")
             if tokenizer_type is None:
-                tokenizer_type = "OpenNMTTokenizer"
                 tokenizer_params = config
             else:
                 tokenizer_params = config.get("params", {})
