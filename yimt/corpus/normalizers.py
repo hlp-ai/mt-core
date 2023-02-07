@@ -1,3 +1,6 @@
+import re
+
+from yimt.corpus.chars import clean_text
 from yimt.corpus.tokenize_file import detok_zh_str
 from yimt.corpus.utils import is_ascii_char, hant_2_hans
 
@@ -13,6 +16,56 @@ class Normalizer(object):
             the normalize string
         """
         pass
+
+
+class Cleaner(Normalizer):
+    def normalize(self, s):
+        s = s.strip()
+        pair = s.split("\t")
+        if len(pair) != 2:
+            return ""
+
+        src = pair[0]
+        tgt = pair[1]
+
+        src = clean_text(src)
+        tgt = clean_text(tgt)
+
+        src = re.sub(r"\s{2,}", " ", src)
+        src = src.strip()
+
+        tgt = re.sub(r"\s{2,}", " ", tgt)
+        tgt = tgt.strip()
+
+        return src + "\t" + tgt
+
+
+class DeTokenizer(Normalizer):
+    """Remove unnecessary spaces"""
+
+    def __init__(self, detok_tgt=False, detok_src=False):
+        self.detok_tgt = detok_tgt
+        self.detok_src = detok_src
+
+    def normalize(self, s):
+        s = s.strip()
+
+        if self.detok_tgt or self.detok_src:
+            pair = s.split("\t")
+            if len(pair) != 2:
+                return ""
+            src = pair[0]
+            tgt = pair[1]
+
+            if self.detok_tgt:
+                tgt = detok_zh_str(tgt)  # remove space between CJK characters
+
+            if self.detok_src:
+                src = detok_zh_str(src)
+
+            return src + "\t" + tgt
+
+        return s
 
 
 class SpaceNormalizer(Normalizer):
