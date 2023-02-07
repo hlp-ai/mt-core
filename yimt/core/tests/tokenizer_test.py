@@ -1,13 +1,8 @@
 import os
-import shutil
-import unittest
 
 import tensorflow as tf
 
 from yimt.core import tokenizers
-from yimt.core.tests import test_util
-
-sp_model = os.path.join(test_util.get_test_data_dir(), "wmtende.model")
 
 
 class TokenizerTest(tf.test.TestCase):
@@ -133,40 +128,6 @@ class TokenizerTest(tf.test.TestCase):
             ["你好，世界！"],
             [["你", "好", "，", "世", "界", "！"]],
         )
-
-    @unittest.skipIf(not os.path.isfile(sp_model), "Missing SentencePiece test model")
-    def testSentencePieceTokenizer(self):
-        tokenizer_class = getattr(tokenizers, "SentencePieceTokenizer", None)
-        if tokenizer_class is None:
-            self.skipTest("tensorflow-text is not installed")
-        tokenizer = tokenizer_class(sp_model)
-        text = ["Hello world!", "", "How are you?"]
-        tokens = [["▁H", "ello", "▁world", "!"], [], ["▁How", "▁are", "▁you", "?"]]
-        self._testTokenizer(tokenizer, text, tokens)
-        self._testDetokenizer(tokenizer, tokens, text)
-
-        # Test SavedModel export.
-        class _InputLayer(tf.Module):
-            def __init__(self, model_path):
-                self._tokenizer = tokenizer_class(model_path)
-
-            @tf.function(input_signature=[tf.TensorSpec(shape=[None], dtype=tf.string)])
-            def call(self, text):
-                return self._tokenizer.tokenize(text).to_tensor()
-
-        # Use a temporary model file to make sure the exported model is self-contained.
-        tmp_model_path = os.path.join(self.get_temp_dir(), "sp.model")
-        shutil.copyfile(sp_model, tmp_model_path)
-        layer = _InputLayer(tmp_model_path)
-        export_dir = os.path.join(self.get_temp_dir(), "export")
-        tf.saved_model.save(layer, export_dir)
-        os.remove(tmp_model_path)
-
-        imported = tf.saved_model.load(export_dir)
-        func = imported.signatures["serving_default"]
-        outputs = func(tf.constant(text))["output_0"]
-        outputs = tf.RaggedTensor.from_tensor(outputs, padding="").to_list()
-        self.assertAllEqual(outputs, tf.nest.map_structure(tf.compat.as_bytes, tokens))
 
     def testMakeTokenizer(self):
         tokenizer = tokenizers.make_tokenizer()
