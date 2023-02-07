@@ -311,33 +311,6 @@ def make_tokenizer(config=None):
     return tokenizer
 
 
-def _process_stream_as_dataset(
-    input_stream,
-    output_stream,
-    map_func,
-    batch_size=512,
-    num_parallel_calls=4,
-):
-    dataset = tf.data.Dataset.from_generator(
-        lambda: input_stream,
-        output_types=tf.string,
-        output_shapes=tf.TensorShape([]),
-    )
-    dataset = dataset.batch(batch_size)
-    dataset = dataset.map(map_func, num_parallel_calls=num_parallel_calls)
-
-    expected_spec = tf.TensorSpec(shape=[None], dtype=tf.string)
-    if dataset.element_spec != expected_spec:
-        raise TypeError(
-            "Expected map_func to produce elements with spec %s, but got spec %s instead"
-            % (expected_spec, dataset.element_spec)
-        )
-
-    for lines in dataset.as_numpy_iterator():
-        for line in lines:
-            misc.print_as_bytes(line, stream=output_stream)
-
-
 @register_tokenizer
 class SpaceTokenizer(Tokenizer):
     """A tokenizer that splits on spaces."""
