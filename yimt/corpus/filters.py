@@ -34,13 +34,13 @@ class OverlapFilter(Filter):
     """Filter pair whose source and target have too much overlap"""
 
     def __init__(self, ratio=0.8):
-        self.ratio = ratio
+        self._ratio = ratio
 
     def filter(self, src, tgt):
         import difflib
 
         s = difflib.SequenceMatcher(None, src, tgt)
-        if s.ratio() > self.ratio:
+        if s.ratio() > self._ratio:
             return None
         return src, tgt
 
