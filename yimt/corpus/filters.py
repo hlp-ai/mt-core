@@ -20,8 +20,11 @@ class Filter(object):
 class SameFilter(Filter):
     """Filter pair with same source and target"""
 
+    def __init__(self, lower=True):
+        self._lower = lower
+
     def filter(self, src, tgt):
-        if src.strip() == tgt.strip():
+        if src.strip().lower() == tgt.strip().lower():
             return None
 
         return src, tgt

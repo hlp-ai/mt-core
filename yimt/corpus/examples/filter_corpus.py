@@ -4,6 +4,7 @@ if __name__ == "__main__":
     same_filter = SameFilter()
     print(same_filter.filter("i like it", "i like it"))
     print(same_filter.filter("i like it", " like it"))
+    print(same_filter.filter("i like it", "I like it "))
     print(same_filter.filter("我喜欢", "我喜欢"))
 
     print()
