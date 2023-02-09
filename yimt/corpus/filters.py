@@ -1,3 +1,5 @@
+import regex
+
 from yimt.api.utils import detect_lang, get_logger
 from yimt.corpus.utils import is_ascii, has_zh
 
@@ -165,6 +167,7 @@ class LengthFilter(Filter):
 
 
 class LongWordFilter(Filter):
+    """Used for languages with space for word divider"""
     def __init__(self, max_long=(40, 40)):
         self.src_max_len = max_long[0]
         self.tgt_max_len = max_long[1]
@@ -177,6 +180,59 @@ class LongWordFilter(Filter):
             return None
 
         if self.tgt_max_len is not None and max([len(w) for w in tgt.split()]) > self.tgt_max_len:
+            return None
+
+        return src, tgt
+
+
+class AlphabetRatioFilter(Filter):
+    """Proportion of alphabetic characters in the segment"""
+
+    def __init__(self, threshold=0.75, exclude_whitespace=False):
+        self.threshold = threshold
+        self.exclude_whitespace = exclude_whitespace
+        self.re_whitespace = regex.compile(r'\s')
+        self.re_not_alphas = regex.compile(r'\p{Alphabetic=No}')
+
+    def filter(self, src, tgt):
+        if self.score(src) > self.threshold and self.score(tgt) > self.threshold:
+            return src, tgt
+
+        return None
+
+    def score(self, s):
+        segment = s
+        if self.exclude_whitespace:
+            segment = self.re_whitespace.sub('', s)
+        alphas = self.re_not_alphas.sub('', s)
+        r = len(alphas) / len(segment)
+        return r
+
+
+class CharacterScoreFilter(Filter):
+    """Proportion of alphabetic characters that are in the given script
+
+    For a list of valid scripts, see e.g.
+    https://www.regular-expressions.info/unicode.html
+
+    """
+    def __init__(self, scripts, thresholds=None):
+        self.scripts = scripts
+        self.thresholds = [1] * len(scripts) if thresholds is None else thresholds
+        self.re_not_alphas = regex.compile(r'\p{Alphabetic=No}')
+        self.re_not_script = [regex.compile(fr'\p{{^Script={script}}}')
+                              for script in self.scripts]
+
+    def score(self, sent, idx):
+        alphas = self.re_not_alphas.sub('', sent)
+        if alphas:
+            script = self.re_not_script[idx].sub('', alphas)
+            return len(script) / len(alphas)
+        else:
+            return 1.0
+
+    def filter(self, src, tgt):
+        if self.score(src, 0) < self.thresholds[0] or self.score(tgt, 1) < self.thresholds[1]:
             return None
 
         return src, tgt
