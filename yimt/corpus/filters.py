@@ -24,8 +24,12 @@ class SameFilter(Filter):
         self._lower = lower
 
     def filter(self, src, tgt):
-        if src.strip().lower() == tgt.strip().lower():
-            return None
+        if self._lower:
+            if src.strip().lower() == tgt.strip().lower():
+                return None
+        else:
+            if src.strip() == tgt.strip():
+                return None
 
         return src, tgt
 
@@ -124,6 +128,59 @@ class LenDiffFilter(Filter):
             return src, tgt
         else:
             return None
+
+
+class LengthFilter(Filter):
+
+    def __init__(self, src_len_fn=len, tgt_len_fn=len,
+                 src_lens=(None, None), tgt_lens=(None, None),
+                 ratio=3):
+        self.src_min_len = src_lens[0]
+        self.src_max_len = src_lens[1]
+        self.tgt_min_len = tgt_lens[0]
+        self.tgt_max_len = tgt_lens[1]
+
+        self.src_len_fn = src_len_fn
+        self.tgt_len_fn = tgt_len_fn
+
+        self.ratio = ratio
+
+    def filter(self, src, tgt):
+        src_len = self.src_len_fn(src)
+        tgt_len = self.tgt_len_fn(tgt)
+
+        if self.src_min_len is not None and src_len < self.src_min_len:
+            return None
+        if self.src_max_len is not None and src_len > self.src_max_len:
+            return None
+        if self.tgt_min_len is not None and tgt_len < self.tgt_min_len:
+            return None
+        if self.tgt_max_len is not None and tgt_len > self.tgt_max_len:
+            return None
+
+        if src_len <= self.ratio * tgt_len and tgt_len <= self.ratio * src_len:
+            return src, tgt
+        else:
+            return None
+
+
+class LongWordFilter(Filter):
+    def __init__(self, max_long=(40, 40)):
+        self.src_max_len = max_long[0]
+        self.tgt_max_len = max_long[1]
+
+    def filter(self, src, tgt):
+        if self.src_max_len is None and self.tgt_max_len is None:
+            return src, tgt
+
+        if self.src_max_len is not None and max([len(w) for w in src.split()]) > self.src_max_len:
+            return None
+
+        if self.tgt_max_len is not None and max([len(w) for w in tgt.split()]) > self.tgt_max_len:
+            return None
+
+        return src, tgt
+
 
 class Latin2ZhFilter(Filter):
 
