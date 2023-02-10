@@ -10,6 +10,7 @@ from yimt.core.utils import checkpoint as checkpoint_util
 from word2word import Word2word
 
 from yimt.api.text_splitter import paragraph_detokenizer, paragraph_tokenizer
+from yimt.corpus.tokenize_file import detok_zh_str
 
 
 class WordTranslator(object):
@@ -110,6 +111,7 @@ class Translator(object):
         if self.to_lang == "zh":
             new_translations = []
             for t in translations:
+                t = detok_zh_str(t)
                 t = t.replace(",", "，")
                 t = t.replace(";", "；")
                 t = t.replace(":", "：")
