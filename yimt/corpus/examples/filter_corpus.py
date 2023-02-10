@@ -1,4 +1,5 @@
-from yimt.corpus.filters import SameFilter, EmptyFilter, OverlapFilter, AllASCII, LangFilter, LenDiffFilter, LenFilter
+from yimt.corpus.filters import SameFilter, EmptyFilter, OverlapFilter, AllASCII, LangFilter, LenDiffFilter, LenFilter, \
+    LengthFilter, AlphabetRatioFilter, CharacterRatioFilter
 
 if __name__ == "__main__":
     same_filter = SameFilter()
@@ -48,3 +49,26 @@ if __name__ == "__main__":
     print(len_filter.filter("a b", "啊啊啊啊啊啊啊啊啊啊啊啊"))
     print(len_filter.filter("a b", "啊啊啊啊"))
 
+    new_len_filter = LengthFilter(src_len_fn=LengthFilter.space_sep_len_f,
+                                  tgt_len_fn=LengthFilter.space_sep_len_f,
+                                  src_lens=(2, 4), tgt_lens=(2, 7),
+                                  ratio=3)
+    print(new_len_filter.filter("like", "what what are wrong"))
+    print(new_len_filter.filter("a b", "aaaaa bbbb cccc"))
+    print(new_len_filter.filter("a b", "aaaaa bbbb ccccdddddddddd ff ee dd f"))
+
+    new_len_filter2 = LengthFilter(src_len_fn=LengthFilter.space_sep_len_f,
+                                  tgt_len_fn=LengthFilter.char_len_f,
+                                  src_lens=(2, 4), tgt_lens=(2, 7),
+                                  ratio=3)
+    print(new_len_filter2.filter("a b", "啊啊啊啊啊啊啊啊啊啊啊啊"))
+    print(new_len_filter2.filter("a b", "啊啊啊啊"))
+
+    alphabet_filter = AlphabetRatioFilter()
+    print(alphabet_filter.filter("a b cddd", "啊啊 啊啊啊啊"))
+    print(alphabet_filter.filter("a b cddd", "啊啊 啊啊啊啊+++++"))
+    print(alphabet_filter.filter("a b cddd09999999555", "啊啊 啊啊啊啊"))
+
+    char_filter = CharacterRatioFilter(scripts=("Latin", "Han"), thresholds=(0.8, 0.8))
+    print(char_filter.filter("a b cddd", "啊啊 啊啊啊啊+++++++"))
+    print(char_filter.filter("a b cddd啊啊啊啊", "啊啊 啊啊啊啊"))

@@ -134,6 +134,9 @@ class LenDiffFilter(Filter):
 
 class LengthFilter(Filter):
 
+    space_sep_len_f = lambda s: len(s.split())
+    char_len_f = lambda s: len(s)
+
     def __init__(self, src_len_fn=len, tgt_len_fn=len,
                  src_lens=(None, None), tgt_lens=(None, None),
                  ratio=3):
@@ -195,7 +198,7 @@ class AlphabetRatioFilter(Filter):
         self.re_not_alphas = regex.compile(r'\p{Alphabetic=No}')
 
     def filter(self, src, tgt):
-        if self.score(src) > self.threshold and self.score(tgt) > self.threshold:
+        if self.score(src) >= self.threshold and self.score(tgt) >= self.threshold:
             return src, tgt
 
         return None
@@ -209,7 +212,7 @@ class AlphabetRatioFilter(Filter):
         return r
 
 
-class CharacterScoreFilter(Filter):
+class CharacterRatioFilter(Filter):
     """Proportion of alphabetic characters that are in the given script
 
     For a list of valid scripts, see e.g.
@@ -229,7 +232,7 @@ class CharacterScoreFilter(Filter):
             script = self.re_not_script[idx].sub('', alphas)
             return len(script) / len(alphas)
         else:
-            return 1.0
+            return 0.0
 
     def filter(self, src, tgt):
         if self.score(src, 0) < self.thresholds[0] or self.score(tgt, 1) < self.thresholds[1]:
