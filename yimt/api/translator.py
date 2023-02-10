@@ -9,7 +9,7 @@ from yimt.core.config import MODEL_DESCRIPTION_FILENAME, load_model_from_file
 from yimt.core.utils import checkpoint as checkpoint_util
 from word2word import Word2word
 
-from yimt.api.text_splitter import paragraph_detokenizer, paragraph_tokenizer
+from yimt.api.text_splitter import paragraph_detokenizer, paragraph_tokenizer, word_segment
 from yimt.corpus.tokenize_file import detok_zh_str
 
 
@@ -161,6 +161,8 @@ class Translator(object):
         :param texts list of text
         :return dict with tokens and length
         """
+        if self.from_lang == "zh" or self.from_lang == "ja":
+            texts = [" ".join(word_segment(t, self.from_lang)) for t in texts]
         all_tokens = self._tokenize(texts)
         lengths = [len(ts) for ts in all_tokens]
         max_length = max(lengths)

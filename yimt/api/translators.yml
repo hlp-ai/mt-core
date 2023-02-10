@@ -4,10 +4,8 @@ translators:
     sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.en-sp-32000.model
 
   zh-en:
-    # model_or_config_dir: D:\kidden\mt\exp\zh-en\ccm1\run\export\ct2
-    model_or_config_dir: D:\kidden\mt\mt-exp\zhen-ccm1-50m-55k\export\ct2
-    # model_or_config_dir: D:\kidden\mt\exp\zh-en\ccm1\deploy.yml
-    sp_src_path: D:\kidden\mt\exp\sp\spm-bpe-zh-32000.model
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-en\opus\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
 
   ja-zh:
     model_or_config_dir: D:\kidden\mt\exp\ja-zh\ccm\run\export\ct2
