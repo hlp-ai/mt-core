@@ -5,8 +5,9 @@ import tkinter.messagebox
 from functools import partial
 
 from yimt.admin.win_utils import ask_open_file, ask_dir, ask_save_file
+from yimt.corpus.dedup import dedup
 from yimt.corpus.tokenize_file import tokenize_single, detok_zh
-from yimt.corpus.utils import pair_to_single, single_to_pair, merge, dedup, hant_2_hans, sample, split, merge_moses
+from yimt.corpus.utils import pair_to_single, single_to_pair, merge, sample, split, merge_moses
 import yimt.corpus.bin.normalize as norm
 import yimt.corpus.bin.filter as filt
 
@@ -163,15 +164,22 @@ def create_normalize_corpus(parent):
                                                                                                   padx=10,
                                                                                                   pady=5)
 
+    tk.Label(parent, text="About Chinese").grid(row=2, column=0, padx=10, pady=5, sticky="e")
+    entry_zh = tk.Entry(parent, width=50)
+    entry_zh.grid(row=2, column=1, padx=10, pady=5)
+    entry_zh.insert(0, "tozh")
+
     def go():
         corpus_normalize_in = entry_normalize_in.get().strip()
         corpus_normalize_out = entry_normalize_out.get().strip()
+
+        zh = entry_zh.get().strip()
 
         if len(corpus_normalize_in) == 0 or len(corpus_normalize_out) == 0:
             tk.messagebox.showinfo(title="Info", message="Some parameter empty.")
             return
 
-        norm.main(corpus_normalize_in, corpus_normalize_out)
+        norm.main(corpus_normalize_in, corpus_normalize_out, zh)
 
         tk.messagebox.showinfo(title="Info", message="done")
 
