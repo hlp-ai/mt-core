@@ -8,28 +8,28 @@ translators:
     sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
 
   ja-zh:
-    model_or_config_dir: D:\kidden\mt\exp\ja-zh\ccm\run\export\ct2
-    sp_src_path: D:\kidden\mt\exp\ja-zh\ccm\ccm-ja-zh.ja.sp.model
+    model_or_config_dir: D:\kidden\mt\mt-exp\ja-zh\opus\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-jazh-sf.ja.pretok-sp-32000.model
 
   zh-ja:
-    model_or_config_dir: D:\kidden\mt\exp\zh-ja\ccm\run\ct2
-    sp_src_path: D:\kidden\mt\exp\ja-zh\ccm\ccm-ja-zh.zh.sp.model
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-ja\opus\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
 
   ko-zh:
-    model_or_config_dir: D:\kidden\mt\mt-exp\ko-zh\opus\run1\model\export\ct2
-    sp_src_path: D:\kidden\mt\mt-exp\ko-zh\opus\tok\opus-kozh-sf.ko-sp-32000.model
+    model_or_config_dir: D:\kidden\mt\mt-exp\ko-zh\opus\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-koen-sf.ko-sp-32000.model
 
   zh-ko:
-    model_or_config_dir: D:\kidden\mt\mt-exp\zh-ko\opus\run1\deploy.yml
-    sp_src_path: D:\kidden\mt\mt-exp\ko-zh\opus\tok\opus-kozh-sf.zh-sp-32000.model
-
-  zh-de:
-    model_or_config_dir: D:\kidden\mt\mt-exp\zh-de\run1\model\export\ct2
-    sp_src_path: D:\kidden\mt\mt-exp\de-zh\tok\opus-dezh-sf.zh-sp-32000.model
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-ko\opus\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
 
   de-zh:
-    model_or_config_dir: D:\kidden\mt\mt-exp\de-zh\run1\model\export\ct2
-    sp_src_path: D:\kidden\mt\mt-exp\de-zh\tok\opus-dezh-sf.de-sp-32000.model
+    model_or_config_dir: D:\kidden\mt\mt-exp\de-zh\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-dezh-sf.de-sp-32000.model
+
+  zh-de:
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-de\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
 
   vi-zh:
     model_or_config_dir: D:\kidden\mt\mt-exp\vi-zh\run\model\export\ct2
@@ -40,12 +40,12 @@ translators:
     sp_src_path: D:\kidden\mt\mt-exp\vi-zh\tok\vi-zh-opus-sf.zh-sp-32000.model
 
   ru-zh:
-    model_or_config_dir: D:\kidden\mt\mt-exp\ru-zh\run\model\export\ct2
-    sp_src_path: D:\kidden\mt\mt-exp\ru-zh\tok\opus-ruzh-sf.ru-sp-32000.model
+    model_or_config_dir: D:\kidden\mt\mt-exp\ru-zh\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-ruzh-sf.ru-sp-32000.model
 
   zh-ru:
-    model_or_config_dir: D:\kidden\mt\mt-exp\zh-ru\run\model\export\ct2
-    sp_src_path: D:\kidden\mt\mt-exp\ru-zh\tok\opus-ruzh-sf.zh-sp-32000.model
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-ru\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
 
   ar-zh:
     model_or_config_dir: D:\kidden\mt\mt-exp\ar-zh\export\ct2
