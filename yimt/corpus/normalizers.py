@@ -2,7 +2,7 @@ import re
 
 from yimt.corpus.chars import clean_text
 from yimt.corpus.tokenize_file import detok_zh_str
-from yimt.corpus.utils import is_ascii_char, hant_2_hans
+from yimt.corpus.utils import hant_2_hans
 
 
 class Normalizer(object):
@@ -66,57 +66,6 @@ class DeTokenizer(Normalizer):
             return src + "\t" + tgt
 
         return s
-
-
-class SpaceNormalizer(Normalizer):
-    """Remove unnecessary spaces"""
-
-    def __init__(self, detok_tgt=False, detok_src=False):
-        self.detok_tgt = detok_tgt
-        self.detok_src = detok_src
-
-    def normalize(self, s):
-        import re
-
-        s = s.strip()
-        s = s.replace("\u3000", " ")
-        s = s.replace("\xa0", " ")
-        s = re.sub(r"\s{2,}", " ", s)
-        s = s.strip()
-
-        if self.detok_tgt or self.detok_src:
-            pair = s.split("\t")
-            if len(pair) != 2:
-                return ""
-            src = pair[0]
-            tgt = pair[1]
-
-            if self.detok_tgt:
-                tgt = detok_zh_str(tgt)  # remove space between CJK characters
-
-            if self.detok_src:
-                src = detok_zh_str(src)
-
-            return src + "\t" + tgt
-
-        return s
-
-
-def not_print_en(s):
-    return is_ascii_char(s) and not ('\u0020' <= s[0] <= '\u007e' or s[0] == '\u0009')
-
-
-class NoPrintNormalizer(Normalizer):
-    """Remove the characters that cannot be printed"""
-
-    def normalize(self, s):
-        new_s = ""
-
-        for c in s:
-            if ('\u0000' <= c <= '\u0008') or ('\u000a' <= c <= '\u001f') or c == '\u007f':
-                continue
-            new_s += c
-        return new_s
 
 
 punct_pairs = [('“', '”'), ('"', '"'), ("‘", "’"), ("（", "）"), ("《", "》"), ("(", ")")]
@@ -190,33 +139,3 @@ class Hant2Hans(Normalizer):
             tgt = hant_2_hans(tgt)
 
         return src + "\t" + tgt
-
-
-class ToZhNormalizer(Normalizer):
-
-    def __init__(self):
-        self.normalizers = [SpaceNormalizer(detok_tgt=True), NoPrintNormalizer(),
-                            Hant2Hans(norm_src=False, norm_tgt=True), PairPunctNormalizer()]
-
-    def normalize(self, s):
-        for normalizer in self.normalizers:
-            if len(s.strip()) == 0:
-                continue
-            s = normalizer.normalize(s)
-
-        return s
-
-
-class NoZhNormalizer(Normalizer):
-
-    def __init__(self):
-        self.normalizers = [SpaceNormalizer(), NoPrintNormalizer(), PairPunctNormalizer()]
-
-    def normalize(self, s):
-        for normalizer in self.normalizers:
-            if len(s.strip()) == 0:
-                continue
-            s = normalizer.normalize(s)
-
-        return s
-
