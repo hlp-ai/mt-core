@@ -1,7 +1,7 @@
 import regex
 
 from yimt.api.utils import detect_lang, get_logger
-from yimt.corpus.utils import is_ascii, has_zh
+from yimt.corpus.utils import is_ascii, has_zh, is_ascii_char
 
 
 class Filter(object):
@@ -71,6 +71,27 @@ class AllASCII(Filter):
         if is_src_en and is_tgt_en:
             return None
         return src, tgt
+
+
+class ASCIIRatioFilter(Filter):
+    """Filter pair whose src and target are english"""
+
+    def __init__(self, threshold=0.8):
+        self._threshold = threshold
+
+    def n_ascii(self, s):
+        n = 0
+        for c in s:
+            if is_ascii_char(c):
+                n += 1
+
+        return n
+
+    def filter(self, src, tgt):
+        if self.n_ascii(src)/len(src) <= self._threshold and self.n_ascii(tgt)/len(tgt)<=self._threshold:
+            return src, tgt
+
+        return None
 
 
 class LangFilter(Filter):
@@ -219,6 +240,12 @@ class CharacterRatioFilter(Filter):
     https://www.regular-expressions.info/unicode.html
 
     """
+    lang2script = {
+        "zh": "Han",
+        "en": "Latin",
+        "ko": "Hangul"
+    }
+
     def __init__(self, scripts, thresholds=None):
         self.scripts = scripts
         self.thresholds = [1] * len(scripts) if thresholds is None else thresholds

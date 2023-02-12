@@ -2,7 +2,8 @@ import argparse
 import io
 
 from yimt.api.utils import get_logger
-from yimt.corpus.filters import SameFilter, AllASCII, OverlapFilter, LenFilter, LenDiffFilter
+from yimt.corpus.filters import SameFilter, AllASCII, OverlapFilter, LengthFilter, \
+    EmptyFilter, AlphabetRatioFilter, CharacterRatioFilter, ASCIIRatioFilter
 
 
 def main(in_path, out_path, lang_pair):
@@ -11,26 +12,34 @@ def main(in_path, out_path, lang_pair):
 
     logger = get_logger("filter")
 
-    latin_len = lambda s: len(s.split())
-    cj_len = lambda s: len(s)
-
     src_lang, tgt_lang = lang_pair.split("-")
 
-    if src_lang == "ja" or src_lang == "zh":
-        src_len = cj_len
-    else:
-        src_len = latin_len
+    # script_src = "Latin"
+    # if src_lang in CharacterRatioFilter.lang2script:
+    #     script_src = CharacterRatioFilter.lang2script.get(src_lang)
+    #
+    # script_tgt = "Han"
+    # if tgt_lang in CharacterRatioFilter.lang2script:
+    #     script_tgt = CharacterRatioFilter.lang2script.get(tgt_lang)
 
-    if tgt_lang == "ja" or tgt_lang == "zh":
-        tgt_len = cj_len
+    if src_lang == "ja" or src_lang == "zh" or src_lang == "ko":
+        src_len = LengthFilter.char_len_f
     else:
-        tgt_len = latin_len
+        src_len = LengthFilter.space_sep_len_f
+
+    if tgt_lang == "ja" or tgt_lang == "zh" or tgt_lang == "ko":
+        tgt_len = LengthFilter.char_len_f
+    else:
+        tgt_len = LengthFilter.space_sep_len_f
 
     filters = [SameFilter(),
+               EmptyFilter(),
                AllASCII(),
                OverlapFilter(),
-               LenFilter((2, 128), (2, 128), src_len, tgt_len),
-               LenDiffFilter(4, src_len, tgt_len)]
+               LengthFilter(src_len, tgt_len, (2, 256), (2, 256), ratio=4),
+               AlphabetRatioFilter(threshold=0.4, exclude_whitespace=True),
+               ASCIIRatioFilter(threshold=0.8)]
+               # CharacterRatioFilter(scripts=(script_src, script_tgt), thresholds=(0.33, 0.33))]
 
     print(filters)
 
