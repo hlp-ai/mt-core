@@ -1,9 +1,7 @@
 from yimt.core.optimizers.utils import make_optimizer, register_optimizer
 
 from yimt.core.optimizers.lr_schedules import (
-    InvSqrtDecay,
     NoamDecay,
-    RsqrtDecay,
     ScheduleWrapper,
     make_learning_rate_schedule,
     register_learning_rate_schedule,

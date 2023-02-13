@@ -1,8 +1,6 @@
 """Define learning rate decay functions."""
 
 import inspect
-
-import numpy as np
 import tensorflow as tf
 
 from yimt.core.utils import misc
@@ -134,88 +132,4 @@ class NoamDecay(tf.keras.optimizers.schedules.LearningRateSchedule):
             self.scale
             * tf.pow(self.model_dim, -0.5)
             * tf.minimum(tf.pow(step, -0.5), step * tf.pow(self.warmup_steps, -1.5))
-        )
-
-
-@register_learning_rate_schedule
-class RsqrtDecay(tf.keras.optimizers.schedules.LearningRateSchedule):
-    r"""Decay based on the reciprocal of the step square root.
-    This corresponds to ``rsqrt_decay`` in Tensor2Tensor.
-
-    .. math::
-
-        \text{schedule}(\text{step}) = \frac{\text{scale}}
-                                            {\sqrt{\max(\text{step},\text{warmup_steps})}}
-
-    See also:
-      - :class:`yimt.schedules.InvSqrtDecay`
-    """
-
-    def __init__(self, scale, warmup_steps):
-        """Initializes the decay function.
-
-        Args:
-          scale: The scale constant.
-          warmup_steps: The number of warmup steps.
-        """
-        self.scale = tf.cast(scale, tf.float32)
-        self.warmup_steps = tf.cast(warmup_steps, tf.float32)
-
-    def __call__(self, step):
-        step = tf.cast(step, tf.float32)
-        return self.scale * tf.math.rsqrt(tf.maximum(step, self.warmup_steps))
-
-
-@register_learning_rate_schedule
-class InvSqrtDecay(tf.keras.optimizers.schedules.LearningRateSchedule):
-    r"""Decay based on the reciprocal of the step square root.
-    This corresponds to ``inverse_sqrt`` in Fairseq and ``--lr-decay-inv-sqrt`` in Marian.
-
-    During warmup (linear increase of the learning rate):
-
-    .. math::
-
-        \text{schedule}(\text{step}) = \text{init_lr}
-                                       +
-                                       (\text{lr} - \text{init_lr})
-                                       \times
-                                       \frac{\text{step}}{\text{warmup_steps}}
-
-    After warmup:
-
-    .. math::
-
-        \text{schedule}(\text{step}) = \text{lr}
-                                       \times
-                                       \sqrt{\frac{\text{warmup_steps}}{\text{step}}}
-
-    See also:
-      - :class:`yimt.schedules.RsqrtDecay`
-    """
-
-    def __init__(self, learning_rate, warmup_steps, initial_learning_rate=0):
-        """Initializes the decay function.
-
-        Args:
-          learning_rate: The base learning rate.
-          warmup_steps: The number of warmup steps.
-          initial_learning_rate: Initial learning rate during warmup.
-        """
-        self.lr = tf.cast(learning_rate, tf.float32)
-        self.init_lr = tf.cast(initial_learning_rate, tf.float32)
-        self.warmup_steps = tf.cast(warmup_steps, tf.float32)
-
-    def __call__(self, step):
-        step = tf.cast(step + 1, tf.float32)
-
-        def _warmup():
-            return self.init_lr + (self.lr - self.init_lr) * (step / self.warmup_steps)
-
-        def _after_warmup():
-            return self.lr * tf.math.sqrt(self.warmup_steps / step)
-
-        return tf.cond(
-            step <= self.warmup_steps,
-            true_fn=_warmup,
-            false_fn=_after_warmup,
         )

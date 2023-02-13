@@ -1,5 +1,4 @@
 import tensorflow as tf
-from parameterized import parameterized
 
 from yimt.core.optimizers import lr_schedules
 
@@ -26,13 +25,6 @@ class LRSchedulesTest(tf.test.TestCase):
         lr_schedules.get_lr_schedule_class("NoamDecay") == lr_schedules.NoamDecay
 
     def testMakeSchedule(self):
-        wrapper = lr_schedules.make_learning_rate_schedule(
-            2.0, "ExponentialDecay", dict(decay_steps=1000, decay_rate=0.7)
-        )
-        self.assertIsInstance(
-            wrapper.schedule, tf.keras.optimizers.schedules.ExponentialDecay
-        )
-
         wrapper = lr_schedules.make_learning_rate_schedule(
             2.0, "NoamDecay", dict(model_dim=512, warmup_steps=4000)
         )
@@ -66,19 +58,6 @@ class LRSchedulesTest(tf.test.TestCase):
 
     def testNoamDecay(self):
         self._testNoError(lr_schedules.NoamDecay(2.0, 512, 4000))
-
-    def testRsqrtDecay(self):
-        self._testNoError(lr_schedules.RsqrtDecay(2.0, 4000))
-
-    @parameterized.expand([(0,), (1e-07,)])
-    def testInvSqrtDecay(self, initial_learning_rate):
-        learning_rate = 0.0002
-        warmup_steps = 4000
-        schedule = lr_schedules.InvSqrtDecay(
-            learning_rate, warmup_steps, initial_learning_rate=initial_learning_rate
-        )
-        self.assertNotEqual(schedule(0), initial_learning_rate)
-        self.assertEqual(schedule(warmup_steps - 1), learning_rate)
 
 
 if __name__ == "__main__":
