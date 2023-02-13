@@ -1,3 +1,5 @@
+import re
+
 import regex
 
 from yimt.api.utils import detect_lang, get_logger
@@ -292,62 +294,33 @@ class Latin2ZhFilter(Filter):
         return src, tgt
 
 
-class JK2ZhFilter(Filter):
+class AugumentForZhFilter(Filter):
 
     def __init__(self):
-        self.ja_len = lambda s: len(s)
-        self.zh_len = lambda s: len(s)
+        self.en_word_regex = re.compile(r"[a-zA-Z0-9]+")
 
-        self.filters = [SameFilter(),
-                        AllASCII(),
-                        LenFilter((2, 128), (2, 128), self.ja_len, self.zh_len),
-                        LenDiffFilter(3, self.ja_len, self.zh_len)]
+    def _get_en_words(self, s):
+        en_words = []
+        for m in re.finditer(self.en_word_regex, s):
+            en_words.append(m.group(0))
+
+        return en_words
+
+    def _exist(self, words, s):
+        for w in words:
+            if s.find(w) == -1:
+                return False
+
+        return True
 
     def filter(self, src, tgt):
-        for f in self.filters:
-            r = f.filter(src, tgt)
-            if r is None:
-                return None
+        src_en_words = self._get_en_words(src)
+        if not self._exist(src_en_words, tgt):
+            return None
+
+        tgt_en_words = self._get_en_words(tgt)
+        if not self._exist(tgt_en_words, src):
+            return None
 
         return src, tgt
 
-
-class JK2LatinFilter(Filter):
-
-    def __init__(self):
-        self.en_len = lambda s: len(s.split())
-        self.cjk_len = lambda s: len(s)
-
-        self.filters = [SameFilter(),
-                        AllASCII(),
-                        OverlapFilter(),
-                        LenFilter((2, 128), (2, 128), self.cjk_len, self.en_len),
-                        LenDiffFilter(4, self.cjk_len, self.en_len)]
-
-    def filter(self, src, tgt):
-        for f in self.filters:
-            r = f.filter(src, tgt)
-            if r is None:
-                return None
-
-        return src, tgt
-
-
-class Latin2LatinFilter(Filter):
-
-    def __init__(self):
-        self.en_len = lambda s: len(s.split())
-
-        self.filters = [SameFilter(),
-                        AllASCII(),
-                        OverlapFilter(),
-                        LenFilter((2, 128), (2, 128), self.en_len, self.en_len),
-                        LenDiffFilter(4, self.en_len, self.en_len)]
-
-    def filter(self, src, tgt):
-        for f in self.filters:
-            r = f.filter(src, tgt)
-            if r is None:
-                return None
-
-        return src, tgt

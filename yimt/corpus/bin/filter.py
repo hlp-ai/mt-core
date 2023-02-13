@@ -2,8 +2,8 @@ import argparse
 import io
 
 from yimt.api.utils import get_logger
-from yimt.corpus.filters import SameFilter, AllASCII, OverlapFilter, LengthFilter, \
-    EmptyFilter, AlphabetRatioFilter, CharacterRatioFilter, ASCIIRatioFilter
+from yimt.corpus.filters import SameFilter, OverlapFilter, LengthFilter, \
+    EmptyFilter, AlphabetRatioFilter, CharacterRatioFilter, ASCIIRatioFilter, AugumentForZhFilter
 
 
 def main(in_path, out_path, lang_pair):
@@ -13,14 +13,6 @@ def main(in_path, out_path, lang_pair):
     logger = get_logger("filter")
 
     src_lang, tgt_lang = lang_pair.split("-")
-
-    # script_src = "Latin"
-    # if src_lang in CharacterRatioFilter.lang2script:
-    #     script_src = CharacterRatioFilter.lang2script.get(src_lang)
-    #
-    # script_tgt = "Han"
-    # if tgt_lang in CharacterRatioFilter.lang2script:
-    #     script_tgt = CharacterRatioFilter.lang2script.get(tgt_lang)
 
     if src_lang == "ja" or src_lang == "zh" or src_lang == "ko":
         src_len = LengthFilter.char_len_f
@@ -34,11 +26,12 @@ def main(in_path, out_path, lang_pair):
 
     filters = [SameFilter(),
                EmptyFilter(),
-               AllASCII(),
+               ASCIIRatioFilter(threshold=0.8),
                OverlapFilter(),
                LengthFilter(src_len, tgt_len, (2, 256), (2, 256), ratio=4),
                AlphabetRatioFilter(threshold=0.4, exclude_whitespace=True),
-               ASCIIRatioFilter(threshold=0.8)]
+               #AugumentForZhFilter()
+               ]
                # CharacterRatioFilter(scripts=(script_src, script_tgt), thresholds=(0.33, 0.33))]
 
     print(filters)
