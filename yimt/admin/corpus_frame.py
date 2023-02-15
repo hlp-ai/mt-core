@@ -118,10 +118,10 @@ def create_merge_moses_corpus(parent):
     tk.Button(parent, text="...", command=partial(ask_dir, entry=entry_mergemoses_datapath)).grid(row=0, column=2,
                                                                                                   padx=10, pady=5)
 
-    tk.Label(parent, text="Output directory").grid(row=1, column=0, padx=10, pady=5, sticky="e")
-    entry_mergemoses_tgt = tk.Entry(parent, width=50)
-    entry_mergemoses_tgt.grid(row=1, column=1, padx=10, pady=5)
-    tk.Button(parent, text="...", command=partial(ask_dir, entry=entry_mergemoses_tgt)).grid(row=1, column=2, padx=10,
+    tk.Label(parent, text="Output directory(Optional)").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    entry_mergemoses_outpath = tk.Entry(parent, width=50)
+    entry_mergemoses_outpath.grid(row=1, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_dir, entry=entry_mergemoses_outpath)).grid(row=1, column=2, padx=10,
                                                                                              pady=5)
 
     tk.Label(parent, text="Source language").grid(row=2, column=0, padx=10, pady=5, sticky="e")
@@ -134,9 +134,9 @@ def create_merge_moses_corpus(parent):
 
     def go():
         corpus_mergemoses_datapath = entry_mergemoses_datapath.get().strip()
-        corpus_mergemoses_tgt = entry_mergemoses_tgt.get().strip()
-        if len(corpus_mergemoses_tgt) == 0:
-            corpus_mergemoses_tgt = None
+        corpus_output_path = entry_mergemoses_outpath.get().strip()
+        if len(corpus_output_path) == 0:
+            corpus_output_path = None
         corpus_mergemoses_sl = entry_mergemoses_sl.get().strip()
         if len(corpus_mergemoses_sl) == 0:
             corpus_mergemoses_sl = None
@@ -144,7 +144,7 @@ def create_merge_moses_corpus(parent):
         if len(corpus_mergemoses_tl) == 0:
             corpus_mergemoses_tl = None
 
-        merge_moses(corpus_mergemoses_datapath, corpus_mergemoses_sl, corpus_mergemoses_tl, corpus_mergemoses_tgt)
+        merge_moses(corpus_mergemoses_datapath, corpus_mergemoses_sl, corpus_mergemoses_tl, corpus_output_path)
         tk.messagebox.showinfo(title="Info", message="done")
 
     tk.Button(parent, text="Merge", command=go).grid(row=5, column=1, padx=10, pady=5)
