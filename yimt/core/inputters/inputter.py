@@ -5,8 +5,7 @@ import abc
 import tensorflow as tf
 
 from yimt.core.data import dataset as dataset_util
-from yimt.core.layers import common
-from yimt.core.layers.reducer import ConcatReducer, JoinReducer
+from yimt.core.layers.reducer import JoinReducer
 from yimt.core.utils import misc
 
 
@@ -256,17 +255,6 @@ class Inputter(tf.keras.layers.Layer):
         _ = training
         return features
 
-    def visualize(self, model_root, log_dir):
-        """Visualizes the transformation, usually embeddings.
-
-        Args:
-          model_root: The root model object.
-          log_dir: The active log directory.
-        """
-        _ = model_root
-        _ = log_dir
-        return
-
 
 class MultiInputter(Inputter):
     """An inputter that gathers multiple inputters, possibly nested."""
@@ -333,10 +321,6 @@ class MultiInputter(Inputter):
             inputter.prepare_elements(elts)
             for inputter, elts in zip(self.inputters, elements)
         )
-
-    def visualize(self, model_root, log_dir):
-        for inputter in self.inputters:
-            inputter.visualize(model_root, log_dir)
 
 
 class ParallelInputter(MultiInputter):

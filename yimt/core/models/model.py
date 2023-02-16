@@ -429,16 +429,6 @@ class Model(tf.keras.layers.Layer):
         """
         return self.examples_inputter.export_assets(asset_dir)
 
-    def visualize(self, log_dir):
-        """Setups model visualization (e.g. word embedding projections).
-
-        Args:
-          log_dir: The log directory.
-        """
-        self.features_inputter.visualize(self, log_dir)
-
-        self.labels_inputter.visualize(self, log_dir)
-
     def format_prediction(self, prediction, params=None):
         """Formats the model prediction for file saving.
 

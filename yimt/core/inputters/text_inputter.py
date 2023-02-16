@@ -1,85 +1,18 @@
 """Define word-based embedders."""
 
-import abc
 import collections
-import os
 
 import numpy as np
 import tensorflow as tf
 
-from google.protobuf import text_format
-from tensorboard.plugins import projector
-
 from yimt.core import tokenizers
 from yimt.core import constants
 from yimt.core.data import dataset as dataset_util
-from yimt.core.data import text
 from yimt.core.data import vocab
 from yimt.core.inputters import Inputter
 from yimt.core.layers import common
 from yimt.core.utils import misc
 
-
-def save_embeddings_metadata(
-    log_dir, variable_name, vocabulary_file, num_oov_buckets=1
-):
-    """Registers an embedding variable for visualization in TensorBoard.
-
-    This function registers :obj:`variable_name` in the ``projector_config.pbtxt``
-    file and generates metadata from :obj:`vocabulary_file` to attach a label
-    to each word ID.
-
-    Args:
-      log_dir: The active log directory.
-      variable_name: The variable name in the checkpoint.
-      vocabulary_file: The associated vocabulary file.
-      num_oov_buckets: The number of additional unknown tokens.
-    """
-    # Assume it ends with /.ATTRIBUTES/VALUE
-    filename = "%s.txt" % "_".join(variable_name.split("/")[:-2])
-    metadata_path = os.path.join(log_dir, filename)
-
-    with tf.io.gfile.GFile(vocabulary_file) as src, tf.io.gfile.GFile(
-        metadata_path, mode="w"
-    ) as dst:
-        ws_index = 0
-        for line in src:
-            # The TensorBoard code checks line.trim().length == 0 when loading the
-            # metadata file so make sure lines are not dropped.
-            if not line.replace("\uFEFF", "").strip():
-                dst.write("<whitespace%d>\n" % ws_index)
-                ws_index += 1
-            else:
-                dst.write(line)
-        if num_oov_buckets == 1:
-            dst.write("<unk>\n")
-        else:
-            for i in range(num_oov_buckets):
-                dst.write("<unk%d>\n" % i)
-
-    config = projector.ProjectorConfig()
-
-    # If the projector file exists, load it.
-    config_path = os.path.join(log_dir, "projector_config.pbtxt")
-    if tf.io.gfile.exists(config_path):
-        with tf.io.gfile.GFile(config_path) as config_file:
-            text_format.Merge(config_file.read(), config)
-
-    # If this embedding is already registered, just update the metadata path.
-    exists = False
-    for meta in config.embeddings:
-        if meta.tensor_name == variable_name:
-            meta.metadata_path = filename
-            exists = True
-            break
-
-    if not exists:
-        embedding = config.embeddings.add()
-        embedding.tensor_name = variable_name
-        embedding.metadata_path = filename
-
-    with tf.io.gfile.GFile(config_path, "w") as config_file:
-        config_file.write(text_format.MessageToString(config))
 
 
 def load_pretrained_embeddings(
@@ -515,11 +448,3 @@ class WordEmbedder(TextInputter):
         outputs = tf.nn.embedding_lookup(self.embedding, ids)
         outputs = common.dropout(outputs, self.dropout, training=training)
         return outputs
-
-    def visualize(self, model_root, log_dir):
-        save_embeddings_metadata(
-            log_dir,
-            misc.get_variable_name(self.embedding, model_root),
-            self.vocabulary_file,
-            num_oov_buckets=self.num_oov_buckets,
-        )

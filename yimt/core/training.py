@@ -269,8 +269,6 @@ class Trainer:
         """Logs some information about the model being trained."""
         if not self.is_master:
             return
-        if self._checkpoint is not None:
-            self._model.visualize(self._checkpoint.model_dir)
         tf.get_logger().info(
             "Number of model parameters: %d", self._model.count_params()
         )

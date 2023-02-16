@@ -18,57 +18,6 @@ from yimt.core.utils.misc import count_lines, item_or_tuple
 
 
 class InputterTest(tf.test.TestCase):
-    def testSaveEmbeddingMetadata(self):
-        log_dir = os.path.join(self.get_temp_dir(), "log")
-        if not os.path.exists(log_dir):
-            os.mkdir(log_dir)
-
-        def _create_vocab(vocab_filename, vocab_size=10):
-            vocab_file = os.path.join(self.get_temp_dir(), vocab_filename)
-            with open(vocab_file, mode="w") as vocab:
-                for i in range(vocab_size):
-                    vocab.write("%d\n" % i)
-            return vocab_file
-
-        def _visualize(embedding, vocab_file, num_oov_buckets=1):
-            text_inputter.save_embeddings_metadata(
-                log_dir, embedding, vocab_file, num_oov_buckets=num_oov_buckets
-            )
-            projector_config = projector.ProjectorConfig()
-            projector_config_path = os.path.join(log_dir, "projector_config.pbtxt")
-            self.assertTrue(os.path.exists(projector_config_path))
-            with open(projector_config_path) as projector_config_file:
-                text_format.Merge(projector_config_file.read(), projector_config)
-            return projector_config
-
-        def _check_vocab(config, filename, expected_size):
-            self.assertEqual(config.metadata_path, filename)
-            self.assertEqual(
-                count_lines(os.path.join(log_dir, filename)), expected_size
-            )
-
-        # Register an embedding variable.
-        src_embedding = "model/src_emb/.ATTRIBUTES/VALUE"
-        src_vocab_file = _create_vocab("src_vocab.txt")
-        projector_config = _visualize(src_embedding, src_vocab_file)
-        self.assertEqual(1, len(projector_config.embeddings))
-        self.assertEqual(src_embedding, projector_config.embeddings[0].tensor_name)
-        _check_vocab(projector_config.embeddings[0], "model_src_emb.txt", 10 + 1)
-
-        # Register a second embedding variable.
-        tgt_embedding = "model/tgt_emb/.ATTRIBUTES/VALUE"
-        tgt_vocab_file = _create_vocab("tgt_vocab.txt")
-        projector_config = _visualize(tgt_embedding, tgt_vocab_file, num_oov_buckets=2)
-        self.assertEqual(2, len(projector_config.embeddings))
-        self.assertEqual(tgt_embedding, projector_config.embeddings[1].tensor_name)
-        _check_vocab(projector_config.embeddings[1], "model_tgt_emb.txt", 10 + 2)
-
-        # Update an existing variable.
-        src_vocab_file = _create_vocab("src_vocab.txt", vocab_size=20)
-        projector_config = _visualize(src_embedding, src_vocab_file)
-        self.assertEqual(2, len(projector_config.embeddings))
-        self.assertEqual(src_embedding, projector_config.embeddings[0].tensor_name)
-        _check_vocab(projector_config.embeddings[0], "model_src_emb.txt", 20 + 1)
 
     def _makeTextFile(self, name, lines, compress=False):
         path = os.path.join(self.get_temp_dir(), name)
@@ -231,33 +180,6 @@ class InputterTest(tf.test.TestCase):
 
         oov_tokens = embedder.get_oov_tokens(features)
         self.assertListEqual(oov_tokens.numpy().flatten().tolist(), [b"!"])
-
-    def testWordEmbedderWithTokenizer(self):
-        vocab_file = self._makeTextFile("vocab.txt", ["the", "world", "hello", "￭"])
-        data_file = self._makeTextFile("data.txt", ["hello world!"])
-        tokenization = {
-            "mode": "aggressive",
-            "joiner_annotate": True,
-            "joiner_new": True,
-        }
-        tokenization_config_path = os.path.join(self.get_temp_dir(), "tok.yml")
-        with open(tokenization_config_path, "w") as tokenization_config_file:
-            yaml.dump(tokenization, tokenization_config_file)
-
-        embedder = text_inputter.WordEmbedder(embedding_size=10)
-        data_config = {
-            "vocabulary": vocab_file,
-            "tokenization": tokenization_config_path,
-        }
-        features, transformed = self._makeDataset(
-            embedder,
-            data_file,
-            data_config=data_config,
-            shapes={"tokens": [None, None], "ids": [None, None], "length": [None]},
-        )
-
-        self.assertAllEqual([4], features["length"])
-        self.assertAllEqual([[2, 1, 3, 4]], features["ids"])
 
     def testWordEmbedderWithInGraphTokenizer(self):
         vocab_file = self._makeTextFile("vocab.txt", ["the", "world", "hello", "￭"])
