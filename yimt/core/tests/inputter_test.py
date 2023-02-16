@@ -3,18 +3,15 @@ import io
 import os
 
 import tensorflow as tf
-import yaml
 
-from google.protobuf import text_format
 from parameterized import parameterized
-from tensorboard.plugins import projector
 
 from yimt.core import inputters
 from yimt.core.data import dataset as dataset_util
 from yimt.core.data import noise
 from yimt.core.inputters import inputter, text_inputter
 from yimt.core.tests import test_util
-from yimt.core.utils.misc import count_lines, item_or_tuple
+from yimt.core.utils.misc import item_or_tuple
 
 
 class InputterTest(tf.test.TestCase):
