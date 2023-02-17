@@ -16,11 +16,11 @@ translators:
     sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
 
   ko-zh:
-    model_or_config_dir: D:\kidden\mt\mt-exp\ko-zh\opus\ct2
+    model_or_config_dir: D:\kidden\mt\mt-exp\ko-zh\opus\run4\ct2
     sp_src_path: D:\kidden\mt\mt-exp\sp\opus-koen-sf.ko-sp-32000.model
 
   zh-ko:
-    model_or_config_dir: D:\kidden\mt\mt-exp\zh-ko\opus\ct2
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-ko\opus\run4\ct2
     sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
 
   de-zh:
@@ -32,12 +32,12 @@ translators:
     sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
 
   vi-zh:
-    model_or_config_dir: D:\kidden\mt\mt-exp\vi-zh\run\model\export\ct2
+    model_or_config_dir: D:\kidden\mt\mt-exp\vi-zh\run2\ct2
     sp_src_path: D:\kidden\mt\mt-exp\vi-zh\tok\vi-zh-opus-sf.vi-sp-32000.model
 
   zh-vi:
-    model_or_config_dir: D:\kidden\mt\mt-exp\zh-vi\run\model\export\ct2
-    sp_src_path: D:\kidden\mt\mt-exp\vi-zh\tok\vi-zh-opus-sf.zh-sp-32000.model
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-vi\run2\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
 
   ru-zh:
     model_or_config_dir: D:\kidden\mt\mt-exp\ru-zh\ct2
@@ -48,12 +48,12 @@ translators:
     sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
 
   ar-zh:
-    model_or_config_dir: D:\kidden\mt\mt-exp\ar-zh\export\ct2
+    model_or_config_dir: D:\kidden\mt\mt-exp\ar-zh\run2\ct2
     sp_src_path: D:\kidden\mt\mt-exp\ar-zh\tok\opus-arzh-sf.ar-sp-32000.model
 
   zh-ar:
-    model_or_config_dir: D:\kidden\mt\mt-exp\zh-ar\export\ct2
-    sp_src_path: D:\kidden\mt\mt-exp\ar-zh\tok\opus-arzh-sf.zh-sp-32000.model
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-ar\run2\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
 
 languages:
   - {code: en, name: English, cname: 英文}
