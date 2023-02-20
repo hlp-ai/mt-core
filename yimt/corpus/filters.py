@@ -78,8 +78,10 @@ class AllASCII(Filter):
 class ASCIIRatioFilter(Filter):
     """Filter pair whose src and target are english"""
 
-    def __init__(self, threshold=0.8):
+    def __init__(self, threshold=0.67, filter_src=False, filter_tgt=True):
         self._threshold = threshold
+        self._filter_src = filter_src
+        self._filter_tgt = filter_tgt
 
     def n_ascii(self, s):
         n = 0
@@ -90,10 +92,12 @@ class ASCIIRatioFilter(Filter):
         return n
 
     def filter(self, src, tgt):
-        if self.n_ascii(src)/len(src) <= self._threshold and self.n_ascii(tgt)/len(tgt)<=self._threshold:
-            return src, tgt
+        if self._filter_src and self.n_ascii(src)/len(src) > self._threshold:
+            return None
+        if self._filter_tgt and self.n_ascii(tgt)/len(tgt) > self._threshold:
+            return None
 
-        return None
+        return src, tgt
 
 
 class LangFilter(Filter):

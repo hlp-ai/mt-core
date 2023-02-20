@@ -34,6 +34,9 @@ def main(in_path, out_path, lang_pair):
                ]
                # CharacterRatioFilter(scripts=(script_src, script_tgt), thresholds=(0.33, 0.33))]
 
+    if tgt_lang == "ja" or tgt_lang == "zh" or tgt_lang == "ko":
+        filters.append(ASCIIRatioFilter())
+
     print(filters)
 
     total = 0
