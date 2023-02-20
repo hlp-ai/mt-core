@@ -24,12 +24,12 @@ def main(in_path, out_path, lang_pair):
     else:
         tgt_len = LengthFilter.space_sep_len_f
 
-    filters = [SameFilter(),
-               EmptyFilter(),
-               ASCIIRatioFilter(threshold=0.8),
+    filters = [EmptyFilter(),
+               SameFilter(),
+               # ASCIIRatioFilter(threshold=0.8),
+               LengthFilter(src_len, tgt_len, (2, 200), (2, 200), ratio=4),
                OverlapFilter(),
-               LengthFilter(src_len, tgt_len, (2, 256), (2, 256), ratio=4),
-               AlphabetRatioFilter(threshold=0.4, exclude_whitespace=True),
+               AlphabetRatioFilter(threshold=0.5, exclude_whitespace=True),
                #AugumentForZhFilter()
                ]
                # CharacterRatioFilter(scripts=(script_src, script_tgt), thresholds=(0.33, 0.33))]
