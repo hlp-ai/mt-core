@@ -4,8 +4,9 @@ import time
 from yimt.corpus.bitext_scorers import LaBSEScorer
 
 
-def main(in_path, out_path):
-    scorer = LaBSEScorer("D:/kidden/mt/open/mt-ex/mt/data/labse1", 48)
+def main(in_path, out_path,
+         labse_model_dir="D:/kidden/mt/open/mt-ex/mt/data/labse1", max_seq_len=48):
+    scorer = LaBSEScorer(labse_model_dir, max_seq_len)
 
     lines = open(in_path, encoding="utf-8").readlines()
     print("# of lines:", len(lines))
@@ -41,4 +42,4 @@ def main(in_path, out_path):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
+    main(sys.argv[1], sys.argv[2], sys.argv[3])

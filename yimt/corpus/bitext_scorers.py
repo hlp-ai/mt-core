@@ -6,42 +6,6 @@ class BiTextScorer(object):
         pass
 
 
-# pip install bert-for-tf2
-class LaserScorer(BiTextScorer):
-    """Filter based on similarity of pair with Laser sentence embedding"""
-    from laserembeddings import Laser
-
-    laser = Laser()
-
-    def __init__(self, lang1="en", lang2="zh"):
-        self.lang1 = lang1
-        self.lang2 = lang2
-
-    def score(self, src, tgt):
-        if isinstance(src, str) and isinstance(tgt, str):
-            src = [src]
-            tgt = [tgt]
-        assert len(src) == len(tgt)
-
-        embeddings_src = self.laser.embed_sentences(src, lang=self.lang1)
-        embeddings_tgt = self.laser.embed_sentences(tgt, lang=self.lang2)
-        # print(embeddings_en.shape, embeddings_zh.shape)
-
-        norms_en = [np.linalg.norm(embeddings_src[i]) for i in range(embeddings_src.shape[0])]
-        # print(norms_en)
-        norms_zh = [np.linalg.norm(embeddings_tgt[i]) for i in range(embeddings_tgt.shape[0])]
-        # print(norms_zh)
-
-        # sim = np.matmul(embeddings_en, embeddings_zh.T)
-        sim = [np.dot(embeddings_src[i], embeddings_tgt[i]) for i in range(embeddings_src.shape[0])]
-        # print(sim.shape)
-
-        for i in range(len(norms_en)):
-            sim[i] = sim[i] / (norms_en[i] * norms_zh[i])
-
-        return sim
-
-
 class LaBSEScorer(object):
 
     def __init__(self, model_url, max_seq_length=48):
