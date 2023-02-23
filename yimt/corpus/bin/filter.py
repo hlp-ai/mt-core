@@ -27,7 +27,7 @@ def main(in_path, out_path, lang_pair):
     filters = [EmptyFilter(),
                SameFilter(),
                # ASCIIRatioFilter(threshold=0.8),
-               LengthFilter(src_len, tgt_len, (2, 200), (2, 200), ratio=4),
+               LengthFilter(src_len, tgt_len, (2, 256), (2, 256), ratio=4),
                OverlapFilter(),
                AlphabetRatioFilter(threshold=0.5, exclude_whitespace=True),
                #AugumentForZhFilter()
