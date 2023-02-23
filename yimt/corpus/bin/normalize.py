@@ -2,7 +2,7 @@
 import argparse
 import io
 
-from yimt.corpus.normalizers import Cleaner, PairPunctNormalizer, Hant2Hans
+from yimt.corpus.normalizers import Cleaner, PairPunctNormalizer, Hant2Hans, DeTokenizer
 
 
 def main(in_path, out_path, zh="tozh"):
@@ -23,6 +23,7 @@ def main(in_path, out_path, zh="tozh"):
 
     if norm_src or norm_tgt:
         normalizers.append(Hant2Hans(norm_src, norm_tgt))
+        normalizers.append(DeTokenizer(norm_src, norm_tgt))
 
     print(normalizers)
 
