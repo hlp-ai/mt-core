@@ -43,7 +43,7 @@ class Cleaner(Normalizer):
 class DeTokenizer(Normalizer):
     """Remove unnecessary spaces"""
 
-    def __init__(self, detok_tgt=False, detok_src=False):
+    def __init__(self, detok_src=False, detok_tgt=True):
         self.detok_tgt = detok_tgt
         self.detok_src = detok_src
 
