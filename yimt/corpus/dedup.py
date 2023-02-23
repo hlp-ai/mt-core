@@ -27,7 +27,8 @@ def dedup(in_path, out_path,
     n = 0
     total = 0
 
-    with open(in_path, encoding="utf-8") as f, open(out_path, "w", encoding="utf-8") as out_f:
+    with open(in_path, encoding="utf-8") as f, open(out_path, "w", encoding="utf-8") as out_f, \
+            open(in_path+".deduped", "w", encoding="utf-8") as deduped_f:
         for p in f:
             p = p.strip()
             total += 1
@@ -37,7 +38,8 @@ def dedup(in_path, out_path,
             if dedup_src or dedup_tgt:
                 pp = p.split("\t")
                 if len(pp) != 2:
-                    logger.warn("dedup: not tab for pair, ommitted: {}".format(p))
+                    # logger.warn("dedup: not tab for pair, ommitted: {}".format(p))
+                    deduped_f.write(p + "\n")
                     continue
                 src = pp[0].strip()
                 tgt = pp[1].strip()
@@ -45,7 +47,8 @@ def dedup(in_path, out_path,
                     src = norm(src, lower, remove_noletter)
                     hs = hash(src)
                     if hs in srcs:
-                        logger.debug("Source duplicate: {}".format(p))
+                        # logger.debug("Source duplicate: {}".format(p))
+                        deduped_f.write(p + "\n")
                         continue
                     else:
                         srcs.add(hs)
@@ -53,7 +56,8 @@ def dedup(in_path, out_path,
                     tgt = norm(tgt, lower, remove_noletter)
                     ht = hash(tgt)
                     if ht in tgts:
-                        logger.debug("Target duplicate: {}".format(p))
+                        # logger.debug("Target duplicate: {}".format(p))
+                        deduped_f.write(p + "\n")
                         continue
                     else:
                         tgts.add(ht)
@@ -62,7 +66,8 @@ def dedup(in_path, out_path,
                 pn = norm(p, lower, remove_noletter)
                 h = hash(pn)
                 if h in pairs:
-                    logger.debug("Source-Target duplicate: {}".format(p))
+                    # logger.debug("Source-Target duplicate: {}".format(p))
+                    deduped_f.write(p + "\n")
                     continue
                 else:
                     pairs.add(h)
