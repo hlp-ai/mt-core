@@ -5,7 +5,10 @@ from yimt.corpus.bitext_scorers import LaBSEScorer
 
 
 def main(in_path, out_path,
-         labse_model_dir="D:/kidden/mt/open/mt-ex/mt/data/labse1", max_seq_len=48):
+         labse_model_dir="D:/kidden/mt/open/mt-ex/mt/data/labse1",
+         block=8,
+         max_seq_len=48
+         ):
     scorer = LaBSEScorer(labse_model_dir, max_seq_len)
 
     lines = open(in_path, encoding="utf-8").readlines()
@@ -13,7 +16,6 @@ def main(in_path, out_path,
 
     out_f = open(out_path, "w", encoding="utf-8")
 
-    block = 8
     n = 0
     start = time.time()
     for i in range(0, len(lines), block):
@@ -42,4 +44,4 @@ def main(in_path, out_path,
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2], sys.argv[3])
+    main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
