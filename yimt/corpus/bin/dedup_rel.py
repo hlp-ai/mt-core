@@ -1,7 +1,7 @@
 """Delete duplicate pairs from parallel corpus"""
 import argparse
 
-from yimt.corpus.utils import dedup_rel
+from yimt.corpus.dedup import dedup_rel
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
