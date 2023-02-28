@@ -122,6 +122,15 @@ def sample(files, n):
         f.close()
 
 
+def count_lines(fn):
+    lines = 0
+    with open(fn, encoding="utf-8") as f:
+        for _ in f:
+            lines += 1
+
+    return lines
+
+
 def split(files, num_per_file):
     """Split corpus into multiple files with the same lines"""
     in_files = [io.open(f, encoding="utf-8") for f in files]
