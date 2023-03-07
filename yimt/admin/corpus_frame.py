@@ -7,7 +7,8 @@ from functools import partial
 from yimt.admin.win_utils import ask_open_file, ask_dir, ask_save_file
 from yimt.corpus.dedup import dedup
 from yimt.corpus.tokenize_file import tokenize_single, detok_zh
-from yimt.corpus.utils import pair_to_single, single_to_pair, merge, sample, split, merge_moses
+from yimt.corpus.utils import pair_to_single, single_to_pair, merge, sample, split, merge_moses, extract_zips, \
+    extract_gzips
 import yimt.corpus.bin.normalize as norm
 import yimt.corpus.bin.filter as filt
 
@@ -81,6 +82,45 @@ def create_mono2tsv_corpus(parent):
 
     tk.Button(parent, text="Combine source and target file into a parallel one", command=go).grid(row=5, column=1,
                                                                                                   padx=10, pady=5)
+
+
+def create_unzip_corpus(parent):
+    tk.Label(parent, text="Path of data").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    entry_corpus_datapath = tk.Entry(parent, width=50)
+    entry_corpus_datapath.grid(row=0, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_dir, entry=entry_corpus_datapath)).grid(row=0, column=2,
+                                                                                              padx=10, pady=5)
+
+    tk.Label(parent, text="Output Directory (Optional)").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    entry_corpus_output = tk.Entry(parent, width=50)
+    entry_corpus_output.grid(row=1, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_save_file, entry=entry_corpus_output)).grid(row=1, column=2, padx=10,
+                                                                                               pady=5)
+
+    tk.Label(parent, text="Compression Format").grid(row=2, column=0, padx=10, pady=5, sticky="e")
+    entry_format = tk.Entry(parent, width=50)
+    entry_format.grid(row=2, column=1, padx=10, pady=5)
+    entry_format.insert(0, "zip")
+
+    def go():
+        corpus_datapath = entry_corpus_datapath.get().strip()
+        unzip_dir = entry_corpus_output.get().strip()
+        format = entry_format.get().strip()
+        if len(unzip_dir) == 0:
+            unzip_dir = None
+
+        if len(corpus_datapath) == 0:
+            tk.messagebox.showinfo(title="Info", message="Corpus directory empty.")
+            return
+
+        if format == "zip":
+            extract_zips(corpus_datapath, unzip_dir)
+        elif format == "gz":
+            extract_gzips(corpus_datapath, unzip_dir)
+
+        tk.messagebox.showinfo(title="Info", message="done")
+
+    tk.Button(parent, text="Unzip files", command=go).grid(row=3, column=1, padx=10, pady=5)
 
 
 def create_merge_corpus(parent):

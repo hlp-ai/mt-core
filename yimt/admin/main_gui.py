@@ -9,7 +9,7 @@ from yimt.admin.train_frame import create_sp_train, create_sp_tokenize, create_b
     create_train, create_pretrain
 from yimt.admin.corpus_frame import create_tsv2mono_corpus, create_mono2tsv_corpus, create_merge_corpus, \
     create_normalize_corpus, create_filter_corpus, create_dedup_corpus, create_han2hans_corpus, create_sample_corpus, \
-    create_split_corpus, create_merge_moses_corpus, create_tok_mono, create_detok_zh
+    create_split_corpus, create_merge_moses_corpus, create_tok_mono, create_detok_zh, create_unzip_corpus
 from yimt.admin.compare_frame import create_trans,create_sarcebleu_trans
 
 
@@ -39,6 +39,11 @@ if __name__ == "__main__":
     mono2tsv_frame.pack()
     create_mono2tsv_corpus(mono2tsv_frame)
     frames.append(mono2tsv_frame)
+
+    unzip_frame = tk.Frame(win_main)
+    unzip_frame.pack()
+    create_unzip_corpus(unzip_frame)
+    frames.append(unzip_frame)
 
     merge_frame = tk.Frame(win_main)
     merge_frame.pack()
@@ -173,6 +178,7 @@ if __name__ == "__main__":
     corpus_menu.add_command(label="TSV2Mono",command=partial(on_menu, tsv2mono_frame))
     corpus_menu.add_command(label="Mono2TSV",command=partial(on_menu,mono2tsv_frame))
     corpus_menu.add_separator()
+    corpus_menu.add_command(label="Unzip Files", command=partial(on_menu, unzip_frame))
     corpus_menu.add_command(label="Merge Moses Files", command=partial(on_menu, merge_moses_frame))
     corpus_menu.add_command(label="Merge Files", command=partial(on_menu, merge_frame))
     corpus_menu.add_command(label="Normalize",command=partial(on_menu,normalize_frame))
