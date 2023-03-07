@@ -269,7 +269,7 @@ def create_dedup_corpus(parent):
     tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_dedup_in)).grid(row=0, column=2,
                                                                                              padx=10, pady=5)
 
-    tk.Label(parent, text="Output file").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Output file (Optional)").grid(row=1, column=0, padx=10, pady=5, sticky="e")
     entry_dedup_out = tk.Entry(parent, width=50)
     entry_dedup_out.grid(row=1, column=1, padx=10, pady=5)
     tk.Button(parent, text="...", command=partial(ask_save_file, entry=entry_dedup_out)).grid(row=1, column=2,
@@ -293,8 +293,11 @@ def create_dedup_corpus(parent):
         corpus_dedup_in = entry_dedup_in.get().strip()
         corpus_dedup_out = entry_dedup_out.get().strip()
 
-        if len(corpus_dedup_in) == 0 or len(corpus_dedup_out) == 0:
-            tk.messagebox.showinfo(title="Info", message="Some parameter empty.")
+        if len(corpus_dedup_out) == 0:
+            corpus_dedup_out = corpus_dedup_in + ".dedup"
+
+        if len(corpus_dedup_in) == 0:
+            tk.messagebox.showinfo(title="Info", message="Input parameter empty.")
             return
 
         dedup_srctgt = True if var_srctgt.get() == 1 else False
