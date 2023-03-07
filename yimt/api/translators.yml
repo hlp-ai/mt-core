@@ -79,6 +79,14 @@ translators:
     model_or_config_dir: D:\kidden\mt\mt-exp\zh-pt\run1\ct2
     sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
 
+  ms-zh:
+    model_or_config_dir: D:\kidden\mt\mt-exp\ms-zh\run3\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-ms-en.sf.ms-sp-32000.model
+
+  zh-ms:
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-ms\run1\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
+
 languages:
   - {code: en, name: English, cname: 英文}
   - {code: zh, name: Chinese, cname: 中文}
@@ -91,3 +99,4 @@ languages:
   - {code: es, name: Spanish, cname: 西班牙文}
   - {code: fr, name: French, cname: 法文}
   - {code: pt, name: Portuguese, cname: 葡萄牙文}
+  - {code: ms, name: Malay, cname: 马来文}
