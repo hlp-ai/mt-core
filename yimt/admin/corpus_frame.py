@@ -235,7 +235,7 @@ def create_filter_corpus(parent):
     tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_filter_in)).grid(row=0, column=2,
                                                                                               padx=10, pady=5)
 
-    tk.Label(parent, text="Output file").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Output file (Optional)").grid(row=1, column=0, padx=10, pady=5, sticky="e")
     entry_filter_out = tk.Entry(parent, width=50)
     entry_filter_out.grid(row=1, column=1, padx=10, pady=5)
     tk.Button(parent, text="...", command=partial(ask_save_file, entry=entry_filter_out)).grid(row=1, column=2,
@@ -251,8 +251,11 @@ def create_filter_corpus(parent):
         corpus_filter_out = entry_filter_out.get().strip()
         corpus_filter_langpair = entry_filter_langpair.get().strip()
 
-        if len(corpus_filter_in) == 0 or len(corpus_filter_out) == 0:
-            tk.messagebox.showinfo(title="Info", message="Some parameter empty.")
+        if len(corpus_filter_out) == 0:
+            corpus_filter_out = corpus_filter_in + ".filter"
+
+        if len(corpus_filter_in) == 0:
+            tk.messagebox.showinfo(title="Info", message="Input parameter empty.")
             return
 
         filt.main(corpus_filter_in, corpus_filter_out, corpus_filter_langpair)
