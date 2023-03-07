@@ -131,6 +131,42 @@ def sample(files, n):
         f.close()
 
 
+def partition(files, n):
+    """"Sample sentences from bitext or source and target file"""
+    in_files = [io.open(f, encoding="utf-8") for f in files]
+    out_files = [io.open("{}-{}".format(f, n), "w", encoding="utf-8") for f in files]
+    new_files = [io.open(f+".new", "w", encoding="utf-8") for f in files]
+
+    total = count_lines(files[0])
+    print(total)
+
+    sampled = 0
+    scanned = 0
+    sample_prob = (1.1*n) / total
+    done = False
+    for p in zip(*in_files):
+        scanned += 1
+        prob = random.uniform(0, 1)
+        if not done and prob < sample_prob:
+            for i in range(len(out_files)):
+                out_files[i].write(p[i].strip() + "\n")
+            sampled += 1
+            if sampled % 10000 == 0:
+                print(scanned, sampled)
+            if sampled >= n:
+                done = True
+        else:
+            for i in range(len(new_files)):
+                new_files[i].write(p[i].strip() + "\n")
+    print(scanned, sampled)
+
+    for f in out_files:
+        f.close()
+
+    for f in new_files:
+        f.close()
+
+
 def count_lines(fn):
     print("Counting lines...")
     lines = 0

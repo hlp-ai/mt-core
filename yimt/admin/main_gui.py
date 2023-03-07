@@ -9,7 +9,8 @@ from yimt.admin.train_frame import create_sp_train, create_sp_tokenize, create_b
     create_train, create_pretrain
 from yimt.admin.corpus_frame import create_tsv2mono_corpus, create_mono2tsv_corpus, create_merge_corpus, \
     create_normalize_corpus, create_filter_corpus, create_dedup_corpus, create_han2hans_corpus, create_sample_corpus, \
-    create_split_corpus, create_merge_moses_corpus, create_tok_mono, create_detok_zh, create_unzip_corpus
+    create_split_corpus, create_merge_moses_corpus, create_tok_mono, create_detok_zh, create_unzip_corpus, \
+    create_partition_corpus
 from yimt.admin.compare_frame import create_trans,create_sarcebleu_trans
 
 
@@ -79,6 +80,11 @@ if __name__ == "__main__":
     sample_frame.pack()
     create_sample_corpus(sample_frame)
     frames.append(sample_frame)
+
+    partition_frame = tk.Frame(win_main)
+    partition_frame.pack()
+    create_partition_corpus(partition_frame)
+    frames.append(partition_frame)
 
     split_frame = tk.Frame(win_main)
     split_frame.pack()
@@ -188,6 +194,7 @@ if __name__ == "__main__":
     corpus_menu.add_separator()
     corpus_menu.add_command(label="Hant2Hans", command=partial(on_menu, han2Hans_frame))
     corpus_menu.add_command(label="Sample", command=partial(on_menu, sample_frame))
+    corpus_menu.add_command(label="Partition", command=partial(on_menu, partition_frame))
     corpus_menu.add_separator()
     corpus_menu.add_command(label="Tokenize File", command=partial(on_menu, tokenize_frame))
     corpus_menu.add_command(label="DeTokenize Chinese Text", command=partial(on_menu, detokenize_frame))
