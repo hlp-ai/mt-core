@@ -57,11 +57,36 @@ def tokenize_tsv(corpus_fn, lang1, lang2="zh", out=None, max_sentences=None):
         print(n)
 
 
+# def detok_zh_str(s):
+#     result = ""
+#     i = 0
+#     while i < len(s):
+#         if s[i] == " ":
+#             if (i > 0 and is_ascii_char(s[i-1])) and (i < len(s)-1 and is_ascii_char(s[i+1])):
+#                 result += " "
+#         else:
+#             result += s[i]
+#         i += 1
+#
+#     return result
+
+
+EN_PUCTS = ",.?:;/<>()[]{}|\\~!@#$%^&*-+="
+
+
+def is_en_punct(s):
+    return len(s) == 1 and is_ascii_char(s) and EN_PUCTS.find(s)>=0
+
+
 def detok_zh_str(s):
     result = ""
     i = 0
     while i < len(s):
         if s[i] == " ":
+            if (i > 0 and is_en_punct(s[i-1])) or (i < len(s)-1 and is_en_punct(s[i+1])):
+                i += 1
+                continue
+
             if (i > 0 and is_ascii_char(s[i-1])) and (i < len(s)-1 and is_ascii_char(s[i+1])):
                 result += " "
         else:
