@@ -81,8 +81,13 @@ def dedup_rel(base_path, in_path, out_path,
     pairs = set()
     srcs = set()
     tgts = set()
+    total = 0
+    print("Scanning base file...")
     with open(base_path, encoding="utf-8") as bf:
         for p in bf:
+            total += 1
+            if total % 10000 == 0:
+                print(total)
             p = p.strip()
             pp = p.split("\t")
             if len(pp) != 2:
@@ -102,9 +107,12 @@ def dedup_rel(base_path, in_path, out_path,
             h = hash(p)
             pairs.add(h)
 
+    print(total)
+
     unique = 0
     total = 0
 
+    print("Deduping...")
     with open(in_path, encoding="utf-8") as f, open(out_path, "w", encoding="utf-8") as out_f, \
             open(in_path+".deduped", "w", encoding="utf-8") as deduped_f:
         for p in f:
