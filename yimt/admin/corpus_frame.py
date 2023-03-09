@@ -5,7 +5,7 @@ import tkinter.messagebox
 from functools import partial
 
 from yimt.admin.win_utils import ask_open_file, ask_dir, ask_save_file
-from yimt.corpus.dedup import dedup
+from yimt.corpus.dedup import dedup, dedup_rel
 from yimt.corpus.tokenize_file import tokenize_single, detok_zh
 from yimt.corpus.utils import pair_to_single, single_to_pair, merge, sample, split, merge_moses, extract_zips, \
     extract_gzips, partition
@@ -312,6 +312,61 @@ def create_dedup_corpus(parent):
         tk.messagebox.showinfo(title="Info", message="done")
 
     tk.Button(parent, text="Write unique inputs", command=go).grid(row=5, column=1, padx=10, pady=5)
+
+
+def create_dedup_rel_corpus(parent):
+    tk.Label(parent, text="Base TSV file").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    entry_dedup_base = tk.Entry(parent, width=50)
+    entry_dedup_base.grid(row=0, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_dedup_base)).grid(row=0, column=2,
+                                                                                             padx=10, pady=5)
+    tk.Label(parent, text="Input TSV file").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    entry_dedup_in = tk.Entry(parent, width=50)
+    entry_dedup_in.grid(row=1, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_dedup_in)).grid(row=1, column=2,
+                                                                                             padx=10, pady=5)
+
+    tk.Label(parent, text="Output file (Optional)").grid(row=2, column=0, padx=10, pady=5, sticky="e")
+    entry_dedup_out = tk.Entry(parent, width=50)
+    entry_dedup_out.grid(row=2, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_save_file, entry=entry_dedup_out)).grid(row=2, column=2,
+                                                                                              padx=10, pady=5)
+
+    tk.Label(parent, text="Dedup condition").grid(row=3, column=0, padx=10, pady=5, sticky="e")
+    var_srctgt = IntVar()
+    check_srctgt = Checkbutton(parent, text="Source and Target", variable=var_srctgt, onvalue=1, offvalue=0)
+    check_srctgt.grid(row=3, column=1, padx=10, pady=5)
+    check_srctgt.select()
+
+    var_src = IntVar()
+    check_src = Checkbutton(parent, text="Source", variable=var_src, onvalue=1, offvalue=0)
+    check_src.grid(row=4, column=1, padx=10, pady=5)
+
+    var_tgt = IntVar()
+    check_tgt = Checkbutton(parent, text="Target", variable=var_tgt, onvalue=1, offvalue=0)
+    check_tgt.grid(row=5, column=1, padx=10, pady=5)
+
+    def go():
+        corpus_dedup_base = entry_dedup_base.get().strip()
+        corpus_dedup_in = entry_dedup_in.get().strip()
+        corpus_dedup_out = entry_dedup_out.get().strip()
+
+        if len(corpus_dedup_out) == 0 or len(corpus_dedup_base)==0:
+            corpus_dedup_out = corpus_dedup_in + ".dedup"
+
+        if len(corpus_dedup_in) == 0:
+            tk.messagebox.showinfo(title="Info", message="Input parameter empty.")
+            return
+
+        dedup_srctgt = True if var_srctgt.get() == 1 else False
+        dedup_src = True if var_src.get() == 1 else False
+        dedup_tgt = True if var_tgt.get() == 1 else False
+
+        dedup_rel(corpus_dedup_base, corpus_dedup_in, corpus_dedup_out, dedup_srctgt, dedup_src, dedup_tgt)
+
+        tk.messagebox.showinfo(title="Info", message="done")
+
+    tk.Button(parent, text="Write unique inputs with respect to base file", command=go).grid(row=6, column=1, padx=10, pady=5)
 
 
 def create_han2hans_corpus(parent):
