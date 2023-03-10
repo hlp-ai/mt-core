@@ -4,8 +4,8 @@ from yimt.corpus.bin import filter_score, score_bitext
 
 
 def process(raw_filter_path, min_score, model_path, block):
-    path_s = raw_filter_path + "-s"
-    path_sf = raw_filter_path + "-sf"
+    path_s = raw_filter_path + ".score"
+    path_sf = raw_filter_path + ".sfilter"
 
     print("Scoring {} into {}...".format(raw_filter_path, path_s))
     score_bitext.main(raw_filter_path, path_s, model_path, block)
