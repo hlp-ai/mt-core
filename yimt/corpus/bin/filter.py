@@ -1,17 +1,10 @@
 import argparse
-import io
 
-from yimt.api.utils import get_logger
 from yimt.corpus.filters import SameFilter, OverlapFilter, LengthFilter, \
     EmptyFilter, AlphabetRatioFilter, CharacterRatioFilter, ASCIIRatioFilter, AugumentForZhFilter
 
 
 def main(in_path, out_path, lang_pair):
-    in_f = io.open(in_path, encoding="utf-8")
-    out_f = io.open(out_path, "w", encoding="utf-8")
-
-    logger = get_logger("filter")
-
     src_lang, tgt_lang = lang_pair.split("-")
 
     if src_lang == "ja" or src_lang == "zh" or src_lang == "ko":
