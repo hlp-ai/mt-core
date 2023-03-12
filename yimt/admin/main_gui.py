@@ -10,7 +10,7 @@ from yimt.admin.train_frame import create_sp_train, create_sp_tokenize, create_b
 from yimt.admin.corpus_frame import create_tsv2mono_corpus, create_mono2tsv_corpus, create_merge_corpus, \
     create_normalize_corpus, create_filter_corpus, create_dedup_corpus, create_han2hans_corpus, create_sample_corpus, \
     create_split_corpus, create_merge_moses_corpus, create_tok_mono, create_detok_zh, create_unzip_corpus, \
-    create_partition_corpus, create_dedup_rel_corpus
+    create_partition_corpus, create_dedup_rel_corpus, create_score_filter_corpus
 from yimt.admin.compare_frame import create_trans,create_sarcebleu_trans
 
 
@@ -65,6 +65,11 @@ if __name__ == "__main__":
     filter_frame.pack()
     create_filter_corpus(filter_frame)
     frames.append(filter_frame)
+
+    score_filter_frame = tk.Frame(win_main)
+    score_filter_frame.pack()
+    create_score_filter_corpus(score_filter_frame)
+    frames.append(score_filter_frame)
 
     dedup_frame = tk.Frame(win_main)
     dedup_frame.pack()
@@ -196,6 +201,7 @@ if __name__ == "__main__":
     corpus_menu.add_command(label="Dedup", command=partial(on_menu, dedup_frame))
     corpus_menu.add_command(label="Filter",command=partial(on_menu,filter_frame))
     corpus_menu.add_command(label="Split", command=partial(on_menu, split_frame))
+    corpus_menu.add_command(label="Score and Filter", command=partial(on_menu, score_filter_frame))
     corpus_menu.add_separator()
     corpus_menu.add_command(label="Hant2Hans", command=partial(on_menu, han2Hans_frame))
     corpus_menu.add_command(label="Sample", command=partial(on_menu, sample_frame))

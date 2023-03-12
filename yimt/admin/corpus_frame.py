@@ -265,6 +265,60 @@ def create_filter_corpus(parent):
     tk.Button(parent, text="Filter", command=go).grid(row=5, column=1, padx=10, pady=5)
 
 
+def create_score_filter_corpus(parent):
+    tk.Label(parent, text="Input TSV file pattern").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    entry_filter_in = tk.Entry(parent, width=50)
+    entry_filter_in.grid(row=0, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_filter_in)).grid(row=0, column=2,
+                                                                                              padx=10, pady=5)
+
+    tk.Label(parent, text="# of start").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    entry_filter_start = tk.Entry(parent, width=50)
+    entry_filter_start.grid(row=1, column=1, padx=10, pady=5)
+    entry_filter_start.insert(0, "0")
+
+    tk.Label(parent, text="# of end").grid(row=2, column=0, padx=10, pady=5, sticky="e")
+    entry_filter_end = tk.Entry(parent, width=50)
+    entry_filter_end.grid(row=2, column=1, padx=10, pady=5)
+    entry_filter_end.insert(0, "1")
+
+    tk.Label(parent, text="Min score").grid(row=3, column=0, padx=10, pady=5, sticky="e")
+    entry_filter_min = tk.Entry(parent, width=50)
+    entry_filter_min.grid(row=3, column=1, padx=10, pady=5)
+    entry_filter_min.insert(0, "0.70")
+
+    tk.Label(parent, text="Path of LaBSE model").grid(row=4, column=0, padx=10, pady=5, sticky="e")
+    entry_model = tk.Entry(parent, width=50)
+    entry_model.grid(row=4, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_dir, entry=entry_model)).grid(row=4, column=2,
+                                                                                              padx=10, pady=5)
+
+    tk.Label(parent, text="Size of block").grid(row=5, column=0, padx=10, pady=5, sticky="e")
+    entry_filter_block = tk.Entry(parent, width=50)
+    entry_filter_block.grid(row=5, column=1, padx=10, pady=5)
+    entry_filter_block.insert(0, "16")
+
+    def go():
+        corpus_filter_in = entry_filter_in.get().strip()
+        corpus_model = entry_model.get().strip()
+
+        if len(corpus_filter_in) == 0 or len(corpus_model) == 0:
+            tk.messagebox.showinfo(title="Info", message="Input parameter empty.")
+            return
+
+        start = int(entry_filter_start.get().strip())
+        end = int(entry_filter_end.get().strip())
+        block = int(entry_filter_block.get().strip())
+        min_score = float(entry_filter_min.get().strip())
+
+        score_and_filter_cmd = "python ../corpus/bin/score_and_filter.py {} {} {} {} {} {}"
+        os.popen(score_and_filter_cmd.format(corpus_filter_in, start, end, min_score, corpus_model, block)).readlines()
+
+        tk.messagebox.showinfo(title="Info", message="done")
+
+    tk.Button(parent, text="Score and Filter bitext", command=go).grid(row=6, column=1, padx=10, pady=5)
+
+
 def create_dedup_corpus(parent):
     tk.Label(parent, text="Input TSV file").grid(row=0, column=0, padx=10, pady=5, sticky="e")
     entry_dedup_in = tk.Entry(parent, width=50)
