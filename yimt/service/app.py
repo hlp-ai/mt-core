@@ -131,14 +131,6 @@ def create_app(args):
                     abort(403, description="NO API key")
                 elif api_keys_db.lookup(ak) is None:
                     abort(403, description="Invalid API key")
-                # if ak and api_keys_db.lookup(ak) is None:
-                #     abort(403, description="Invalid API key")
-                # elif (
-                #     args.require_api_key_origin
-                #     and api_keys_db.lookup(ak) is None
-                #     and request.headers.get("Origin") != args.require_api_key_origin  # ?
-                # ):
-                #     abort(403, description="Please contact the server operator to obtain an API key")
 
             return f(*a, **kw)
 
@@ -178,10 +170,16 @@ def create_app(args):
     
     @app.route('/text')
     def text():
+        if args.disable_web_ui:
+            abort(404)
+
         return render_template('text.html')
 
     @app.route('/mobile')
     def mobile():
+        if args.disable_web_ui:
+            abort(404)
+
         return render_template('mobile_text.html')
 
 
