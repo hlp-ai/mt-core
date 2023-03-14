@@ -169,6 +169,7 @@ def create_app(args):
         return render_template('file.html')
     
     @app.route('/text')
+    @limiter.exempt
     def text():
         if args.disable_web_ui:
             abort(404)
@@ -176,12 +177,12 @@ def create_app(args):
         return render_template('text.html')
 
     @app.route('/mobile')
+    @limiter.exempt
     def mobile():
         if args.disable_web_ui:
             abort(404)
 
         return render_template('mobile_text.html')
-
 
     @app.get("/languages")
     @limiter.exempt
