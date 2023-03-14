@@ -9,7 +9,6 @@ from flask import (Flask, abort, jsonify, render_template, request, send_file, u
 from werkzeug.utils import secure_filename
 from yimt.api.translators import Translators
 from yimt.api.utils import detect_lang, get_logger
-from yimt.api.text_splitter import word_segment
 
 from yimt.files.translate_files import support, translate_doc
 from yimt.files.translate_tag import translate_html
@@ -54,7 +53,7 @@ def get_remote_address():
     else:
         ip = request.remote_addr or "127.0.0.1"
 
-    # log_service.info("Request from: " + ip)
+    log_service.info("Request from: " + ip)
 
     return ip
 
@@ -350,6 +349,5 @@ def create_app(args):
         download_filename = '.'.join(download_filename)
 
         return send_file(return_data, as_attachment=True, download_name=download_filename)
-
 
     return app
