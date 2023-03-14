@@ -6,7 +6,7 @@ import shutil
 from pprint import pprint
 
 import yaml
-from opennmt.utils.misc import merge_dict
+from yimt.core.utils.misc import merge_dict
 
 
 def copy_to_dir(fn, dst):
@@ -55,7 +55,7 @@ if __name__ == "__main__":
         extra_conf = yaml.load(io.open(args.config, encoding="utf-8"), Loader=yaml.FullLoader)
         pprint(extra_conf)
 
-    print("Copy checkpoint {} into {}...".format(ckpt_dir, output_dir))
+    print("Copying checkpoint {} into {}...".format(ckpt_dir, output_dir))
     for f in os.listdir(ckpt_dir):
         m = re.search("ckpt-(\\d+)", f)
         if m:

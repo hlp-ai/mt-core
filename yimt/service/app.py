@@ -262,20 +262,6 @@ def create_app(args):
         src = q
         lang = source_lang + "-" + target_lang
 
-        # TODO: uncomment it after korean tokenizer is good and word translation work well
-        # tokens = word_segment(src, source_lang)
-        # if len(tokens) == 1:
-        #     # log_service.info("->Translated by WordTranslator")
-        #     word_translator = translators.get_word_translator(source_lang, target_lang)
-        #     translation = tokens[0]
-        #     if word_translator.has(tokens[0]):
-        #         translation = word_translator.lookup(tokens[0])
-        #
-        #     # log_service.info("/translate: " + q + "; " + source_lang + "-" + target_lang + "; " + text_format
-        #     #                  + "-->" + translation)
-        #
-        #     return jsonify({'translatedText': translation})
-
         translator = translators.get_translator(source_lang, target_lang)
         if translator is None:
             abort(400, description="Language pair %s is not supported" % lang)
