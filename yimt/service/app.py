@@ -151,6 +151,12 @@ def create_app(args):
     def denied(e):
         return jsonify({"error": str(e.description)}), 403
 
+    ##############################################################################################
+    #
+    # Path for Web server
+    #
+    ##############################################################################################
+
     @app.route("/")
     @limiter.exempt
     def index():
@@ -183,14 +189,6 @@ def create_app(args):
 
         return render_template('mobile_text.html')
 
-    @app.get("/languages")
-    @limiter.exempt
-    def languages():
-        """Retrieve list of supported languages"""
-        log_service.info("/languages")
-        supported_languages = langs_api
-        return jsonify(supported_languages)
-
     @app.after_request
     def after_request(response):
         response.headers.add("Access-Control-Allow-Origin", "*")  # Allow CORS from anywhere
@@ -202,6 +200,23 @@ def create_app(args):
         response.headers.add("Access-Control-Allow-Credentials", "true")
         response.headers.add("Access-Control-Max-Age", 60 * 60 * 24 * 20)
         return response
+
+    ##############################################################################################
+    #
+    # Interface for translation service
+    #
+    ##############################################################################################
+
+    @app.get("/languages")
+    @limiter.exempt
+    def languages():
+        """Retrieve list of supported languages
+        No parameter
+        :return list of language dictionary
+        """
+        log_service.info("/languages")
+        supported_languages = langs_api
+        return jsonify(supported_languages)
 
     @app.post("/translate")
     @access_check
