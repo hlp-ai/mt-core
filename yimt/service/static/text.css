@@ -45,6 +45,11 @@ body {
     right: 58px;
 }
 
+
+.url_setting_block{
+    display: block;
+}
+
 .restriction{
     margin-left: 60px;
     margin-right: 60px;
@@ -347,6 +352,7 @@ body {
     color: #999;
     white-space:pre;
     margin-left: 22px;
+    cursor: pointer;
 }
 
 .nav2{
@@ -552,3 +558,5 @@ body {
     color: rgb(7, 71, 209);
     text-align: center;
 }
+
+
