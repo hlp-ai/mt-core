@@ -36,3 +36,5 @@ installation methods and basic operations.
     print(word_segment("Viện trưởng Vương xử sự ngay thẳng, làm việc công minh, chưa từng gây khó dễ cho ai, mọi người đều tôn kính ông ấy.", lang="vi"))
 
     print(word_segment("في 11 مارس 2020، أعلنت منظمة الصحة العالمية مرض فيروس كورونا 2019 (كوفيد-19) كجائحة.", lang="ar"))
+
+    print(word_segment("ในเริ่มแรกนั้นพระเจ้าทรงเนรมิตสร้างฟ้าและแผ่นดินโลก", lang="th"))
