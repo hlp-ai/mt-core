@@ -1,5 +1,6 @@
 import argparse
 
+from yimt.api.text_splitter import word_segment
 from yimt.corpus.filters import SameFilter, OverlapFilter, LengthFilter, \
     EmptyFilter, AlphabetRatioFilter, CharacterRatioFilter, ASCIIRatioFilter, AugumentForZhFilter
 
@@ -9,11 +10,15 @@ def main(in_path, out_path, lang_pair):
 
     if src_lang == "ja" or src_lang == "zh" or src_lang == "ko":
         src_len = LengthFilter.char_len_f
+    elif src_lang == "th":
+        src_len = lambda t: len(word_segment(t, lang="th"))
     else:
         src_len = LengthFilter.space_sep_len_f
 
     if tgt_lang == "ja" or tgt_lang == "zh" or tgt_lang == "ko":
         tgt_len = LengthFilter.char_len_f
+    elif tgt_lang == "th":
+        tgt_len = lambda t: len(word_segment(t, lang="th"))
     else:
         tgt_len = LengthFilter.space_sep_len_f
 
@@ -27,8 +32,11 @@ def main(in_path, out_path, lang_pair):
                ]
                # CharacterRatioFilter(scripts=(script_src, script_tgt), thresholds=(0.33, 0.33))]
 
-    if tgt_lang == "ja" or tgt_lang == "zh" or tgt_lang == "ko":
-        filters.append(ASCIIRatioFilter())
+    if tgt_lang == "ja" or tgt_lang == "zh" or tgt_lang == "ko" or tgt_lang == "th":
+        filters.append(ASCIIRatioFilter(filter_tgt=True, filter_src=False))
+
+    if src_lang == "ja" or src_lang == "zh" or src_lang == "ko" or src_lang == "th":
+        filters.append(ASCIIRatioFilter(filter_tgt=False, filter_src=True))
 
     print(filters)
 
