@@ -21,7 +21,9 @@
                     break;
                 }
             }
-            if(!flag)
+            var tag=window.localStorage.getItem("tag");
+            //alert(tag);
+            if(!flag&&tag!="jump")
             {
                 window.location.href="{{url_for('mobile')}}"
             }    
