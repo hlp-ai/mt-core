@@ -5,6 +5,7 @@ import tkinter.messagebox
 from functools import partial
 
 from yimt.admin.win_utils import ask_open_file, ask_dir, ask_save_file
+from yimt.corpus.bin import score_and_filter
 from yimt.corpus.dedup import dedup, dedup_rel
 from yimt.corpus.tokenize_file import tokenize_single, detok_zh
 from yimt.corpus.utils import pair_to_single, single_to_pair, merge, sample, split, merge_moses, extract_zips, \
@@ -311,8 +312,7 @@ def create_score_filter_corpus(parent):
         block = int(entry_filter_block.get().strip())
         min_score = float(entry_filter_min.get().strip())
 
-        score_and_filter_cmd = "python ../corpus/bin/score_and_filter.py {} {} {} {} {} {}"
-        os.popen(score_and_filter_cmd.format(corpus_filter_in, start, end, min_score, corpus_model, block)).readlines()
+        score_and_filter.main(corpus_filter_in, start, end, corpus_model, min_score, block)
 
         tk.messagebox.showinfo(title="Info", message="done")
 

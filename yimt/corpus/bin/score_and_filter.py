@@ -16,6 +16,12 @@ def process(raw_filter_path, min_score, model_path, block):
     print()
 
 
+def main(pattern, start, end, model_path, min_score=0.70, block=16):
+    for i in range(start, end):
+        p = pattern.format(i)
+        process(p, min_score, model_path, block)
+
+
 if __name__ == "__main__":
     path_pattern = sys.argv[1]
     from_no = int(sys.argv[2])
@@ -24,6 +30,4 @@ if __name__ == "__main__":
     model_path = sys.argv[5]
     block = int(sys.argv[6])
 
-    for i in range(from_no, to_no):
-        p = path_pattern.format(i)
-        process(p, min_score, model_path, block)
+    main(path_pattern, from_no, to_no, model_path, min_score, block)
