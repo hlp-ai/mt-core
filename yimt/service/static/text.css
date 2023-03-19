@@ -48,6 +48,42 @@ body {
 
 .url_setting_block{
     display: block;
+    position: absolute;
+    border: #2b2b2b;
+    border-width: 3px;
+    border-radius: 5px;
+    width: 260px;
+    height: 200px;
+    top:30px;
+    right: 20%;
+    opacity:1;
+    box-shadow: 0px 0 20px 3px rgba(0, 0, 0, 0.5);
+    background-color: #ffffff;
+    z-index: 6;
+}
+.url_setting_block:hover{
+    box-shadow: 0px 0 20px 7px rgba(0, 0, 0, 0.5);
+}
+.mask{
+    display: none;
+    position:absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0.3;
+    background-color: #020202;
+    z-index: 5;
+}
+
+.arrow_image{
+    display: block;
+    height: 100%;
+    width: auto;
+    margin:auto;
+    background: #ebebeb;
+    background-image:url(../static/img/arrow-left.png) ;
+    background-repeat:no-repeat;
+    background-position:center;
+    background-size:100% 100%;
 }
 
 .restriction{
