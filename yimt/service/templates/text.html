@@ -5,11 +5,20 @@
     <link rel="stylesheet" type="text/css" href="../static/text.css">
 
     <script>
-        var end_point="http://127.0.0.1:5555/translate";
+        var end_point;
 
         window.onload = function()
         {
-            
+            var json1=window.localStorage.getItem("data");
+            var jsonObj1=JSON.parse(json1);
+            if(jsonObj1=="")
+            {
+                end_point=="http://127.0.0.1:5555/translate";
+                //http://127.0.0.1:5555/api_key_get
+            }
+            else{
+                end_point=jsonObj1;
+            }
             var userAgentInfo = navigator.userAgent;
             var Agents = ["Android","iPhone","SymbianOS","Windows Phone","iPad","iPod"];
             var flag = true;
@@ -21,7 +30,9 @@
                     break;
                 }
             }
-            if(!flag)
+            var tag=window.localStorage.getItem("tag");
+            //alert(tag);
+            if(!flag&&tag!="jump")
             {
                 window.location.href="{{url_for('mobile')}}"
             }    
@@ -48,36 +59,82 @@
 </head>
 
 <body>
-
+    <div class="mask" id="mask"></div>
+    <div class="url_setting_block" id="url_setting_block" style="visibility: hidden;">
+        <div class="url_setting_hide" id="url_setting_hide" style="cursor:pointer; position:absolute ;top:20px;left: 30px;width: 20px;height: 20px;"onclick="url_setting_hide_func()">
+            <div class="arrow_image"></div>
+        </div>
+        <div style="position:absolute; top:60px;left: 30px;">
+            <label style="font-size: 14px; color: rgb(130, 130, 130);position: absolute;left: 0px;top:0px;width: 200px;text-align: left;">服务器端点</label>
+            <textarea class="url" id="url" placeholder="http://127.0.0.1:5555/translate" style="position:absolute;font-size: 16px;height:35px;width: 194px;top: 25px;"></textarea>
+            <input type="button" class="url_button" id="url_button" style="position: absolute;top:77px; height: 35px; width: 200px; background-color: #357aa1; border-radius: 3px;border:none;cursor:pointer;color: #ffffff;"  value="重置地址" onclick="url_resetting_func()">
+        </div>
+    </div>
+    <div class="api_key_block" id="api_key_block" style="visibility: hidden;">
+        <div class="api_key_hide" id="api_key_hide" style="cursor:pointer; position:absolute ;top:20px;left: 30px;width: 20px;height: 20px;"onclick="api_key_hide_func()">
+            <div class="arrow_image"></div>
+        </div>
+        <div style="position:absolute; top:60px;left: 30px;">
+            <label style="font-size: 14px; color: rgb(130, 130, 130);position: absolute;left: 0px;top:0px;width: 200px;text-align: left;">输入API密钥</label>
+            <textarea class="api_key" id="api_key" placeholder="api_key" style="position:absolute;font-size: 16px;height:35px;width: 194px;top: 25px;"></textarea>
+            <input type="button" class="api_key_button" id="api_key_button" style="position: absolute;top:77px; height: 35px; width: 200px; background-color: #357aa1; border-radius: 3px;border:none;cursor:pointer;color: #ffffff;"  value="确认" onclick="api_key_check_func()">
+        </div>
+    </div>
     <div class="fanyi__nav">
         <div class="fanyi__nav__container">
                 <a href="/" class="fanyi__nav__logo"></a>
-            <div class="nav_left">
-                <a target="_blank" class="nav" href="/file">文档翻译</a><a target="_blank" class="nav" href="/">翻译API</a><a target="_blank" class="nav" href="/">登录</a><a target="_blank" id="url_setting_label" class="nav" >设置服务器地址</a>
-            </div>
+                <div class="nav_left">
+                    <a target="_blank" class="nav" href="/">文本翻译</a><a target="_blank" class="nav" id="api_key_label">翻译API</a><a target="_blank" class="nav" href="/">登录</a><a target="_blank" id="url_setting_label" class="nav" >设置服务器地址</a>
+                </div>
                 
-        </div>
-        <div class="url_setting_block" id="url_setting_block" style="visibility: hidden;">
-            <textarea calss="url" id="url" placeholder="127.0.0.1:5555"></textarea>
-            <input type="button" class="url_button" id="url_button" value="重置翻译服务器地址" onclick="url_resetting_func()">
-            <input type="button" class="url_setting_hide" id="url_setting_hide" value="关闭" onclick="url_setting_hide_func()">
         </div>
         <script>
             function url_setting_func()
             {
                 document.getElementById("url_setting_block").style.visibility='visible';
+                document.getElementById("mask").style.display='block'
+                alert("当前翻译地址为："+end_point);//这里测试显示当前翻译地址
             }
+            function api_key_func()
+            {
+                document.getElementById("api_key_block").style.visibility='visible';
+                document.getElementById("mask").style.display='block'
+            }
+            
             function url_resetting_func()
             {
                 end_point = document.getElementById("url").value;
-                alert("重置成功！重置后的url为："+end_point);
+                
+                //var d=JSON.stringify();
+                window.localStorage.setItem("data",end_point);
+                var json=window.localStorage.getItem("data");
+                alert("重置成功！重置后的url为："+json);
+            }
+            async function api_key_check_func()//
+            {
+                var api_key = document.getElementById("api_key").value;
+                const res = await fetch(end_point, {
+                method: "POST",
+                body: JSON.stringify({api_key:api_key}),
+                headers: { "Content-Type": "application/json" }
+                }
+                );
+                alert("输入成功");
             }
             function url_setting_hide_func()
             {
                 document.getElementById("url_setting_block").style.visibility='hidden';
+                document.getElementById("mask").style.display='none'
             }
+            function api_key_hide_func()
+            {
+                document.getElementById("api_key_block").style.visibility='hidden';
+                document.getElementById("mask").style.display='none'
+            }
+
             document.getElementById("url_setting_label").addEventListener("click", url_setting_func);
-        </script> 
+            document.getElementById("api_key_label").addEventListener("click", api_key_func);
+        </script>
 
     </div>
 
