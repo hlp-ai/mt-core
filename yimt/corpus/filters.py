@@ -2,7 +2,7 @@ import re
 
 import regex
 
-from yimt.api.utils import detect_lang, get_logger
+from yimt.api.utils import detect_lang
 from yimt.corpus.utils import is_ascii, has_zh, is_ascii_char
 
 
@@ -270,30 +270,6 @@ class CharacterRatioFilter(Filter):
     def filter(self, src, tgt):
         if self.score(src, 0) < self.thresholds[0] or self.score(tgt, 1) < self.thresholds[1]:
             return None
-
-        return src, tgt
-
-
-class Latin2ZhFilter(Filter):
-
-    def __init__(self):
-        self.en_len = lambda s: len(s.split())
-        self.zh_len = lambda s: len(s)
-
-        self.filters = [SameFilter(),
-                        AllASCII(),
-                        OverlapFilter(),
-                        LenFilter((2, 128), (2, 128), self.en_len, self.zh_len),
-                        LenDiffFilter(4, self.en_len, self.zh_len)]
-
-    def filter(self, src, tgt):
-        if has_zh(src):
-            return None
-
-        for f in self.filters:
-            r = f.filter(src, tgt)
-            if r is None:
-                return None
 
         return src, tgt
 
