@@ -170,9 +170,14 @@ def partition(files, n):
 def count_lines(fn):
     print("Counting lines...")
     lines = 0
+    interval = 500000
     with open(fn, encoding="utf-8") as f:
         for _ in f:
             lines += 1
+            if lines % interval == 0:
+                print(lines)
+
+    print(lines)
 
     return lines
 
