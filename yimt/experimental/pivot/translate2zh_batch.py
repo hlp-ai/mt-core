@@ -57,6 +57,8 @@ def _translate(translator, in_file, out_file, batch_size = 48):
 if __name__ == "__main__":
     argparser = ArgumentParser()
     argparser.add_argument("-i", "--input", required=True, help="TSV file pattern to be translate")
+    argparser.add_argument("-b", "--begin", default=0, type=int, help="start number for pattern")
+    argparser.add_argument("-e", "--end", required=True, type=int, help="end number for pattern")
     argparser.add_argument("-s", "--src", required=True, help="Souce language")
     argparser.add_argument("-t", "--tgt", required=True, help="Target language")
     argparser.add_argument("-se", "--sp_en_model",
@@ -72,8 +74,8 @@ if __name__ == "__main__":
     args = argparser.parse_args()
 
     tsv_file_pattern = args.input  # r"/home/liuxf/hdisk/exp/hi-en/score/sf/opus-en-hi.raw.tsv.norm.dedup.filter-{}-sf"
-    from_no = 0
-    end_no = 44
+    from_no = args.begin
+    end_no = args.end
 
     sp_en_file = args.sp_en_model  # r"/home/liuxf/hdisk/exp/sp/opus-enzh-all-sf.en-sp-32000.model"
     sp_en = load_spm(sp_en_file)
