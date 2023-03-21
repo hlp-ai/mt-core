@@ -291,53 +291,47 @@ def create_edit_config(parent):
     tk.Label(parent, text="Train Batch Size").grid(row=8, column=0, padx=10, pady=5, sticky="e")
     entry_batch_size = tk.Entry(parent)
     entry_batch_size.grid(row=8, column=1, padx=10, pady=5, sticky="w")
-    entry_batch_size.insert(0, "4096")
+    entry_batch_size.insert(0, "3200")
 
-    tk.Label(parent, text="Train Max Step").grid(row=9, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Effective Train Batch Size").grid(row=9, column=0, padx=10, pady=5, sticky="e")
+    entry_effective_batch_size = tk.Entry(parent)
+    entry_effective_batch_size.grid(row=9, column=1, padx=10, pady=5, sticky="w")
+    entry_effective_batch_size.insert(0, "25600")
+
+    tk.Label(parent, text="Train Max Step").grid(row=10, column=0, padx=10, pady=5, sticky="e")
     entry_max_step = tk.Entry(parent)
-    entry_max_step.grid(row=9, column=1, padx=10, pady=5, sticky="w")
+    entry_max_step.grid(row=10, column=1, padx=10, pady=5, sticky="w")
     entry_max_step.insert(0, "30000")
 
-    tk.Label(parent, text="Checkpoint Step").grid(row=10, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Checkpoint Step").grid(row=11, column=0, padx=10, pady=5, sticky="e")
     entry_ckpt_step = tk.Entry(parent)
-    entry_ckpt_step.grid(row=10, column=1, padx=10, pady=5, sticky="w")
+    entry_ckpt_step.grid(row=11, column=1, padx=10, pady=5, sticky="w")
     entry_ckpt_step.insert(0, 200)
 
-    tk.Label(parent, text="Max Checkpoints").grid(row=11, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Max Checkpoints").grid(row=12, column=0, padx=10, pady=5, sticky="e")
     entry_ckpt_max = tk.Entry(parent)
-    entry_ckpt_max.grid(row=11, column=1, padx=10, pady=5, sticky="w")
+    entry_ckpt_max.grid(row=12, column=1, padx=10, pady=5, sticky="w")
     entry_ckpt_max.insert(0, '5')
 
-    tk.Label(parent, text="Summary Step").grid(row=12, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Summary Step").grid(row=13, column=0, padx=10, pady=5, sticky="e")
     entry_summary_step = tk.Entry(parent)
-    entry_summary_step.grid(row=12, column=1, padx=10, pady=5, sticky="w")
+    entry_summary_step.grid(row=13, column=1, padx=10, pady=5, sticky="w")
     entry_summary_step.insert(0, 100)
 
-    tk.Label(parent, text="Evaluation Step").grid(row=13, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Evaluation Step").grid(row=14, column=0, padx=10, pady=5, sticky="e")
     entry_eval_step = tk.Entry(parent)
-    entry_eval_step.grid(row=13, column=1, padx=10, pady=5, sticky="w")
+    entry_eval_step.grid(row=14, column=1, padx=10, pady=5, sticky="w")
     entry_eval_step.insert(0, 200)
 
-    tk.Label(parent, text="Evaluation Scorer").grid(row=14, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Evaluation Scorer").grid(row=15, column=0, padx=10, pady=5, sticky="e")
     entry_eval_scorer = tk.Entry(parent)
-    entry_eval_scorer.grid(row=14, column=1, padx=10, pady=5, sticky="w")
+    entry_eval_scorer.grid(row=15, column=1, padx=10, pady=5, sticky="w")
     entry_eval_scorer.insert(0, "bleu")
 
-    tk.Label(parent, text="EarlyStopping Metric").grid(row=15, column=0, padx=10, pady=5, sticky="e")
-    cbox_stop_metric = ttk.Combobox(parent)
-    cbox_stop_metric.grid(row=15, column=1, padx=10, pady=5, sticky="w")
-    cbox_stop_metric['value'] = ('bleu', 'loss')
-    cbox_stop_metric.current(0)
-
-    tk.Label(parent, text="EarlyStopping Min Improve.").grid(row=16, column=0, padx=10, pady=5, sticky="e")
-    entry_stop_min = tk.Entry(parent)
-    entry_stop_min.grid(row=16, column=1, padx=10, pady=5, sticky="w")
-    entry_stop_min.insert(0, "0.01")
-
-    tk.Label(parent, text="EarlyStopping Patience").grid(row=17, column=0, padx=10, pady=5, sticky="e")
-    entry_stop_step = tk.Entry(parent)
-    entry_stop_step.grid(row=17, column=1, padx=10, pady=5, sticky="w")
-    entry_stop_step.insert(0, 4)
+    tk.Label(parent, text="Beam Width").grid(row=16, column=0, padx=10, pady=5, sticky="e")
+    entry_params_beam = tk.Entry(parent)
+    entry_params_beam.grid(row=16, column=1, padx=10, pady=5, sticky="w")
+    entry_params_beam.insert(0, "5")
 
     def save():
         config = {}
@@ -363,16 +357,12 @@ def create_edit_config(parent):
         config["data"]["train_labels_file"] = tgt_train
 
         src_eval = entry_src_eval.get()
-        if len(src_eval.strip()) == 0:
-            tk.messagebox.showinfo(title="Info", message="Source file for eval empty.")
-            return
-        config["data"]["eval_features_file"] = src_eval
+        if len(src_eval.strip()) > 0:
+            config["data"]["eval_features_file"] = src_eval.strip()
 
         tgt_eval = entry_tgt_eval.get()
-        if len(tgt_eval.strip()) == 0:
-            tk.messagebox.showinfo(title="Info", message="Target file for eval empty.")
-            return
-        config["data"]["eval_labels_file"] = tgt_eval
+        if len(tgt_eval.strip()) > 0:
+            config["data"]["eval_labels_file"] = tgt_eval.strip()
 
         src_vocab = entry_src_vocab.get()
         if len(src_vocab.strip()) == 0:
@@ -389,18 +379,19 @@ def create_edit_config(parent):
         config["train"] = {}
         config["train"]["batch_type"] = cbox_batch_type.get()
         config["train"]["batch_size"] = int(entry_batch_size.get())
+        config["train"]["effective_batch_size"] = int(entry_effective_batch_size.get())
         config["train"]["max_step"] = int(entry_max_step.get())
         config["train"]["save_checkpoints_steps"] = int(entry_ckpt_step.get())
         config["train"]["keep_checkpoint_max"] = int(entry_ckpt_max.get())
+        config["train"]["average_last_checkpoints"] = int(entry_ckpt_max.get())
         config["train"]["save_summary_steps"] = int(entry_summary_step.get())
 
         config["eval"] = {}
         config["eval"]["steps"] = int(entry_eval_step.get())
         config["eval"]["scorers"] = entry_eval_scorer.get()
-        config["eval"]["early_stopping"] = {}
-        config["eval"]["early_stopping"]["metric"] = cbox_stop_metric.get()
-        config["eval"]["early_stopping"]["min_improvement"] = float(entry_stop_min.get())
-        config["eval"]["early_stopping"]["steps"] = int(entry_stop_step.get())
+
+        config["params"] = {}
+        config["params"]["beam_width"] = int(entry_params_beam.get())
 
         filename = tk.filedialog.asksaveasfilename()
         if filename != '':
@@ -463,8 +454,8 @@ def create_edit_config(parent):
             tk.messagebox.showinfo(message="Not file chosen.")
             return
 
-    tk.Button(parent, text="Load Config", command=load).grid(row=18, column=0, padx=10, pady=5)
-    tk.Button(parent, text="Save Config", command=save).grid(row=18, column=1, padx=10, pady=5)
+    tk.Button(parent, text="Load Config", command=load).grid(row=17, column=0, padx=10, pady=5)
+    tk.Button(parent, text="Save Config", command=save).grid(row=17, column=1, padx=10, pady=5)
 
 
 def create_train(parent):
