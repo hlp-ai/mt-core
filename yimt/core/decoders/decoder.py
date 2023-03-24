@@ -144,7 +144,6 @@ class Decoder(tf.keras.layers.Layer):
         length_or_step=None,
         state=None,
         input_fn=None,
-        sampling_probability=None,
         training=None,
     ):
         """Runs the decoder layer on either a complete sequence (e.g. for training
@@ -157,8 +156,6 @@ class Decoder(tf.keras.layers.Layer):
             :obj:`inputs`, the current decoding timestep.
           state: The decoder state.
           input_fn: A callable taking sampled ids and returning the decoding inputs.
-          sampling_probability: When :obj:`inputs` is the full sequence, the
-            probability to read from the last sample instead of the true target.
           training: Run in training mode.
 
         Returns:
@@ -197,7 +194,6 @@ class Decoder(tf.keras.layers.Layer):
                 memory=self.memory,
                 memory_sequence_length=self.memory_sequence_length,
                 input_fn=input_fn,
-                sampling_probability=sampling_probability,
                 training=training,
             )
         else:
@@ -212,7 +208,6 @@ class Decoder(tf.keras.layers.Layer):
         memory=None,
         memory_sequence_length=None,
         input_fn=None,
-        sampling_probability=None,
         training=None,
     ):
         """Runs the decoder on full sequences.
@@ -224,8 +219,6 @@ class Decoder(tf.keras.layers.Layer):
           memory: Memory values to query.
           memory_sequence_length: Memory values length.
           input_fn: A callable taking sampled ids and returning the decoding inputs.
-          sampling_probability: The probability to read from the last sample instead
-            of the true target.
           training: Run in training mode.
 
         Returns:

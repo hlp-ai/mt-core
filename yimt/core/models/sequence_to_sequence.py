@@ -211,8 +211,6 @@ class SequenceToSequence(model.Model):
         target_inputs = self.labels_inputter(labels, training=training)
         input_fn = lambda ids: self.labels_inputter({"ids": ids}, training=training)
 
-        sampling_probability = None
-
         initial_state = self.decoder.initial_state(
             memory=encoder_outputs,
             memory_sequence_length=encoder_sequence_length,
@@ -223,7 +221,6 @@ class SequenceToSequence(model.Model):
             self.labels_inputter.get_length(labels),
             state=initial_state,
             input_fn=input_fn,
-            sampling_probability=sampling_probability,
             training=training,
         )
         outputs = dict(logits=logits, attention=attention)
@@ -238,7 +235,6 @@ class SequenceToSequence(model.Model):
                 labels["noisy_length"],
                 state=initial_state,
                 input_fn=input_fn,
-                sampling_probability=sampling_probability,
                 training=training,
             )
             outputs["noisy_logits"] = noisy_logits
