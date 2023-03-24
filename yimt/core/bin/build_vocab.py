@@ -15,17 +15,6 @@ def main():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
     parser.add_argument("data", nargs="*", help="List of data files.")
-    parser.add_argument(
-        "--from_vocab",
-        default=None,
-        help="Build from a saved vocabulary (see also --from_format).",
-    )
-    parser.add_argument(
-        "--from_format",
-        default="default",
-        choices=["default", "sentencepiece"],
-        help="The format of the saved vocabulary (see also --from_vocab).",
-    )
     parser.add_argument("--save_vocab", required=True, help="Output vocabulary file.")
     parser.add_argument(
         "--min_frequency", type=int, default=1, help="Minimum word frequency."
@@ -61,8 +50,6 @@ def main():
     vocab = data.Vocab(special_tokens=special_tokens)
     num_oov_buckets = 1
 
-    if args.from_vocab is not None:
-        vocab.load(args.from_vocab, file_format=args.from_format)
     tokenizer = tokenizers.make_tokenizer(None)
     for data_file in args.data:
         vocab.add_from_text(data_file, tokenizer=tokenizer)
