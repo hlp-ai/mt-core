@@ -108,7 +108,6 @@ class DecodingStrategy(abc.ABC):
             return BeamSearch(
                 beam_size,
                 length_penalty=params.get("length_penalty", 0),
-                coverage_penalty=params.get("coverage_penalty", 0),
                 tflite_output_size=params.get("tflite_output_size", 250)
                 if tflite_mode
                 else None,
@@ -230,19 +229,17 @@ class BeamSearch(DecodingStrategy):
     """A beam search strategy."""
 
     def __init__(
-        self, beam_size, length_penalty=0, coverage_penalty=0, tflite_output_size=None
+        self, beam_size, length_penalty=0, tflite_output_size=None
     ):
         """Initializes the decoding strategy.
 
         Args:
           beam_size: The number of paths to consider per batch.
           length_penalty: Length penalty, see https://arxiv.org/abs/1609.08144.
-          coverage_penalty: Coverage penalty, see https://arxiv.org/abs/1609.08144.
           tflite_output_size: None if not TFLite exporting.  Is the output size of TFLite model
         """
         self.beam_size = beam_size
         self.length_penalty = length_penalty
-        self.coverage_penalty = coverage_penalty
         self._state_reorder_flags = None
         self.tflite_output_size = tflite_output_size
 
