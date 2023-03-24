@@ -7,7 +7,6 @@ import time
 
 import tensorflow as tf
 
-from yimt.core.inputters import text_inputter
 from yimt.core.optimizers import utils as optimizer_util
 from yimt.core.utils import misc
 
@@ -537,10 +536,8 @@ class TrainingStats:
           target: A dictionary of target features.
         """
         self._update_words_counter("source", source)
-        self._record_oov_tokens("source", source, self._model.features_inputter)
 
         self._update_words_counter("target", target)
-        self._record_oov_tokens("target", target, self._model.labels_inputter)
 
     def update_on_step(self, step, loss):
         """Updates the training statistics on a new training step.
@@ -680,23 +677,6 @@ class TrainingStats:
         if isinstance(learning_rate, tf.optimizers.schedules.LearningRateSchedule):
             learning_rate = learning_rate(self._last_step)
         return float(learning_rate)
-
-    def _record_oov_tokens(self, name, features, inputter):
-        if not isinstance(inputter, text_inputter.WordEmbedder):
-            return
-
-        def _record(num_tokens, oov_tokens):
-            self._num_tokens[name] += int(num_tokens)
-            all_oov_tokens = self._oov_tokens[name]
-            for oov_token in oov_tokens.flatten():
-                all_oov_tokens[oov_token.decode("utf-8")] += 1
-
-        num_tokens = tf.reduce_sum(
-            inputter.get_length(features, ignore_special_tokens=True)
-        )
-        oov_tokens = inputter.get_oov_tokens(features)
-
-        tf.numpy_function(_record, [num_tokens, oov_tokens], [])
 
     def _update_words_counter(self, name, features):
         """Accumulates the number of source and target tokens to report throughput."""
