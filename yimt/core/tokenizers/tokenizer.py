@@ -337,26 +337,3 @@ class SpaceTokenizer(Tokenizer):
 
     def _detokenize_string(self, tokens):
         return " ".join(tokens)
-
-
-@register_tokenizer
-class CharacterTokenizer(Tokenizer):
-    """A tokenizer that splits unicode characters."""
-
-    @property
-    def in_graph(self):
-        return True
-
-    def _tokenize_tensor(self, text, _):
-        text = tf.strings.regex_replace(text, " ", "▁")
-        return tf.strings.unicode_split(text, "UTF-8")
-
-    def _detokenize_tensor(self, tokens):
-        text = tf.strings.reduce_join(tokens, axis=tokens.shape.rank - 1)
-        return tf.strings.regex_replace(text, "▁", " ")
-
-    def _tokenize_string(self, text, _):
-        return list(text.replace(" ", "▁"))
-
-    def _detokenize_string(self, tokens):
-        return "".join(tokens).replace("▁", " ")

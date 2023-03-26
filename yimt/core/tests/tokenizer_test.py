@@ -112,23 +112,6 @@ class TokenizerTest(tf.test.TestCase):
             ["Hello world !", "Test", "", "My name"],
         )
 
-    def testCharacterTokenizer(self):
-        self._testTokenizer(
-            tokenizers.CharacterTokenizer(),
-            ["a b", "", "cd e"],
-            [["a", "▁", "b"], [], ["c", "d", "▁", "e"]],
-        )
-        self._testDetokenizer(
-            tokenizers.CharacterTokenizer(),
-            [["a", "▁", "b"], [], ["c", "d", "▁", "e"]],
-            ["a b", "", "cd e"],
-        )
-        self._testTokenizer(
-            tokenizers.CharacterTokenizer(),
-            ["你好，世界！"],
-            [["你", "好", "，", "世", "界", "！"]],
-        )
-
     def testMakeTokenizer(self):
         tokenizer = tokenizers.make_tokenizer()
         self.assertIsInstance(tokenizer, tokenizers.SpaceTokenizer)
