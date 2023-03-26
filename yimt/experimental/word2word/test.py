@@ -1,4 +1,4 @@
-from yimt.api.word2word.word2word import Word2word
+from yimt.experimental.word2word.word2word import Word2word
 
 lang_src = input("Source language: ")
 lang_tgt = input("Target language: ")
