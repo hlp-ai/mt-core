@@ -143,7 +143,7 @@ class Translator(object):
         :param texts list of text
         :return dict with tokens and length
         """
-        if self.from_lang == "zh" or self.from_lang == "ja":
+        if self.from_lang == "zh" or self.from_lang == "ja" or self.from_lang == "th":
             texts = [" ".join(word_segment(t, self.from_lang)) for t in texts]
         all_tokens = self._tokenize(texts)
         lengths = [len(ts) for ts in all_tokens]
