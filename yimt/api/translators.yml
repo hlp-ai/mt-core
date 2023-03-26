@@ -103,6 +103,14 @@ translators:
     model_or_config_dir: D:\kidden\mt\mt-exp\zh-it\run1\ct2
     sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
 
+  th-zh:
+    model_or_config_dir: D:\kidden\mt\mt-exp\th-zh\aug\run1\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-th-en-aug-th-zh.sf.th.pretok-sp-32000.model
+
+  zh-th:
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-th\aug\run1\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
+
 languages:
   - {code: en, name: English, cname: 英文}
   - {code: zh, name: Chinese, cname: 中文}
@@ -118,3 +126,4 @@ languages:
   - {code: ms, name: Malay, cname: 马来文}
   - {code: hi, name: Hindi, cname: 印地文}
   - {code: it, name: Italian, cname: 意大利文}
+  - {code: th, name: Thai, cname: 泰文}
