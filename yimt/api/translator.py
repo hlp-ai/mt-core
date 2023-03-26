@@ -7,27 +7,9 @@ import sentencepiece as spm
 from yimt.core import load_config
 from yimt.core.config import MODEL_DESCRIPTION_FILENAME, load_model_from_file
 from yimt.core.utils import checkpoint as checkpoint_util
-from word2word import Word2word
 
 from yimt.api.text_splitter import paragraph_detokenizer, paragraph_tokenizer, word_segment
 from yimt.corpus.tokenize_file import detok_zh_str
-
-
-class WordTranslator(object):
-    """Word/Phrase Translator"""
-
-    def __init__(self, source_lang, target_lang):
-        self.lexicon = Word2word(source_lang, target_lang)
-
-    def has(self, w):
-        """Does the word exist?"""
-        w = w.lower()
-        return w in self.lexicon.word2x
-
-    def lookup(self, w):
-        """Get the translation of the word"""
-        w = w.lower()
-        return self.lexicon(w)[0]
 
 
 def load_translator(model_or_config_dir, sp_src_path, lang_pair=None):
