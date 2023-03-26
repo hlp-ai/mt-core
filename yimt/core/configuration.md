@@ -76,17 +76,6 @@ data:
   # them in the graph itself (default: true).
   export_vocabulary_assets: true
 
-  # (optional) Tokenization configuration (or path to a configuration file).
-  # See also: https://github.com/OpenNMT/Tokenizer/blob/master/docs/options.md
-  source_tokenization:
-    type: OpenNMTTokenizer
-    params:
-      mode: aggressive
-      joiner_annotate: true
-      segment_numbers: true
-      segment_alphabet_change: true
-  target_tokenization: config/tokenization/aggressive.yml
-
   # (optional) Pretrained embedding configuration.
   source_embedding:
     path: data/glove/glove-100000.txt
