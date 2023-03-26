@@ -10,10 +10,11 @@
         window.onload = function()
         {
             var json1=window.localStorage.getItem("data");
-            var jsonObj1=JSON.parse(json1);
-            if(jsonObj1=="")
+            //alert(json1);
+            if(json1=="")
             {
-                end_point=="http://127.0.0.1:5555/translate";
+                end_point = "http://127.0.0.1:5555/translate";
+                //alert(end_point);//
                 //http://127.0.0.1:5555/api_key_get
             }
             else{
@@ -104,10 +105,10 @@
         <div class="url_setting_hide" id="url_setting_hide" style="cursor:pointer; position:absolute ;top:20px;left: 30px;width: 20px;height: 20px;"onclick="url_setting_hide_func()">
             <div class="arrow_image"></div>
         </div>
-        <div style="position:absolute; top:60px;left: 30px;">
-            <label style="font-size: 14px; color: rgb(130, 130, 130);position: absolute;left: 0px;top:0px;width: 200px;text-align: left;">服务器端点</label>
-            <textarea class="url" id="url" placeholder="http://127.0.0.1:5555/translate" style="position:absolute;font-size: 16px;height:35px;width: 194px;top: 25px;"></textarea>
-            <input type="button" class="url_button" id="url_button" style="position: absolute;top:77px; height: 35px; width: 200px; background-color: #357aa1; border-radius: 3px;border:none;cursor:pointer;color: #ffffff;"  value="重置地址" onclick="url_resetting_func()">
+        <div style="position:absolute; top:65px;left: 30px;">
+            <label style="font-size: 14px; color: rgb(130, 130, 130);position: absolute;left: 0px;top:5px;width: 200px;text-align: left;">服务器端点</label>
+            <textarea class="url" id="url" rows="1" cols="20" placeholder="http://127.0.0.1:5555/translate" wrap="off" style="position:absolute;width: 193.5px;height:21px;letter-spacing: 0px;font-size: 14px;top: 30px;"></textarea>
+            <input type="button" class="url_button" id="url_button" style="position: absolute;top:67px; height: 35px; width: 200px; background-color: #357aa1; border-radius: 3px;border:none;cursor:pointer;color: #ffffff;"  value="重置地址" onclick="url_resetting_func()">
         </div>
     </div>
     <div class="api_key_block" id="api_key_block" style="visibility: hidden;">
@@ -133,8 +134,9 @@
             function url_setting_func()
             {
                 document.getElementById("url_setting_block").style.visibility='visible';
-                document.getElementById("mask").style.display='block'
-                alert("当前翻译地址为："+end_point);//这里测试显示当前翻译地址
+                document.getElementById("mask").style.display='block';
+                console.log("当前翻译地址为："+end_point);
+                //alert("当前翻译地址为："+end_point);//这里测试显示当前翻译地址
             }
             function api_key_func()
             {
@@ -150,17 +152,25 @@
                 window.localStorage.setItem("data",end_point);
                 var json=window.localStorage.getItem("data");
                 alert("重置成功！重置后的url为："+json);
+                document.getElementById("url_setting_block").style.visibility='hidden';
+                document.getElementById("mask").style.display='none'
+
             }
             async function api_key_check_func()//
             {
                 var api_key = document.getElementById("api_key").value;
-                const res = await fetch(end_point, {
+
+                window.localStorage.setItem("key",api_key);
+                //var key=window.localStorage.getItem("key");
+                //alert(key);
+                const res = await fetch("http://127.0.0.1:5555/get_req_api_key", {
                 method: "POST",
                 body: JSON.stringify({api_key:api_key}),
                 headers: { "Content-Type": "application/json" }
                 }
                 );
                 alert("输入成功");
+                url_setting_hide_func();
             }
             function url_setting_hide_func()
             {
