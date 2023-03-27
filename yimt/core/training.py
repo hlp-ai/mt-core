@@ -60,7 +60,6 @@ class Trainer:
         save_steps=5000,
         evaluator=None,
         eval_steps=5000,
-        moving_average_decay=None,
     ):
         """Runs the training.
 
@@ -74,9 +73,6 @@ class Trainer:
           evaluator: A :class:`yimt.evaluation.Evaluator` instance to call for
             evaluation.
           eval_steps: Evaluate every this many steps.
-          moving_average_decay: If set, maintain an exponential moving average of the model
-            variables using this decay value (usually close to 1, e.g. 0.9999). See
-            https://www.tensorflow.org/api_docs/python/tf/train/ExponentialMovingAverage.
 
         Returns:
           A dictionary with various training statistics.
@@ -110,15 +106,6 @@ class Trainer:
             ):
                 if i == 0:
                     self._log_model_info()
-
-                if moving_average_decay is not None and self.is_master:
-                    if moving_average is None:
-                        moving_average = MovingAverage(
-                            self._model.trainable_variables,
-                            iterations,
-                            decay=moving_average_decay,
-                        )
-                    self._update_moving_average(moving_average)
 
                 step = iterations.numpy()
                 reset_throughput = False
@@ -446,56 +433,6 @@ def _summarize_gradients(gradients, should_record):
             false_fn=lambda: tf.constant(0, dtype=gradients[0].dtype),
         ),
     )
-
-
-class MovingAverage(object):
-    """Object holding an exponential moving average of variables."""
-
-    def __init__(self, variables, step, decay=0.9999):
-        """Initializes the moving average object.
-
-        Args:
-          variables: The list of variable for which to maintain a moving average.
-          step: The training step counter as a ``tf.Variable``.
-          decay: The decay rate of the exponential moving average. Usually close to
-            1, e.g. 0.9999, see the complete formula on
-            https://www.tensorflow.org/api_docs/python/tf/train/ExponentialMovingAverage.
-
-        Raises:
-          TypeError: is :obj:`step` is not a ``tf.Variable``.
-        """
-        if not isinstance(step, tf.Variable):
-            raise TypeError("step should be a tf.Variable")
-        if decay < 0.9 or decay > 1:
-            tf.get_logger().warning(
-                "Moving average decay should be close to 1 (e.g. 0.9999) but you "
-                "passed %f, is it correct? See https://www.tensorflow.org/api_docs"
-                "/python/tf/train/ExponentialMovingAverage for details about the "
-                "formula and recommended decay values."
-            )
-        self._ema = tf.train.ExponentialMovingAverage(decay, num_updates=step)
-        self._variables = variables
-
-    @tf.function
-    def update(self):
-        """Updates the moving average of the variables."""
-        self._ema.apply(self._variables)
-
-    @contextlib.contextmanager
-    def shadow_variables(self):
-        """Returns a context manager that assigns the variables to their moving
-        average value on enter and restores the previous value on exit.
-
-        Returns:
-          A context manager.
-        """
-        previous_values = []
-        for variable in self._variables:
-            previous_values.append(variable.value())
-            variable.assign(self._ema.average(variable))
-        yield
-        for previous_value, variable in zip(previous_values, self._variables):
-            variable.assign(previous_value)
 
 
 class TrainingStats:

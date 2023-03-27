@@ -5,9 +5,6 @@ import math
 import os
 import random
 import shutil
-import subprocess
-import sys
-import tempfile
 
 import numpy as np
 import tensorflow as tf
@@ -265,7 +262,6 @@ class Runner(object):
             save_steps=train_config.get("save_checkpoints_steps", 5000),
             evaluator=evaluator,
             eval_steps=eval_config.get("steps", 5000),
-            moving_average_decay=train_config.get("moving_average_decay"),
         )
 
         average_last_checkpoints = train_config.get("average_last_checkpoints", 0)
