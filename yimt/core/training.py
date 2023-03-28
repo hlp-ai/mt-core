@@ -100,7 +100,6 @@ class Trainer:
             tf.summary.experimental.set_step(iterations)
 
             step = None
-            moving_average = None
             for i, loss in enumerate(
                 self._steps(dataset, accum_steps=accum_steps, report_steps=report_steps)
             ):
@@ -114,12 +113,10 @@ class Trainer:
                     self._training_stats.log(self.is_master)
                     reset_throughput = True
                 if step == 1 or (save_steps is not None and step % save_steps == 0):
-                    self._save_checkpoint(step, moving_average=moving_average)
+                    self._save_checkpoint(step)
                     reset_throughput = True
                 if eval_steps is not None and step % eval_steps == 0:
-                    early_stop = self._evaluate(
-                        evaluator, step, moving_average=moving_average
-                    )
+                    early_stop = self._evaluate(evaluator, step)
                     reset_throughput = True
                     if early_stop:
                         tf.get_logger().warning(
@@ -141,11 +138,11 @@ class Trainer:
 
             self._training_stats.log_final(self.is_master)
             summary = self._training_stats.get_global_summary()
-            self._save_checkpoint(step, moving_average=moving_average)
-            self._evaluate(evaluator, step, moving_average=moving_average)
+            self._save_checkpoint(step)
+            self._evaluate(evaluator, step)
             return summary
 
-    def _save_checkpoint(self, step, moving_average=None):
+    def _save_checkpoint(self, step):
         """Saves a checkpoint for step."""
         if (
             not self.is_master
@@ -153,15 +150,10 @@ class Trainer:
             or step == self._checkpoint.last_saved_step
         ):
             return
-        shadow_variables = (
-            moving_average.shadow_variables()
-            if moving_average is not None
-            else contextlib.suppress()
-        )
-        with shadow_variables:
-            self._checkpoint.save(step)
 
-    def _evaluate(self, evaluator, step, moving_average=None):
+        self._checkpoint.save(step)
+
+    def _evaluate(self, evaluator, step):
         """Runs evaluation for step. Returns ``True`` if early conditions are met."""
         if (
             not self.is_master
@@ -169,14 +161,9 @@ class Trainer:
             or step == evaluator.last_evaluated_step
         ):
             return False
-        shadow_variables = (
-            moving_average.shadow_variables()
-            if moving_average is not None
-            else contextlib.suppress()
-        )
-        with shadow_variables:
-            evaluator(step)
-            return evaluator.should_stop()
+
+        evaluator(step)
+        return evaluator.should_stop()
 
     def _finalize_dataset(self, dataset):
         """Returns the final dataset instance to be used for training.
@@ -315,10 +302,6 @@ class Trainer:
         self._apply_gradients(self._gradient_accumulator.gradients)
         self._gradient_accumulator.reset()
 
-    def _update_moving_average(self, moving_average):
-        """Updates the moving average of variables."""
-        moving_average.update()
-
     def _broadcast_variables(self):
         """Broadcasts variables to other replicas, if required."""
         return
@@ -415,10 +398,6 @@ class MirroredStrategyTrainer(Trainer):
 
     def _step(self):
         self._strategy.run(super()._step)
-
-    def _update_moving_average(self, moving_average):
-        with self._strategy.scope():
-            super()._update_moving_average(moving_average)
 
 
 def _summarize_gradients(gradients, should_record):
