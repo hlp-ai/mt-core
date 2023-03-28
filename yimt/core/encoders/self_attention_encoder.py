@@ -85,4 +85,4 @@ class SelfAttentionEncoder(Encoder):
         for layer in self.layers:
             inputs = layer(inputs, mask=mask, training=training)
         outputs = self.layer_norm(inputs) if self.layer_norm is not None else inputs
-        return outputs, None, sequence_length
+        return outputs, sequence_length

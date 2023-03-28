@@ -29,7 +29,7 @@ class Encoder(tf.keras.layers.Layer):
           training: Run in training mode.
 
         Returns:
-          A tuple ``(outputs, state, sequence_length)``.
+          A tuple ``(outputs, sequence_length)``.
         """
         raise NotImplementedError()
 
@@ -44,7 +44,7 @@ class Encoder(tf.keras.layers.Layer):
 
         Returns:
           If :obj:`inputs` is a ``tf.Tensor``, the encoder returns a tuple
-          ``(outputs, state, sequence_length)``. If :obj:`inputs` is a
+          ``(outputs, sequence_length)``. If :obj:`inputs` is a
           ``tf.RaggedTensor``, the encoder returns a tuple ``(outputs, state)``,
           where ``outputs`` is a ``tf.RaggedTensor``.
         """
@@ -53,14 +53,14 @@ class Encoder(tf.keras.layers.Layer):
             inputs, sequence_length = inputs.to_tensor(), inputs.row_lengths()
         else:
             is_ragged = False
-        outputs, state, sequence_length = super().__call__(
+        outputs, sequence_length = super().__call__(
             inputs, sequence_length=sequence_length, **kwargs
         )
         if is_ragged:
             outputs = tf.RaggedTensor.from_tensor(outputs, lengths=sequence_length)
-            return outputs, state
+            return outputs
         else:
-            return outputs, state, sequence_length
+            return outputs, sequence_length
 
 
 class ParallelEncoder(Encoder):
@@ -81,7 +81,6 @@ class ParallelEncoder(Encoder):
         self,
         encoders,
         outputs_reducer=None,
-        states_reducer=None,
         outputs_layer_fn=None,
         combined_output_layer_fn=None,
     ):
@@ -92,9 +91,6 @@ class ParallelEncoder(Encoder):
             one, in which case the same encoder is applied to each input.
           outputs_reducer: A :class:`yimt.layers.Reducer` to merge all
             outputs. If ``None``, defaults to
-            :class:`yimt.layers.JoinReducer`.
-          states_reducer: A :class:`yimt.layers.Reducer` to merge all
-            states. If ``None``, defaults to
             :class:`yimt.layers.JoinReducer`.
           outputs_layer_fn: A callable or list of callables applied to the
             encoders outputs If it is a single callable, it is applied on each
@@ -123,15 +119,11 @@ class ParallelEncoder(Encoder):
         self.outputs_reducer = (
             outputs_reducer if outputs_reducer is not None else JoinReducer()
         )
-        self.states_reducer = (
-            states_reducer if states_reducer is not None else JoinReducer()
-        )
         self.outputs_layer_fn = outputs_layer_fn
         self.combined_output_layer_fn = combined_output_layer_fn
 
     def call(self, inputs, sequence_length=None, training=None):
         all_outputs = []
-        all_states = []
         all_sequence_lengths = []
         parallel_inputs = isinstance(inputs, (list, tuple))
         parallel_encoders = isinstance(self.encoders, (list, tuple))
@@ -155,7 +147,7 @@ class ParallelEncoder(Encoder):
                 encoder_inputs = inputs
                 length = sequence_length
 
-            outputs, state, length = encoder(
+            outputs, length = encoder(
                 encoder_inputs, sequence_length=length, training=training
             )
 
@@ -166,7 +158,6 @@ class ParallelEncoder(Encoder):
                     outputs = self.outputs_layer_fn(outputs)
 
             all_outputs.append(outputs)
-            all_states.append(state)
             all_sequence_lengths.append(length)
 
         outputs, sequence_length = self.outputs_reducer(
@@ -176,4 +167,4 @@ class ParallelEncoder(Encoder):
         if self.combined_output_layer_fn is not None:
             outputs = self.combined_output_layer_fn(outputs)
 
-        return (outputs, self.states_reducer(all_states), sequence_length)
+        return (outputs, sequence_length)
