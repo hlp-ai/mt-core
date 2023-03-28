@@ -1,7 +1,6 @@
 """Training related classes and functions."""
 
 import collections
-import contextlib
 import itertools
 import time
 
@@ -440,7 +439,6 @@ class TrainingStats:
         self._last_logged_step = self._last_step
         self._last_logged_time = time.time()
         self._num_tokens = collections.defaultdict(int)
-        self._oov_tokens = collections.defaultdict(lambda: collections.defaultdict(int))
 
     def update_on_example(self, source, target):
         """Updates the training statistics on a new training example.
@@ -554,33 +552,6 @@ class TrainingStats:
         """Outputs the final log."""
         if not is_master:
             return
-
-        for name, oov_tokens in self._oov_tokens.items():
-            num_oov_tokens = sum(oov_tokens.values())
-            if num_oov_tokens > 0:
-                num_tokens = self._num_tokens[name]
-                tf.get_logger().warning(
-                    "%.3f%% of %s tokens are out of vocabulary (%d out of %d tokens)",
-                    (num_oov_tokens / num_tokens) * 100,
-                    name,
-                    num_oov_tokens,
-                    num_tokens,
-                )
-                most_frequent_oov_tokens = (
-                    "%s (%.1f%%)" % (oov_token, (count / num_oov_tokens) * 100)
-                    for oov_token, count in sorted(
-                        oov_tokens.items(),
-                        key=lambda x: x[1],
-                        reverse=True,
-                    )
-                )
-                most_frequent_oov_tokens = list(most_frequent_oov_tokens)[:10]
-                tf.get_logger().info(
-                    "The %d most frequent out of vocabulary %s tokens are: %s",
-                    len(most_frequent_oov_tokens),
-                    name,
-                    "; ".join(most_frequent_oov_tokens),
-                )
 
     def reset_throughput(self):
         """Resets the accumulated values since the last log."""
