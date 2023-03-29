@@ -6,14 +6,15 @@
 
     <script>
         var end_point;
-        var api_key;
+        var API_KEY;
         window.onload = function()
         {
             var json1=window.localStorage.getItem("data");
             var json2=window.localStorage.getItem("key");
+            //console.log(json1);//
             //alert(json1);
             //alert(json2);
-            api_key=json2;
+            API_KEY=json2;
             if(json1=="")
             {
                 end_point = "http://127.0.0.1:5555/translate";
@@ -21,7 +22,7 @@
                 //http://127.0.0.1:5555/api_key_get
             }
             else{
-                end_point=jsonObj1;
+                end_point=json1;
             }
             var userAgentInfo = navigator.userAgent;
             var Agents = ["Android","iPhone","SymbianOS","Windows Phone","iPad","iPod"];
@@ -42,27 +43,20 @@
             }    
         }
         async function translate_func(){
-            if(api_key=="")
-            {
-                alert("api-key为空！");
-            }
-            else
-            {
-                qstr = document.getElementById('q').value;
+            qstr = document.getElementById('q').value;
                 qstr = qstr.trim();
                 if(qstr.length==0) return;
                 source_lang = document.getElementById('source').value
                 target_lang = document.getElementById('target').value
                 const res = await fetch(end_point, {
                     method: "POST",
-                    body: JSON.stringify({q: qstr, source: source_lang, target: target_lang, format: "text",api_key:api_key}),
+                    body: JSON.stringify({q: qstr, source: source_lang, target: target_lang,api_key:API_KEY, format: "text"}),
                     headers: { "Content-Type": "application/json" }
                 }
                 );
           
                 trans_json = await res.json();
                 document.getElementById('translation').value= trans_json.translatedText;
-            }
         }
     </script>
     <title>YiMT Translation</title>
@@ -98,7 +92,7 @@
                 document.getElementById("mask").style.display='block';
                 console.log("当前翻译地址为："+end_point);
                 //alert("当前翻译地址为："+end_point);//这里测试显示当前翻译地址
-                console.log("当前api_key为："+api_key);
+                console.log("当前api_key为："+API_KEY);
                 end_point = document.getElementById("url").value;
                 if(end_point=="")
                 {
@@ -118,9 +112,9 @@
 
                 var Api_key = document.getElementById("api_key").value;
                 window.localStorage.setItem("key",Api_key);
-                api_key=Api_key;
+                API_KEY=Api_key;
 
-                alert("设置成功！url为："+json+"  api-key为:"+api_key);
+                alert("设置成功！url为："+json+"  api-key为:"+API_KEY);
             }
          
             function url_setting_hide_func()
