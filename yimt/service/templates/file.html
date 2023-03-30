@@ -108,41 +108,38 @@
 
 <body>
     <div class="mask" id="mask"></div>
-    <div class="url_setting_block" id="url_setting_block" style="visibility: hidden;">
-        <label style="font-size: 20px; color: rgb(130, 130, 130);position: absolute;left: 0px;top:30px;width: 100%;text-align: center;">翻译设置</label>
-        <div style="position:absolute; top:50px;left: 30px;">
-            <label style="font-size: 16px; color: rgb(130, 130, 130);position: absolute;left: 0px;top:45px;width: 200px;text-align: left;">服务器：</label>
-            <input type="text" class="url" id="url" rows="1" cols="20"  wrap="off" style="position:absolute; width: 210px;height:21px;letter-spacing: 0px;font-size: 14px;top: 40px; left: 80px"></textarea>
+    <div class="url_setting_block" id="url_setting_block">
+        <label id="translation_setting_label">翻译设置</label>
+        <div id="translation_setting_block1">
+            <label id="server_label">服务器：</label>
+            <input type="text" class="url" id="url" rows="1" cols="20"  wrap="off">
         </div>
-        <div style="position:absolute; top:130px;left: 30px;">
-            <label style="font-size: 16px; color: rgb(130, 130, 130);position: absolute;left: 0px;top:0px;width: 200px;text-align: left;">API KEY：</label>
-            <input type="text" class="api_key" id="api_key" placeholder="api_key" wrap="off" style="position:absolute;font-size: 14px;height:21px;width: 210px;top: 0px;left: 80px"></textarea>
+        <div id="translation_setting_block2">
+            <label id="api_key_label">API KEY：</label>
+            <input type="text" class="api_key" id="api_key" placeholder="api_key" wrap="off">
         </div>
-        <input type="button" class="url_setting_hide" style="cursor:pointer; position:absolute ;top:180px;left: 190px; height: 35px; width: 140px; background-color: #357aa1; border-radius: 3px;border:none;cursor:pointer;color: #ffffff;"  value="关闭" onclick="url_setting_hide_func()">
-        <input type="button" class="url_button" id="url_button" style="position: absolute;top:180px;left: 30px ; height: 35px; width: 140px; background-color: #357aa1; border-radius: 3px;border:none;cursor:pointer;color: #ffffff;"  value="设置" onclick="url_resetting_func()">
+        <input type="button" class="url_setting_hide" value="关闭" onclick="url_setting_hide_func()">
+        <input type="button" class="url_button" id="url_button" value="设置" onclick="url_resetting_func()">
     </div>
    
     <div class="fanyi__nav">
         <div class="fanyi__nav__container">
             <a href="/" class="fanyi__nav__logo"></a>
             <div class="nav_left">
-                <a target="_blank" class="nav" href="/">文本翻译</a><a target="_blank" class="nav" id="api_key_label">翻译API</a><a target="_blank" class="nav" href="/">登录</a><a target="_blank" id="url_setting_label" class="nav" >设置服务器地址</a>
+                <a target="_blank" class="nav" href="/">文本翻译</a><a target="_blank" class="nav">翻译API</a><a target="_blank" class="nav" href="/">登录</a><a target="_blank" id="url_setting_label" class="nav" >设置服务器地址</a>
             </div>
         </div>
 
         <script>
-             function url_setting_func()
+            function url_setting_func()
             {
                 document.getElementById("url_setting_block").style.visibility='visible';
                 document.getElementById("mask").style.display='block';
                 console.log("当前翻译地址为："+end_point);
                 //alert("当前翻译地址为："+end_point);//这里测试显示当前翻译地址
                 console.log("当前api_key为："+API_KEY);
+                document.getElementById("url").placeholder=end_point;
                 end_point = document.getElementById("url").value;
-                if(end_point=="")
-                {
-                    document.getElementById("url").style.placeholder="http://127.0.0.1:5555/translate";
-                }
             }
             
             function url_resetting_func()
