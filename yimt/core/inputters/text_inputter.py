@@ -14,7 +14,6 @@ from yimt.core.layers import common
 from yimt.core.utils import misc
 
 
-
 def load_pretrained_embeddings(
     embedding_file,
     vocabulary_file,
