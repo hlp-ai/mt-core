@@ -9,11 +9,6 @@ import requests
 import uuid
 import time
 from tqdm import *
-from tencentcloud.common import credential  # 这里需要安装腾讯翻译sdk pip install tencentcloud-sdk-python
-from tencentcloud.common.profile.client_profile import ClientProfile
-from tencentcloud.common.profile.http_profile import HttpProfile
-from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
-from tencentcloud.tmt.v20180321 import tmt_client, models
 
 
 def main(sf, tf, sl, tl, ifbaidu, ifyoudao, iftencent, ifWin):
@@ -199,6 +194,12 @@ def youdaotrans(str2, slanguage, tlanguage):
 
 
 def tencenttrans(str3, slanguage, tlanguage):
+    from tencentcloud.common import credential  # 这里需要安装腾讯翻译sdk pip install tencentcloud-sdk-python
+    from tencentcloud.common.profile.client_profile import ClientProfile
+    from tencentcloud.common.profile.http_profile import HttpProfile
+    from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
+    from tencentcloud.tmt.v20180321 import tmt_client, models
+
     try:
         cred = credential.Credential("AKIDeCZiJfmdEZeS0HI5cdOvBALfojQyMUO6", "XopcAUZR7bpqmaClAMNAi04uhFafV4NP")
         httpProfile = HttpProfile()
