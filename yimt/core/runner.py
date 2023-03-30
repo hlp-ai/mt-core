@@ -333,7 +333,6 @@ class Runner(object):
         self._config["model_dir"] = output_dir
         return output_dir
 
-
     def infer(
         self, features_file, predictions_file=None, checkpoint_path=None, log_time=False
     ):
