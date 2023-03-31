@@ -17,7 +17,7 @@
                         break;
                     }
                 }
-                if(flag)
+                if(!flag)//
                 {
                     window.location.href="{{url_for('text')}}"
                 }    
@@ -50,7 +50,14 @@
             <div class="fanyi__nav__container">
                     <a href="https://fanyi.youdao.com/?keyfrom=fanyi-new.logo" class="fanyi__nav__logo"></a>                 
                 <div class="nav_left">
-                    <a target="_blank" class="nav1" href="{{url_for('text')}}">切换至电脑版</a>
+                    <a target="_blank" class="nav1" href="{{url_for('text')}}" onclick="tag_func()">切换至电脑版</a>
+                    <script>
+                        function tag_func(){
+                            var tag="jump";
+                            window.localStorage.setItem("tag",tag);
+                            //alert(tag);
+                        }
+                    </script>
                 </div>
             </div>    
         </div>

@@ -45,6 +45,137 @@ body {
     right: 58px;
 }
 
+
+.url_setting_block{
+    display: block;
+    position: absolute;
+    border: #2b2b2b;
+    visibility: hidden;
+    border-width: 3px;
+    border-radius: 5px;
+    width: 360px;
+    height: 245px;
+    top:30px;
+    right: 20%;
+    opacity:1;
+    box-shadow: 0px 0 20px 3px rgba(0, 0, 0, 0.5);
+    background-color: #ffffff;
+    z-index: 6;
+}
+.url_setting_block:hover{
+    box-shadow: 0px 0 20px 7px rgba(0, 0, 0, 0.5);
+}
+
+#translation_setting_label{
+    font-size: 20px; 
+    color: rgb(130, 130, 130);
+    position: absolute;
+    left: 0px;
+    top:30px;
+    width: 100%;
+    text-align: center;
+}
+
+#translation_setting_block1{
+    position:absolute; 
+    top:50px;
+    left: 30px;
+}
+
+#server_label{
+    font-size: 16px; 
+    color: rgb(130, 130, 130);
+    position: absolute;
+    left: 0px;
+    top:45px;
+    width: 200px;
+    text-align: left;
+}
+
+.url{
+    position:absolute; 
+    width: 210px;
+    height:21px;
+    letter-spacing: 0px;
+    font-size: 14px;
+    top: 40px; 
+    left: 80px
+}
+
+#translation_setting_block2{
+    position:absolute; 
+    top:130px;
+    left: 30px;
+}
+
+#api_key_label{
+    font-size: 16px; 
+    color: rgb(130, 130, 130);
+    position: absolute;
+    left: 0px;
+    top:0px;
+    width: 200px;
+    text-align: left;
+}
+
+#api_key{
+    position:absolute;
+    font-size: 14px;
+    height:21px;
+    width: 210px;
+    top: 0px;
+    left: 80px
+}
+
+.url_setting_hide{
+    cursor:pointer; 
+    position:absolute;
+    top:180px;
+    left: 190px; 
+    height: 35px; 
+    width: 140px; 
+    background-color: #357aa1; 
+    border-radius: 3px;
+    border:none;
+    cursor:pointer;
+    color: #ffffff;
+}
+
+.url_button{
+    position: absolute;
+    top:180px;
+    left: 30px; 
+    height: 35px; 
+    width: 140px; 
+    background-color: #357aa1; 
+    border-radius: 3px;
+    border:none;
+    cursor:pointer;
+    color: #ffffff;
+}
+
+.mask{
+    display: none;
+    position:absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0.3;
+    background-color: #020202;
+    z-index: 5;
+}
+
+.arrow_image{
+    display: block;
+    height: 100%;
+    width: auto;
+    margin:auto;
+    background: #ebebeb;
+    background-image:url(../static/img/arrow-left.png) ;
+    background-repeat:no-repeat;
+    background-position:center;
+    background-size:100% 100%;
+}
+
 .restriction{
     margin-left: 60px;
     margin-right: 60px;
@@ -347,6 +478,7 @@ body {
     color: #999;
     white-space:pre;
     margin-left: 22px;
+    cursor: pointer;
 }
 
 .nav2{
@@ -552,3 +684,5 @@ body {
     color: rgb(7, 71, 209);
     text-align: center;
 }
+
+
