@@ -34,13 +34,10 @@ class DecoderTest(tf.test.TestCase):
             batch_size, depth, num_sources=num_sources, dtype=dtype
         )
 
-        if initial_state_fn is not None:
-            initial_state = initial_state_fn(batch_size, dtype)
         decoder.initialize(vocab_size=vocab_size)
         initial_state = decoder.initial_state(
             memory=memory,
             memory_sequence_length=memory_sequence_length,
-            initial_state=initial_state,
             dtype=dtype,
         )
 
