@@ -148,7 +148,7 @@ class SequenceToSequence(model.Model):
         # Encode the source.
         source_length = self.features_inputter.get_length(features)
         source_inputs = self.features_inputter(features, training=training)
-        encoder_outputs, encoder_state, encoder_sequence_length = self.encoder(
+        encoder_outputs, encoder_sequence_length = self.encoder(
             source_inputs, sequence_length=source_length, training=training
         )
 
@@ -160,7 +160,6 @@ class SequenceToSequence(model.Model):
             outputs = self._decode_target(
                 labels,
                 encoder_outputs,
-                encoder_state,
                 encoder_sequence_length,
                 step=step,
                 training=training,
@@ -169,7 +168,7 @@ class SequenceToSequence(model.Model):
         # When not in training, also compute the model predictions.
         if not training:
             predictions = self._dynamic_decode(
-                features, encoder_outputs, encoder_state, encoder_sequence_length
+                features, encoder_outputs, encoder_sequence_length
             )
 
         return outputs, predictions
@@ -202,7 +201,6 @@ class SequenceToSequence(model.Model):
         self,
         labels,
         encoder_outputs,
-        encoder_state,
         encoder_sequence_length,
         step=None,
         training=None,
@@ -214,7 +212,6 @@ class SequenceToSequence(model.Model):
         initial_state = self.decoder.initial_state(
             memory=encoder_outputs,
             memory_sequence_length=encoder_sequence_length,
-            initial_state=encoder_state,
         )
         logits, _, attention = self.decoder(
             target_inputs,
@@ -244,7 +241,6 @@ class SequenceToSequence(model.Model):
         self,
         features,
         encoder_outputs,
-        encoder_state,
         encoder_sequence_length,
     ):
         params = self.params
@@ -258,18 +254,11 @@ class SequenceToSequence(model.Model):
             encoder_sequence_length = tfa.seq2seq.tile_batch(
                 encoder_sequence_length, beam_size
             )
-            encoder_state = tf.nest.map_structure(
-                lambda state: tfa.seq2seq.tile_batch(state, beam_size)
-                if state is not None
-                else None,
-                encoder_state,
-            )
 
         # Dynamically decodes from the encoder outputs.
         initial_state = self.decoder.initial_state(
             memory=encoder_outputs,
             memory_sequence_length=encoder_sequence_length,
-            initial_state=encoder_state,
         )
         (
             sampled_ids,

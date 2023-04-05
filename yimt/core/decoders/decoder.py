@@ -95,7 +95,6 @@ class Decoder(tf.keras.layers.Layer):
         self,
         memory=None,
         memory_sequence_length=None,
-        initial_state=None,
         batch_size=None,
         dtype=None,
     ):
@@ -104,8 +103,6 @@ class Decoder(tf.keras.layers.Layer):
         Args:
           memory: Memory values to query.
           memory_sequence_length: Memory values length.
-          initial_state: An initial state to start from, e.g. the last encoder
-            state.
           batch_size: The batch size to use.
           dtype: The dtype of the state.
 
@@ -126,8 +123,6 @@ class Decoder(tf.keras.layers.Layer):
         if batch_size is None or dtype is None:
             sentinel = tf.nest.flatten(memory)[0]
             if sentinel is None:
-                sentinel = tf.nest.flatten(initial_state)[0]
-            if sentinel is None:
                 raise ValueError(
                     "If batch_size or dtype are not set, then either "
                     "memory or initial_state should be set"
@@ -136,7 +131,7 @@ class Decoder(tf.keras.layers.Layer):
                 batch_size = tf.shape(sentinel)[0]
             if dtype is None:
                 dtype = sentinel.dtype
-        return self._get_initial_state(batch_size, dtype, initial_state=initial_state)
+        return self._get_initial_state(batch_size, dtype)
 
     def call(
         self,
@@ -314,13 +309,12 @@ class Decoder(tf.keras.layers.Layer):
         )
 
     @abc.abstractmethod
-    def _get_initial_state(self, batch_size, dtype, initial_state=None):
+    def _get_initial_state(self, batch_size, dtype):
         """Returns the decoder initial state.
 
         Args:
           batch_size: The batch size of the returned state.
           dtype; The data type of the state.
-          initial_state: A state to start from.
 
         Returns:
           The decoder state as a nested structure of tensors.

@@ -202,9 +202,8 @@ class SelfAttentionDecoder(decoder.Decoder):
             attention = tf.squeeze(attention, axis=1)
         return outputs, state, attention
 
-    def _get_initial_state(self, batch_size, dtype, initial_state=None):
+    def _get_initial_state(self, batch_size, dtype):
         # The decoder state contains the keys and values projections of the previous timesteps.
-        _ = initial_state
         cache = []
         for _ in self.layers:
             shape = [batch_size, self.num_heads, 0, self.num_units // self.num_heads]
