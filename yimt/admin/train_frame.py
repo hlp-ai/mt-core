@@ -306,7 +306,7 @@ def create_edit_config(parent):
     tk.Label(parent, text="Checkpoint Step").grid(row=11, column=0, padx=10, pady=5, sticky="e")
     entry_ckpt_step = tk.Entry(parent)
     entry_ckpt_step.grid(row=11, column=1, padx=10, pady=5, sticky="w")
-    entry_ckpt_step.insert(0, 200)
+    entry_ckpt_step.insert(0, 1000)
 
     tk.Label(parent, text="Max Checkpoints").grid(row=12, column=0, padx=10, pady=5, sticky="e")
     entry_ckpt_max = tk.Entry(parent)
@@ -321,7 +321,7 @@ def create_edit_config(parent):
     tk.Label(parent, text="Evaluation Step").grid(row=14, column=0, padx=10, pady=5, sticky="e")
     entry_eval_step = tk.Entry(parent)
     entry_eval_step.grid(row=14, column=1, padx=10, pady=5, sticky="w")
-    entry_eval_step.insert(0, 200)
+    entry_eval_step.insert(0, 1000)
 
     tk.Label(parent, text="Evaluation Scorer").grid(row=15, column=0, padx=10, pady=5, sticky="e")
     entry_eval_scorer = tk.Entry(parent)
@@ -332,6 +332,11 @@ def create_edit_config(parent):
     entry_params_beam = tk.Entry(parent)
     entry_params_beam.grid(row=16, column=1, padx=10, pady=5, sticky="w")
     entry_params_beam.insert(0, "5")
+
+    tk.Label(parent, text="Sample Buffer Size").grid(row=17, column=0, padx=10, pady=5, sticky="e")
+    entry_train_buf_size = tk.Entry(parent)
+    entry_train_buf_size.grid(row=17, column=1, padx=10, pady=5, sticky="w")
+    entry_train_buf_size.insert(0, "-1")
 
     def save():
         config = {}
@@ -385,6 +390,7 @@ def create_edit_config(parent):
         config["train"]["keep_checkpoint_max"] = int(entry_ckpt_max.get())
         config["train"]["average_last_checkpoints"] = int(entry_ckpt_max.get())
         config["train"]["save_summary_steps"] = int(entry_summary_step.get())
+        config["train"]["sample_buffer_size"] = int(entry_train_buf_size.get())
 
         config["eval"] = {}
         config["eval"]["steps"] = int(entry_eval_step.get())
@@ -454,8 +460,8 @@ def create_edit_config(parent):
             tk.messagebox.showinfo(message="Not file chosen.")
             return
 
-    tk.Button(parent, text="Load Config", command=load).grid(row=17, column=0, padx=10, pady=5)
-    tk.Button(parent, text="Save Config", command=save).grid(row=17, column=1, padx=10, pady=5)
+    tk.Button(parent, text="Load Config", command=load).grid(row=18, column=0, padx=10, pady=5)
+    tk.Button(parent, text="Save Config", command=save).grid(row=18, column=1, padx=10, pady=5)
 
 
 def create_train(parent):
