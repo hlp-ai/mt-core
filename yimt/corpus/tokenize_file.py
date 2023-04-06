@@ -28,6 +28,8 @@ def tokenize_single(in_fn, lang=None, out_fn=None):
     print(n)
     out_f.close()
 
+    return out_fn
+
 
 def tokenize_tsv(corpus_fn, lang1, lang2="zh", out=None, max_sentences=None):
     if out is None:

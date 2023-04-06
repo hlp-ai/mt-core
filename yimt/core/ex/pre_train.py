@@ -3,6 +3,7 @@ import argparse
 import os
 
 from yimt.core.ex.sp import train_spm, load_spm, tokenize_file
+from yimt.corpus.tokenize_file import tokenize_single
 
 
 def get_file_name(p):
@@ -22,6 +23,43 @@ def get_tok_file(corpus_path):
 def get_vocab_file(tok_corpus_path):
     corpus_path = get_file_name(tok_corpus_path)
     return corpus_path + ".vocab"
+
+
+def pretrain_corpus(raw_train_fn, raw_dev_fn=None, pretok_lang=None, vocab_size=32000, output_path=None,
+                    max_sent=10000000, coverage=0.9999):
+    if output_path is None:
+        output_path = os.path.dirname(raw_train_fn)
+
+    sp_prefix = os.path.join(output_path, get_sp_prefix(raw_train_fn, vocab_size))
+
+    if pretok_lang:
+        print("Pretokenizing file {}".format(raw_train_fn))
+        raw_train_fn = tokenize_single(raw_train_fn, pretok_lang)
+        if raw_dev_fn:
+            print("Pretokenizing file {}".format(raw_dev_fn))
+            raw_dev_fn = tokenize_single(raw_dev_fn, pretok_lang)
+
+    print("Training SentencePiece on", raw_train_fn, "and writing SP model into", sp_prefix)
+    train_spm(raw_train_fn, sp_prefix, vocab_size, num_sentences=max_sent, coverage=coverage)
+
+    print()
+
+    tokenizer_sp = load_spm(sp_prefix + ".model")
+    train_tok = os.path.join(output_path, get_tok_file(raw_train_fn))
+    print("Tokenizing {} into {}".format(raw_train_fn, train_tok))
+    tokenize_file(tokenizer_sp, raw_train_fn, train_tok)
+    if raw_dev_fn:
+        dev_tok = os.path.join(output_path, get_tok_file(raw_dev_fn))
+        print("Tokenizing {} into {}".format(raw_dev_fn, dev_tok))
+        tokenize_file(tokenizer_sp, raw_dev_fn, dev_tok)
+
+    print()
+
+    build_vocab_cmd = "python -m yimt.core.bin.build_vocab --size {} --save_vocab {} {}"
+
+    vocab = os.path.join(output_path, get_vocab_file(train_tok))
+    print("Building vocab {} from {}...".format(vocab, train_tok))
+    os.popen(build_vocab_cmd.format(vocab_size, vocab, train_tok)).readlines()
 
 
 if __name__ == "__main__":
