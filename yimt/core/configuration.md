@@ -94,6 +94,22 @@ params:
     beta_2: 0.998
   learning_rate: 1.0
 
+  # (optional) The type of learning rate decay (default: null).
+  # This value may change the semantics of other decay options. See the documentation
+  # or the code.
+  decay_type: NoamDecay
+  # (optional unless decay_type is set) Decay parameters.
+  decay_params:
+    model_dim: 512
+    warmup_steps: 4000
+  # (optional) The number of training steps that make 1 decay step (default: 1).
+  decay_step_duration: 1
+  # (optional) After how many steps to start the decay (default: 0).
+  start_decay_steps: 50000
+
+  # (optional) The learning rate minimum value (default: 0).
+  minimum_learning_rate: 0.0001
+
   # (optional) If set, overrides all dropout values configured in the model definition.
   dropout: 0.3
 
@@ -110,24 +126,6 @@ params:
   # (optional) Average loss in the time dimension in addition to the batch dimension
   # (default: true when using "tokens" batch type, false otherwise).
   average_loss_in_time: false
-
-  # (optional) The type of learning rate decay (default: null). See:
-  #  * https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/schedules
-  #  * https://opennmt.net/OpenNMT-tf/package/opennmt.schedules.html
-  # This value may change the semantics of other decay options. See the documentation
-  # or the code.
-  decay_type: NoamDecay
-  # (optional unless decay_type is set) Decay parameters.
-  decay_params:
-    model_dim: 512
-    warmup_steps: 4000
-  # (optional) The number of training steps that make 1 decay step (default: 1).
-  decay_step_duration: 1
-  # (optional) After how many steps to start the decay (default: 0).
-  start_decay_steps: 50000
-
-  # (optional) The learning rate minimum value (default: 0).
-  minimum_learning_rate: 0.0001
 
   # (optional) The label smoothing value.
   label_smoothing: 0.1
