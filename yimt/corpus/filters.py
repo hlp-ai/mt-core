@@ -38,6 +38,22 @@ class SameFilter(Filter):
         return src, tgt
 
 
+class HasZhFilter(Filter):
+
+    def __init__(self, filter_src=True):
+        self.filter_src = filter_src
+
+    def filter(self, src, tgt):
+        if self.filter_src:
+            if has_zh(src):
+                return None
+        else:
+            if has_zh(tgt):
+                return None
+
+        return src, tgt
+
+
 class OverlapFilter(Filter):
     """Filter pair whose source and target have too much overlap"""
 
