@@ -2,7 +2,7 @@ import argparse
 
 from yimt.api.text_splitter import word_segment
 from yimt.corpus.filters import SameFilter, OverlapFilter, LengthFilter, \
-    EmptyFilter, AlphabetRatioFilter, CharacterRatioFilter, ASCIIRatioFilter, AugumentForZhFilter
+    EmptyFilter, AlphabetRatioFilter, CharacterRatioFilter, ASCIIRatioFilter, AugumentForZhFilter, HasZhFilter
 
 
 def main(in_path, out_path, lang_pair):
@@ -37,6 +37,12 @@ def main(in_path, out_path, lang_pair):
 
     if src_lang == "ja" or src_lang == "zh" or src_lang == "ko" or src_lang == "th":
         filters.append(ASCIIRatioFilter(filter_tgt=False, filter_src=True))
+
+    if src_lang == "zh" or tgt_lang == "zh":
+        if src_lang == "zh":
+            filters.append(HasZhFilter(False))
+        else:
+            filters.append(HasZhFilter(True))
 
     print(filters)
 
