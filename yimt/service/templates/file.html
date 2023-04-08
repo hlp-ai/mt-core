@@ -9,6 +9,14 @@
         var END_POINT = "http://127.0.0.1:5555";
         window.onload = function()
         {
+            var json1=window.localStorage.getItem("server");
+            var json2=window.localStorage.getItem("key");
+            API_KEY=json2;
+            if(json1!="")
+            {
+                END_POINT=json1;
+            }
+
             var userAgentInfo = navigator.userAgent;
             var Agents = ["Android","iPhone","SymbianOS","Windows Phone","iPad","iPod"];
             var flag = true;
@@ -31,44 +39,49 @@
         var xhr;
        
 		function uploadFile() {
-		  var fileObj = document.getElementById("select_file").files[0];
-          var files = document.getElementById("select_file").files;
-          if(files.length==0)
-          {
-            return;
-          }
-          document.getElementById("showProgress").style.display ="block";
-          document.getElementById("progress_line").style.display ="block";
-          document.getElementById("download").style.display = "none";
-
-		  console.log(fileObj);
-		  var form = new FormData();
-		  form.append("file", fileObj);
-		  form.append("source", "en");
-		  form.append("target", "zh");
-
-		  var url = END_POINT + "/translate_file";
-		  xhr = new XMLHttpRequest();
-
-          xhr.upload.addEventListener("progress", function(evt){
-            if (evt.lengthComputable) {
-                var percentComplete = Math.round(evt.loaded * 100 / evt.total);
-                if (percentComplete == 100){
-                    setTimeout(function () {
-                    document.getElementById("showProgress").innerHTML = '上传完成，正在翻译...';
-                    document.getElementById("progress_line").value=percentComplete;
-                },10)
-                }else{
-                    document.getElementById("showProgress").innerHTML = '已上传'+percentComplete+"%";
-                    document.getElementById("progress_line").value=percentComplete;
-                }
-             }else {
-                document.getElementById("showProgress").innerHTML = '无法计算';
+		    var fileObj = document.getElementById("select_file").files[0];
+            var files = document.getElementById("select_file").files;
+            if(files.length==0)
+            {
+               return;
             }
-            }, false);
-		  xhr.open("post", url, true);
-		  xhr.onload = uploadComplete;
-		  xhr.send(form);
+            document.getElementById("showProgress").style.display ="block";
+            document.getElementById("progress_line").style.display ="block";
+            document.getElementById("download").style.display = "none";
+
+		    console.log(fileObj);
+
+            source_lang = document.getElementById('source').value;
+            target_lang = document.getElementById('target').value;
+
+		    var form = new FormData();
+		    form.append("file", fileObj);
+		    form.append("source", source_lang);
+		    form.append("target", target_lang);
+            form.append("api_key", API_KEY);
+
+		    var url = END_POINT + "/translate_file";
+		    xhr = new XMLHttpRequest();
+
+            xhr.upload.addEventListener("progress", function(evt){
+                if (evt.lengthComputable) {
+                    var percentComplete = Math.round(evt.loaded * 100 / evt.total);
+                    if (percentComplete == 100){
+                        setTimeout(function () {
+                        document.getElementById("showProgress").innerHTML = '上传完成，正在翻译...';
+                        document.getElementById("progress_line").value=percentComplete;
+                    },10)
+                    }else{
+                        document.getElementById("showProgress").innerHTML = '已上传'+percentComplete+"%";
+                        document.getElementById("progress_line").value=percentComplete;
+                    }
+                }else {
+                    document.getElementById("showProgress").innerHTML = '无法计算';
+                }
+                }, false);
+		    xhr.open("post", url, true);
+		    xhr.onload = uploadComplete;
+		    xhr.send(form);
 		}
 
 		function uploadComplete(evt) {
@@ -115,27 +128,19 @@
         </div>
 
         <script>
-            function url_setting_func()
+           function url_setting_func()
             {
-                var json1=window.localStorage.getItem("server");
-                var json2=window.localStorage.getItem("key");
-                API_KEY=json2;
-                if(json1!="")
-                {
-                    END_POINT=json1;
-                }
-
                 document.getElementById("url_setting_block").style.visibility='visible';
                 document.getElementById("mask").style.display='block';
                 document.getElementById("url").value=END_POINT;
                 document.getElementById("api_key").value=API_KEY;
             }
-
+            
             function url_resetting_func()
             {
                 END_POINT = document.getElementById("url").value;
                 window.localStorage.setItem("server", END_POINT);
-
+                
                 document.getElementById("url_setting_block").style.visibility='hidden';
                 document.getElementById("mask").style.display='none';
 
@@ -150,6 +155,7 @@
             }
 
             document.getElementById("url_setting_label").addEventListener("click", url_setting_func);
+        </script>
         </script>
     </div>
 
