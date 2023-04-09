@@ -61,14 +61,14 @@ def main(in_path, out_path, lang_pair):
                 src, tgt = cols[:2]
             else:
                 # logger.debug("NO Pair: {}".format(line))
-                filtered_f.write(line + "\n")
+                filtered_f.write("NO-Pair: " + line + "\n")
                 continue
 
             valid = True
             for f in filters:
                 if f.filter(src, tgt) is None:
                     # logger.debug("{}: {}".format(f.__class__, line))
-                    filtered_f.write(line + "\n")
+                    filtered_f.write(f.__class__.__name__ + ": " + line + "\n")
                     valid = False
                     break
             if valid:
