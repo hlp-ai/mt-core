@@ -228,11 +228,13 @@ def create_app(args):
             source_lang = json.get("source")
             target_lang = json.get("target")
             text_format = json.get("format")
+            api_key = json.get("api_key")
         else:  # url data in body of POST method
             q = request.values.get("q")
             source_lang = request.values.get("source")
             target_lang = request.values.get("target")
             text_format = request.values.get("format")
+            api_key = request.values.get("api_key")
 
         if not q:
             abort(400, description="Invalid request: missing q parameter")
@@ -246,6 +248,9 @@ def create_app(args):
 
         if text_format not in ["text", "html"]:
             abort(400, description="%s format is not supported" % text_format)
+
+        if not api_key:
+            api_key = ""
 
         q = unescape(q)
         q = q.strip()
@@ -284,8 +289,8 @@ def create_app(args):
         else:
             translation = translator.translate_paragraph(src)
 
-        log_service.info("/translate: " + q + "; " + source_lang + "-" + target_lang + "; " + text_format
-                         + "-->" + translation)
+        log_service.info("/translate: " + q + "&source=" + source_lang + "&target=" + target_lang
+                         + "&format=" + text_format + "&api_key=" + api_key + "-->" + translation)
 
         resp = {
             'translatedText': translation
@@ -303,6 +308,10 @@ def create_app(args):
         target_lang = request.form.get("target")
         file = request.files['file']
 
+        api_key = request.form.get("api_key")
+        if not api_key:
+            api_key = ""
+
         if not file:
             abort(400, description="Invalid request: missing file parameter")
         if not source_lang:
@@ -313,7 +322,8 @@ def create_app(args):
         if file.filename == '':
             abort(400, description="Invalid request: empty file")
 
-        log_service.info("/translate_file: " + file.filename)
+        log_service.info("/translate_file: " + file.filename + "&source=" + source_lang + "&target=" + target_lang
+                         + "&api_key=" + api_key)
 
         file_type = os.path.splitext(file.filename)[1]
 
