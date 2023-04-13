@@ -1,15 +1,4 @@
-import regex
-
-not_letter = regex.compile(r'[^\p{L}]')
-
-
-def norm(s, lower=True, remove_noletter=True):
-    if lower:
-        s = s.lower()
-
-    if remove_noletter:
-        s = regex.sub(not_letter, "", s)
-    return s
+from yimt.corpus.utils import norm
 
 
 def dedup(in_path, out_path,
