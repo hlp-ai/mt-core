@@ -18,48 +18,56 @@ def create_ft(parent):
     entry_sp_src.grid(row=1, column=1, padx=10, pady=5)
     tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_sp_src)).grid(row=1, column=2, padx=10, pady=5)
 
-    tk.Label(parent, text="Target SP model path").grid(row=2, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Pretok Source Language").grid(row=2, column=0, padx=10, pady=5, sticky="e")
+    entry_pretok_src = tk.Entry(parent, width=50)
+    entry_pretok_src.grid(row=2, column=1, padx=10, pady=5)
+
+    tk.Label(parent, text="Target SP model path").grid(row=3, column=0, padx=10, pady=5, sticky="e")
     entry_sp_tgt = tk.Entry(parent, width=50)
-    entry_sp_tgt.grid(row=2, column=1, padx=10, pady=5)
-    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_sp_tgt)).grid(row=2, column=2, padx=10,
+    entry_sp_tgt.grid(row=3, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_sp_tgt)).grid(row=3, column=2, padx=10,
                                                                                            pady=5)
 
-    tk.Label(parent, text="Source vocabulary").grid(row=3, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Pretok Target Language").grid(row=4, column=0, padx=10, pady=5, sticky="e")
+    entry_pretok_tgt = tk.Entry(parent, width=50)
+    entry_pretok_tgt.grid(row=4, column=1, padx=10, pady=5)
+
+    tk.Label(parent, text="Source vocabulary").grid(row=5, column=0, padx=10, pady=5, sticky="e")
     entry_vocab_src = tk.Entry(parent, width=50)
-    entry_vocab_src.grid(row=3, column=1, padx=10, pady=5)
-    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_vocab_src)).grid(row=3, column=2, padx=10,
+    entry_vocab_src.grid(row=5, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_vocab_src)).grid(row=5, column=2, padx=10,
                                                                                            pady=5)
 
-    tk.Label(parent, text="Target vocabulary").grid(row=4, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Target vocabulary").grid(row=6, column=0, padx=10, pady=5, sticky="e")
     entry_vocab_tgt = tk.Entry(parent, width=50)
-    entry_vocab_tgt.grid(row=4, column=1, padx=10, pady=5)
-    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_vocab_tgt)).grid(row=4, column=2, padx=10,
+    entry_vocab_tgt.grid(row=6, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_vocab_tgt)).grid(row=6, column=2, padx=10,
                                                                                            pady=5)
 
-    tk.Label(parent, text="Checkpoint dir to be fine-tuned").grid(row=5, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Checkpoint dir to be fine-tuned").grid(row=7, column=0, padx=10, pady=5, sticky="e")
     entry_chkpt_ft = tk.Entry(parent, width=50)
-    entry_chkpt_ft.grid(row=5, column=1, padx=10, pady=5)
-    tk.Button(parent, text="...", command=partial(ask_dir, entry_chkpt_ft)).grid(row=5, column=2, padx=10, pady=5)
+    entry_chkpt_ft.grid(row=7, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_dir, entry_chkpt_ft)).grid(row=7, column=2, padx=10, pady=5)
 
-    tk.Label(parent, text="Output dir").grid(row=6, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Output dir").grid(row=8, column=0, padx=10, pady=5, sticky="e")
     entry_output = tk.Entry(parent, width=50)
-    entry_output.grid(row=6, column=1, padx=10, pady=5)
-    tk.Button(parent, text="...", command=partial(ask_dir, entry_output)).grid(row=6, column=2, padx=10, pady=5)
+    entry_output.grid(row=8, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_dir, entry_output)).grid(row=8, column=2, padx=10, pady=5)
 
-    tk.Label(parent, text="Steps for fine-tuning").grid(row=7, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Steps for fine-tuning").grid(row=9, column=0, padx=10, pady=5, sticky="e")
     entry_steps = tk.Entry(parent)
-    entry_steps.grid(row=7, column=1, padx=10, pady=5, sticky="w")
+    entry_steps.grid(row=9, column=1, padx=10, pady=5, sticky="w")
     entry_steps.insert(0, "1")
 
-    tk.Label(parent, text="Additional config file").grid(row=8, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Additional config file").grid(row=10, column=0, padx=10, pady=5, sticky="e")
     entry_ex_config = tk.Entry(parent, width=50)
-    entry_ex_config.grid(row=8, column=1, padx=10, pady=5)
-    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_ex_config)).grid(row=8, column=2, padx=10,
+    entry_ex_config.grid(row=10, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_ex_config)).grid(row=10, column=2, padx=10,
                                                                                               pady=5)
 
     var_con_ckpt = IntVar()
     check_con_ckpt = Checkbutton(parent, text="Continue form checkpoint", variable=var_con_ckpt, onvalue=1, offvalue=0)
-    check_con_ckpt.grid(row=9, column=1, padx=10, pady=5)
+    check_con_ckpt.grid(row=11, column=1, padx=10, pady=5)
 
     def go():
         corpus_train = entry_corpus_train.get().strip()
@@ -71,6 +79,9 @@ def create_ft(parent):
         output_path = entry_output.get().strip()
         steps = entry_steps.get().strip()
         ex_config = entry_ex_config.get().strip()
+
+        pretok_src = entry_pretok_src.get().strip()
+        pretok_tgt = entry_pretok_tgt.get().strip()
 
         if len(corpus_train) == 0 or len(sp_src) == 0 or len(sp_tgt) == 0 \
                 or len(vocab_src) == 0 or len(vocab_tgt) == 0 or len(chkpt_dir)==0 \
@@ -86,11 +97,17 @@ def create_ft(parent):
         if var_con_ckpt.get() == 1:
             cmd_str += " --continue_from_checkpoint"
 
+        if len(pretok_src) > 0:
+            cmd_str += " --pretok_src " + pretok_src
+
+        if len(pretok_tgt) > 0:
+            cmd_str += " --pretok_tgt " + pretok_tgt
+
         os.popen(cmd_str).readlines()
 
         tk.messagebox.showinfo(title="Info", message="Fine-tuning Done.")
 
-    tk.Button(parent, text="Fine-tune Model", command=go).grid(row=10, column=1, padx=10, pady=5)
+    tk.Button(parent, text="Fine-tune Model", command=go).grid(row=12, column=1, padx=10, pady=5)
 
 
 def create_mix_ft(parent):
