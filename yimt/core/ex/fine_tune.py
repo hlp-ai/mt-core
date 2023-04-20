@@ -7,6 +7,7 @@ from pprint import pprint
 
 import yaml
 from yimt.core.utils.misc import merge_dict
+from yimt.corpus.tokenize_file import tokenize_single
 
 
 def copy_to_dir(fn, dst):
@@ -22,7 +23,9 @@ if __name__ == "__main__":
     argparser = argparse.ArgumentParser("Fine-tune existing NMT model.")
     argparser.add_argument("--corpus_fn", required=True, help="in-domain parallel corpus file")
     argparser.add_argument("--src_sp_model", required=True, help="sentencepiece model for source text")
+    argparser.add_argument("--pretok_src", default=None, help="pretokenize source text")
     argparser.add_argument("--tgt_sp_model", required=True, help="sentencepiece model for target text")
+    argparser.add_argument("--pretok_tgt", default=None, help="pretokenize target text")
     argparser.add_argument("--src_vocab", required=True, help="source vocabulary file")
     argparser.add_argument("--tgt_vocab", required=True, help="target vocabulary file")
     argparser.add_argument("--ckpt_dir", required=True, help="checkpoint directory containing checkpoint to be fine-tuned")
@@ -77,6 +80,14 @@ if __name__ == "__main__":
     print("Splitting {} into {} and {}...".format(corpus_fn, corpus_fn_src, corpus_fn_tgt))
     os.popen(split_cmd_str.format(corpus_fn, corpus_fn_src, corpus_fn_tgt)).readlines()
     print()
+
+    if args.pretok_src:
+        print("Pretokenzing source text...")
+        corpus_fn_src = tokenize_single(corpus_fn_src, args.pretok_src)
+
+    if args.pretok_tgt:
+        print("Pretokenzing target text...")
+        corpus_fn_tgt = tokenize_single(corpus_fn_tgt, args.pretok_tgt)
 
     tok_cmd_str = "python -m yimt.core.ex.sp_tokenize --sp_model {} --in_fn {} --out_fn {}"
     corpus_fn_src_tok = corpus_fn_src + ".tok"
