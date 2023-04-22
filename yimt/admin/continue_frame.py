@@ -5,6 +5,7 @@ import tkinter.messagebox
 from functools import partial
 
 from yimt.admin.win_utils import ask_open_file, ask_dir
+from yimt.core.ex.fine_tune import main
 
 
 def create_ft(parent):
@@ -79,6 +80,8 @@ def create_ft(parent):
         output_path = entry_output.get().strip()
         steps = entry_steps.get().strip()
         ex_config = entry_ex_config.get().strip()
+        if len(ex_config) == 0:
+            ex_config = None
 
         pretok_src = entry_pretok_src.get().strip()
         pretok_tgt = entry_pretok_tgt.get().strip()
@@ -89,21 +92,8 @@ def create_ft(parent):
             tk.messagebox.showinfo(title="Info", message="Some parameter empty.")
             return
 
-        pretrain_cmd = "python ../core/ex/fine_tune.py --corpus_fn {} --src_sp_model {} --tgt_sp_model {} --src_vocab {} --tgt_vocab {} --ckpt_dir {} --output_dir {} --steps {}"
-        cmd_str = pretrain_cmd.format(corpus_train, sp_src, sp_tgt, vocab_src, vocab_tgt, chkpt_dir, output_path, steps)
-        if len(ex_config) > 0:
-            cmd_str += " --config " + ex_config
-
-        if var_con_ckpt.get() == 1:
-            cmd_str += " --continue_from_checkpoint"
-
-        if len(pretok_src) > 0:
-            cmd_str += " --pretok_src " + pretok_src
-
-        if len(pretok_tgt) > 0:
-            cmd_str += " --pretok_tgt " + pretok_tgt
-
-        os.popen(cmd_str).readlines()
+        main(corpus_train, sp_src, sp_tgt, vocab_src, vocab_tgt, chkpt_dir, output_path, int(steps),
+             ex_config, pretok_src, pretok_tgt, var_con_ckpt.get() == 1)
 
         tk.messagebox.showinfo(title="Info", message="Fine-tuning Done.")
 
@@ -181,15 +171,8 @@ def create_mix_ft(parent):
             tk.messagebox.showinfo(title="Info", message="Some parameter empty.")
             return
 
-        pretrain_cmd = "python ../core/ex/fine_tune.py --corpus_fn {} --src_sp_model {} --tgt_sp_model {} --src_vocab {} --tgt_vocab {} --ckpt_dir {} --output_dir {} --steps {}"
-        cmd_str = pretrain_cmd.format(corpus_train, sp_src, sp_tgt, vocab_src, vocab_tgt, chkpt_dir, output_path, steps)
-        if len(ex_config) > 0:
-            cmd_str += " --config " + ex_config
-
-        if var_con_ckpt.get() == 1:
-            cmd_str += " --continue_from_checkpoint"
-
-        os.popen(cmd_str).readlines()
+        main(corpus_train, sp_src, sp_tgt, vocab_src, vocab_tgt, chkpt_dir, output_path, steps,
+             ex_config)
 
         tk.messagebox.showinfo(title="Info", message="Fine-tuning Done.")
 

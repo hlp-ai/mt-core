@@ -19,6 +19,89 @@ def copy_to_dir(fn, dst):
     return dfname
 
 
+def main(corpus_fn, sp_src, sp_tgt, src_vocab, tgt_vocab,
+         ckpt_dir, output_dir,
+         step_fine_tune,
+         config=None,
+         pretok_src=None, pretok_tgt=None,
+         continue_from_checkpoint=False):
+    corpus_fn_src = corpus_fn + ".src"
+    corpus_fn_tgt = corpus_fn + ".tgt"
+    step_trained = 0
+
+    extra_conf = {}
+    if config is not None:
+        extra_conf = yaml.load(io.open(config, encoding="utf-8"), Loader=yaml.FullLoader)
+        pprint(extra_conf)
+
+    print("Copying checkpoint {} into {}...".format(ckpt_dir, output_dir))
+    for f in os.listdir(ckpt_dir):
+        m = re.search("ckpt-(\\d+)", f)
+        if m:
+            step_trained = int(m.group(1))
+            print("Checkpoint to be fine-tuned has trained for {} stpes".format(step_trained))
+        src = os.path.join(ckpt_dir, f)
+        if os.path.isfile(src):
+            copy_to_dir(src, output_dir)
+
+    print("Copying source sp model and vocab...")
+    sp_src = copy_to_dir(sp_src, output_dir)
+    src_vocab = copy_to_dir(src_vocab, output_dir)
+
+    print("Copying target sp model and vocab...")
+    sp_tgt = copy_to_dir(sp_tgt, output_dir)
+    tgt_vocab = copy_to_dir(tgt_vocab, output_dir)
+
+    split_cmd_str = "python -m yimt.corpus.bin.to_single {} {} {}"
+    print("Splitting {} into {} and {}...".format(corpus_fn, corpus_fn_src, corpus_fn_tgt))
+    os.popen(split_cmd_str.format(corpus_fn, corpus_fn_src, corpus_fn_tgt)).readlines()
+    print()
+
+    if pretok_src:
+        print("Pretokenzing source text...")
+        corpus_fn_src = tokenize_single(corpus_fn_src, pretok_src)
+
+    if pretok_tgt:
+        print("Pretokenzing target text...")
+        corpus_fn_tgt = tokenize_single(corpus_fn_tgt, pretok_tgt)
+
+    tok_cmd_str = "python -m yimt.core.ex.sp_tokenize --sp_model {} --in_fn {} --out_fn {}"
+    corpus_fn_src_tok = corpus_fn_src + ".tok"
+    corpus_fn_tgt_tok = corpus_fn_tgt + ".tok"
+    print("Tokenizing {} into {}...".format(corpus_fn_src, corpus_fn_src_tok))
+    os.popen(tok_cmd_str.format(sp_src, corpus_fn_src, corpus_fn_src_tok)).readlines()
+    print()
+    print("Tokenizing {} into {}...".format(corpus_fn_tgt, corpus_fn_tgt_tok))
+    os.popen(tok_cmd_str.format(sp_tgt, corpus_fn_tgt, corpus_fn_tgt_tok)).readlines()
+    print()
+
+    config = {
+        "model_dir": output_dir,
+        "data": {
+            "train_features_file": corpus_fn_src_tok,
+            "train_labels_file": corpus_fn_tgt_tok,
+            "source_vocabulary": src_vocab,
+            "target_vocabulary": tgt_vocab,
+        },
+        "train": {
+            "max_step": step_trained + step_fine_tune,
+            "average_last_checkpoints": 0
+        }
+    }
+    merge_dict(config, extra_conf)
+    pprint(config)
+    config_fn = os.path.join(output_dir, "ft.yml")
+    with open(config_fn, "w") as f:
+        yaml.safe_dump(config, f, encoding='utf-8', allow_unicode=True)
+
+    train_cmd_str = "python -m yimt.core.bin.main --config {} --auto_config --mixed_precision train"
+    if continue_from_checkpoint:
+        train_cmd_str += " --continue_from_checkpoint"
+    print("Training...")
+    os.popen(train_cmd_str.format(config_fn)).readlines()
+    print()
+
+
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser("Fine-tune existing NMT model.")
     argparser.add_argument("--corpus_fn", required=True, help="in-domain parallel corpus file")
@@ -51,76 +134,5 @@ if __name__ == "__main__":
 
     step_fine_tune = args.steps
 
-    step_trained = 0
-
-    extra_conf = {}
-    if args.config is not None:
-        extra_conf = yaml.load(io.open(args.config, encoding="utf-8"), Loader=yaml.FullLoader)
-        pprint(extra_conf)
-
-    print("Copying checkpoint {} into {}...".format(ckpt_dir, output_dir))
-    for f in os.listdir(ckpt_dir):
-        m = re.search("ckpt-(\\d+)", f)
-        if m:
-            step_trained = int(m.group(1))
-            print("Checkpoint to be fine-tuned has trained for {} stpes".format(step_trained))
-        src = os.path.join(ckpt_dir, f)
-        if os.path.isfile(src):
-            copy_to_dir(src, output_dir)
-
-    print("Copying source sp model and vocab...")
-    sp_src = copy_to_dir(sp_src, output_dir)
-    src_vocab = copy_to_dir(src_vocab, output_dir)
-
-    print("Copying target sp model and vocab...")
-    sp_tgt = copy_to_dir(sp_tgt, output_dir)
-    tgt_vocab = copy_to_dir(tgt_vocab, output_dir)
-
-    split_cmd_str = "python -m yimt.corpus.bin.to_single {} {} {}"
-    print("Splitting {} into {} and {}...".format(corpus_fn, corpus_fn_src, corpus_fn_tgt))
-    os.popen(split_cmd_str.format(corpus_fn, corpus_fn_src, corpus_fn_tgt)).readlines()
-    print()
-
-    if args.pretok_src:
-        print("Pretokenzing source text...")
-        corpus_fn_src = tokenize_single(corpus_fn_src, args.pretok_src)
-
-    if args.pretok_tgt:
-        print("Pretokenzing target text...")
-        corpus_fn_tgt = tokenize_single(corpus_fn_tgt, args.pretok_tgt)
-
-    tok_cmd_str = "python -m yimt.core.ex.sp_tokenize --sp_model {} --in_fn {} --out_fn {}"
-    corpus_fn_src_tok = corpus_fn_src + ".tok"
-    corpus_fn_tgt_tok = corpus_fn_tgt + ".tok"
-    print("Tokenizing {} into {}...".format(corpus_fn_src, corpus_fn_src_tok))
-    os.popen(tok_cmd_str.format(sp_src, corpus_fn_src, corpus_fn_src_tok)).readlines()
-    print()
-    print("Tokenizing {} into {}...".format(corpus_fn_tgt, corpus_fn_tgt_tok))
-    os.popen(tok_cmd_str.format(sp_tgt, corpus_fn_tgt, corpus_fn_tgt_tok)).readlines()
-    print()
-
-    config = {
-        "model_dir": output_dir,
-        "data": {
-            "train_features_file": corpus_fn_src_tok,
-            "train_labels_file": corpus_fn_tgt_tok,
-            "source_vocabulary": src_vocab,
-            "target_vocabulary": tgt_vocab,
-        },
-        "train": {
-            "max_step": step_trained + step_fine_tune,
-            "average_last_checkpoints": 0
-        }
-    }
-    merge_dict(config, extra_conf)
-    pprint(config)
-    config_fn = os.path.join(output_dir, "ft.yml")
-    with open(config_fn, "w") as f:
-        yaml.safe_dump(config, f, encoding='utf-8', allow_unicode=True)
-
-    train_cmd_str = "python -m yimt.core.bin.main --config {} --auto_config --mixed_precision train"
-    if args.continue_from_checkpoint:
-        train_cmd_str += " --continue_from_checkpoint"
-    print("Training...")
-    os.popen(train_cmd_str.format(config_fn)).readlines()
-    print()
+    main(corpus_fn, sp_src, sp_tgt, src_vocab, tgt_vocab, ckpt_dir, output_dir,
+         step_fine_tune, args.config, args.pretok_src, args.pretok_tgt)
