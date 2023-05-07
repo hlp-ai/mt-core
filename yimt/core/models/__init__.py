@@ -7,6 +7,8 @@ from yimt.core.models.catalog import (
     TransformerBig,
     TransformerBig2,
     TransformerBigRelative,
+    ScalingNmtEnDe,
+    ScalingNmtEnFr,
     TransformerBigSharedEmbeddings,
     TransformerTiny,
     get_model_from_catalog,
