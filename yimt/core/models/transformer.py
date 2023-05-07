@@ -115,7 +115,6 @@ class Transformer(SequenceToSequence):
             encoder = ParallelEncoder(
                 encoders if not share_encoders else encoders[0],
                 outputs_reducer=None,
-                states_reducer=None,
             )
         else:
             encoder = encoders[0]
