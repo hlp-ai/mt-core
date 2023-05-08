@@ -134,6 +134,10 @@ class Translator(object):
         """
         if not isinstance(text, (list, tuple)):
             text = [text]
+
+        if self.from_lang == "zh" or self.from_lang == "ja" or self.from_lang == "th":
+            text = [" ".join(word_segment(t, self.from_lang)) for t in text]
+
         tokens = self.sp_source_model.encode(text, out_type=str)
         return tokens
 
@@ -143,8 +147,6 @@ class Translator(object):
         :param texts list of text
         :return dict with tokens and length
         """
-        if self.from_lang == "zh" or self.from_lang == "ja" or self.from_lang == "th":
-            texts = [" ".join(word_segment(t, self.from_lang)) for t in texts]
         all_tokens = self._tokenize(texts)
         lengths = [len(ts) for ts in all_tokens]
         max_length = max(lengths)
