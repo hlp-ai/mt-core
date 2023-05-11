@@ -453,13 +453,13 @@ def create_han2hans_corpus(parent):
 
 
 def create_sample_corpus(parent):
-    tk.Label(parent, text="file1").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="TSV File/Source File").grid(row=0, column=0, padx=10, pady=5, sticky="e")
     entry_sample_in1 = tk.Entry(parent, width=50)
     entry_sample_in1.grid(row=0, column=1, padx=10, pady=5)
     tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_sample_in1)).grid(row=0, column=2,
                                                                                                padx=10, pady=5)
 
-    tk.Label(parent, text="file2").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Target File (Optional)").grid(row=1, column=0, padx=10, pady=5, sticky="e")
     entry_sample_in2 = tk.Entry(parent, width=50)
     entry_sample_in2.grid(row=1, column=1, padx=10, pady=5)
     tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_sample_in2)).grid(row=1, column=2,
@@ -488,18 +488,18 @@ def create_sample_corpus(parent):
         sample(files, int(corpus_sample_number))
         tk.messagebox.showinfo(title="Info", message="done")
 
-    tk.Button(parent, text="Sample sentences from bitext or source and target file", command=go).grid( \
+    tk.Button(parent, text="Sample sentences into a new corpus", command=go).grid( \
         row=5, column=1, padx=10, pady=5)
 
 
 def create_partition_corpus(parent):
-    tk.Label(parent, text="file1").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="TSV File/Source File").grid(row=0, column=0, padx=10, pady=5, sticky="e")
     entry_sample_in1 = tk.Entry(parent, width=50)
     entry_sample_in1.grid(row=0, column=1, padx=10, pady=5)
     tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_sample_in1)).grid(row=0, column=2,
                                                                                                padx=10, pady=5)
 
-    tk.Label(parent, text="file2").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Target File (Optional)").grid(row=1, column=0, padx=10, pady=5, sticky="e")
     entry_sample_in2 = tk.Entry(parent, width=50)
     entry_sample_in2.grid(row=1, column=1, padx=10, pady=5)
     tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_sample_in2)).grid(row=1, column=2,
@@ -528,18 +528,18 @@ def create_partition_corpus(parent):
         partition(files, int(corpus_sample_number))
         tk.messagebox.showinfo(title="Info", message="done")
 
-    tk.Button(parent, text="Partition sentences from bitext or source and target file", command=go).grid( \
+    tk.Button(parent, text="Partition a corpus into two copora", command=go).grid( \
         row=5, column=1, padx=10, pady=5)
 
 
 def create_split_corpus(parent):
-    tk.Label(parent, text="Input File 1").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="TSV File/Source File").grid(row=0, column=0, padx=10, pady=5, sticky="e")
     entry_split_in1 = tk.Entry(parent, width=50)
     entry_split_in1.grid(row=0, column=1, padx=10, pady=5)
     tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_split_in1)).grid(row=0, column=2,
                                                                                               padx=10, pady=5)
 
-    tk.Label(parent, text="Input File2 (Optional)").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(parent, text="Target File (Optional)").grid(row=1, column=0, padx=10, pady=5, sticky="e")
     entry_split_in2 = tk.Entry(parent, width=50)
     entry_split_in2.grid(row=1, column=1, padx=10, pady=5)
     tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_split_in2)).grid(row=1, column=2,
