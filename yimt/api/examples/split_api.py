@@ -17,15 +17,19 @@ if __name__ == "__main__":
     The intent of this book is to introduce readers to the latest version of the
 TensorFlow library. Therefore, this first chapter focuses mainly on what has
 changed in the TensorFlow library since its first version, TensorFlow 1.0.
-We will cover the various changes, in addition to highlighting the specific
-parts for which changes are yet to be introduced. This chapter is divided
-into three sections: the first discusses the internals of TensorFlow; the
-second focuses on the changes that have been implemented in TensorFlow
-2.0 after TensorFlow 1.0; and the final section covers TensorFlow 2.0
-installation methods and basic operations.
     '''
 
     print(may_combine_paragraph(t4))
+
+    t42 = '''
+        The intent of this book is to introduce readers to the latest version of the TensorFlow library. 
+        
+        
+        Therefore, this first chapter focuses mainly on what has changed in the TensorFlow library since its first version.
+        
+        '''
+
+    print(may_combine_paragraph(t42))
 
     print(word_segment("I'm a teacher. This is not co-exist.", lang="en"))
 
