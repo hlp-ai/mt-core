@@ -202,7 +202,7 @@ def may_combine_paragraph(text):
         p = paragraphs[i].strip()
         i += 1
         if len(p) == 0:  # blank paragraph
-            txt = txt + "\r\n"
+            txt = txt + "\r\n\r\n"
         else:
             txt = txt + " " + p
 
