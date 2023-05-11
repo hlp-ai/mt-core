@@ -132,7 +132,7 @@ def sample(files, n):
 
 
 def partition(files, n):
-    """"Sample sentences from bitext or source and target file"""
+    """"Partition a corpus with N sentences into a corpus with n sentences and a corpus with N-n sentences"""
     in_files = [io.open(f, encoding="utf-8") for f in files]
     out_files = [io.open("{}-{}".format(f, n), "w", encoding="utf-8") for f in files]
     new_files = [io.open(f+".new", "w", encoding="utf-8") for f in files]
