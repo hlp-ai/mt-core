@@ -7,6 +7,8 @@ from html import unescape
 
 from flask import (Flask, abort, jsonify, render_template, request, send_file, url_for)
 from werkzeug.utils import secure_filename
+
+from yimt.api.text_splitter import may_combine_paragraph
 from yimt.api.translators import Translators
 from yimt.api.utils import detect_lang, get_logger
 
@@ -287,6 +289,7 @@ def create_app(args):
         if text_format == "html":
             translation = str(translate_html(translator, src))
         else:
+            src = may_combine_paragraph(src)
             translation = translator.translate_paragraph(src)
 
         log_service.info("/translate: " + q + "&source=" + source_lang + "&target=" + target_lang
