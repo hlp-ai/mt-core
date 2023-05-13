@@ -2,21 +2,21 @@
 Transformer based Nerual Machine Translation
 
 ## Features
-1. Based on Tensorflow2
-2. Support gradient accumulation and mixed precision traning
-3. Effective and efficient data pipline
-4. Support checkpoint averaging
-5. Beam search for inference
+1. Based on Tensorflow2.
+2. Support gradient accumulation and mixed precision traning.
+3. Effective and efficient data pipline.
+4. Support checkpoint averaging.
+5. Beam search for inference.
 6. Support file translation: TXT, DOC, DOCX, PPTX, PDF, HTML, XML
-7. Preserve file format after translation
+7. Preserve file format after translation.
 8. A common and easy-to-use Translator interface.
 9. Support several NMT model types, such as Checkpoint, SavedModel and CTranslate2.
 10. Manage NMT models through config file.
-11. RESTful service interface for translation
-12. Provide Web interface for text and file translation
-13. Support translation volume limit and API key
-14. Friendly GUI for training and manipulating NMT models
-15. Tools for filtering, normalizing, merging, splitting, sampling, converting and deduping parallel corpus
+11. RESTful service interface for translation.
+12. Provide Web interface for text and file translation.
+13. Support translation volume limit and API key.
+14. Friendly GUI for training and manipulating NMT models.
+15. Tools for filtering, normalizing, merging, splitting, sampling, converting and deduping parallel corpus.
 
 ## Contents
 The contents of this repository are as follows:
