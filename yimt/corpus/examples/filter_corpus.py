@@ -64,10 +64,14 @@ if __name__ == "__main__":
     print(new_len_filter2.filter("a b", "啊啊啊啊啊啊啊啊啊啊啊啊"))
     print(new_len_filter2.filter("a b", "啊啊啊啊"))
 
+    print()
+
     alphabet_filter = AlphabetRatioFilter()
     print(alphabet_filter.filter("a b cddd", "啊啊 啊啊啊啊"))
     print(alphabet_filter.filter("a b cddd", "啊啊 啊啊啊啊+++++"))
     print(alphabet_filter.filter("a b cddd09999999555", "啊啊 啊啊啊啊"))
+
+    print()
 
     char_filter = CharacterRatioFilter(scripts=("Latin", "Han"), thresholds=(0.8, 0.8))
     print(char_filter.filter("a b cddd", "啊啊 啊啊啊啊+++++++"))
