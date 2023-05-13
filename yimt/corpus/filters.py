@@ -265,7 +265,9 @@ class CharacterRatioFilter(Filter):
     lang2script = {
         "zh": "Han",
         "en": "Latin",
-        "ko": "Hangul"
+        "ko": "Hangul",
+        "ar": "Arabic",
+        "th": "Thai",
     }
 
     def __init__(self, scripts, thresholds=None):
