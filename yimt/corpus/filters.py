@@ -1,4 +1,7 @@
+import difflib
+import itertools
 import re
+import string
 
 import regex
 
@@ -61,8 +64,6 @@ class OverlapFilter(Filter):
         self._ratio = ratio
 
     def filter(self, src, tgt):
-        import difflib
-
         s = difflib.SequenceMatcher(None, src, tgt)
         if s.ratio() > self._ratio:
             return None
@@ -296,6 +297,44 @@ class CharacterRatioFilter(Filter):
             return None
 
         return src, tgt
+
+
+class NonZeroNumeralsFilter(Filter):
+    """Similarity measure between numerals of the two sentences with zeros removed
+
+    If require_all is True, all scores (for pairs of n segments) have
+    to be equal or above the threshold; otherwise at least one the
+    scores have to be equal or above the threshold. For bilingual
+    input, it has no effect.
+
+    See :cite:`vazquez-etal-2019-university`
+
+    """
+
+    def __init__(self, threshold=0.5, require_all=True):
+        self.threshold = threshold
+        self.require_all = require_all
+
+    def score(self, pair):
+        nums = [[int(c) for c in sent if c in string.digits and c != '0']
+                for sent in pair]
+        ratios = []
+        for num1, num2 in itertools.combinations(nums, 2):
+            seq = difflib.SequenceMatcher(None, num1, num2)
+            ratios.append(seq.ratio())
+        return ratios
+
+    def filter(self, src, tgt):
+        score = self.score((src, tgt))
+        if self.require_all:
+            if all(ratio >= self.threshold for ratio in score):
+                return src, tgt
+            else:
+                return None
+        if any(ratio >= self.threshold for ratio in score):
+            return src, tgt
+        else:
+            return None
 
 
 class AugumentForZhFilter(Filter):

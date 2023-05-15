@@ -1,5 +1,5 @@
 from yimt.corpus.filters import SameFilter, EmptyFilter, OverlapFilter, AllASCII, LangFilter, LenDiffFilter, LenFilter, \
-    LengthFilter, AlphabetRatioFilter, CharacterRatioFilter
+    LengthFilter, AlphabetRatioFilter, CharacterRatioFilter, NonZeroNumeralsFilter
 
 if __name__ == "__main__":
     same_filter = SameFilter()
@@ -76,3 +76,11 @@ if __name__ == "__main__":
     char_filter = CharacterRatioFilter(scripts=("Latin", "Han"), thresholds=(0.8, 0.8))
     print(char_filter.filter("a b cddd", "啊啊 啊啊啊啊+++++++"))
     print(char_filter.filter("a b cddd啊啊啊啊", "啊啊 啊啊啊啊"))
+
+    print()
+    t1 = "abc 132"
+    t2 = "dddddd 233"
+    t3 = "eeee 132"
+    number_filter = NonZeroNumeralsFilter(threshold=0.9)
+    print(number_filter.filter(t1, t2))
+    print(number_filter.filter(t1, t3))
