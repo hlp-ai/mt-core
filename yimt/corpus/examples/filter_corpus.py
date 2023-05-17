@@ -1,4 +1,4 @@
-from yimt.corpus.filters import SameFilter, EmptyFilter, OverlapFilter, AllASCII, LangFilter, LenDiffFilter, LenFilter, \
+from yimt.corpus.filters import SameFilter, EmptyFilter, OverlapFilter, AllASCII, LangFilter, LenDiffFilter, \
     LengthFilter, AlphabetRatioFilter, CharacterRatioFilter, NonZeroNumeralsFilter
 
 if __name__ == "__main__":
@@ -44,10 +44,6 @@ if __name__ == "__main__":
     print(lendiff_filter2.filter("a b a b c d cd cc f", "啊啊"))
 
     print()
-
-    len_filter = LenFilter((2, 3), (2, 4), en_len, zh_len)
-    print(len_filter.filter("a b", "啊啊啊啊啊啊啊啊啊啊啊啊"))
-    print(len_filter.filter("a b", "啊啊啊啊"))
 
     new_len_filter = LengthFilter(src_len_fn=LengthFilter.space_sep_len_f,
                                   tgt_len_fn=LengthFilter.space_sep_len_f,
