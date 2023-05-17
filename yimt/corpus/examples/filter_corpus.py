@@ -1,4 +1,4 @@
-from yimt.corpus.filters import SameFilter, EmptyFilter, OverlapFilter, AllASCII, LangFilter, LenDiffFilter, \
+from yimt.corpus.filters import SameFilter, EmptyFilter, OverlapFilter, AllASCII, LangFilter, \
     LengthFilter, AlphabetRatioFilter, CharacterRatioFilter, NonZeroNumeralsFilter
 
 if __name__ == "__main__":
@@ -32,16 +32,6 @@ if __name__ == "__main__":
     lang_filter = LangFilter("en", "zh")
     print(lang_filter.filter("i like it", "i like it"))
     print(lang_filter.filter("i like it", "我真的很喜欢它。"))
-
-    print()
-
-    en_len = lambda s: len(s.split())
-    zh_len = lambda s: len(s)
-    lendiff_filter = LenDiffFilter(3, en_len, en_len)
-    print(lendiff_filter.filter("like", "what what are wrong"))
-    print(lendiff_filter.filter("a b", "aaaaa bbbb cccc"))
-    lendiff_filter2 = LenDiffFilter(3, en_len, zh_len)
-    print(lendiff_filter2.filter("a b a b c d cd cc f", "啊啊"))
 
     print()
 

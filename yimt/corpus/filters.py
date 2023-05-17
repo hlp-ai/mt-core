@@ -131,24 +131,6 @@ class LangFilter(Filter):
         return src, tgt
 
 
-class LenDiffFilter(Filter):
-    """Filter pair whose source and target have big length difference"""
-
-    def __init__(self, ratio, src_len_fn=len, tgt_len_fn=len):
-        self.ratio = ratio
-        self.src_len_fn = src_len_fn
-        self.tgt_len_fn = tgt_len_fn
-
-    def filter(self, src, tgt):
-        len_src = self.src_len_fn(src)
-        len_tgt = self.tgt_len_fn(tgt)
-
-        if len_src <= self.ratio * len_tgt and len_tgt <= self.ratio * len_src:
-            return src, tgt
-        else:
-            return None
-
-
 class LengthFilter(Filter):
 
     space_sep_len_f = lambda s: len(s.split())
