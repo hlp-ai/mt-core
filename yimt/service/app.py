@@ -348,6 +348,32 @@ def create_app(args):
         except Exception as e:
             abort(500, description=e)
 
+    @app.route("/translate_file_progress", methods=['GET', 'POST'])
+    def get_translate_progress():
+        progress = ""
+        # print("checking progress")  # 测试用
+        file = request.files['file']
+        file_type = os.path.splitext(file.filename)[1]
+        if file_type == ".txt":
+            from yimt.files.translate_txt import txt_progress
+            progress = txt_progress
+        elif file_type == ".pdf":
+            from yimt.files.translate_pdf import pdf_progress
+            progress = pdf_progress
+        elif file_type == ".docx" or file_type == ".doc":
+            from yimt.files.translate_docx import docx_progress
+            progress = docx_progress
+        elif file_type in [".html", ".htm", ".xhtml", ".xml"]:
+            from yimt.files.translate_html import html_progress
+            progress = html_progress
+        elif file_type == ".pptx":
+            from yimt.files.translate_ppt import ppt_progress
+            progress = ppt_progress
+        else:
+            return None
+        # print("progress:" + progress)  # 测试用
+        return progress
+
     @app.get("/download_file/<string:filename>")
     def download_file(filename: str):
         """Download a translated file"""
