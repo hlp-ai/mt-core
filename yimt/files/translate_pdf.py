@@ -11,7 +11,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Paragraph, Frame, KeepInFrame
 from yimt.api.utils import detect_lang
-
+pdf_progress = ""
 pdfmetrics.registerFont(TTFont('SimSun', os.path.join(os.path.dirname(__file__), 'SimSun.ttf')))
 styles = getSampleStyleSheet()
 styles.add(ParagraphStyle(fontName='SimSun', name='Song', fontSize=9, wordWrap='CJK'))
@@ -20,7 +20,7 @@ styles.add(ParagraphStyle(fontName='SimSun', name='Song', fontSize=9, wordWrap='
 p_chars_lang_independent = re.compile(r"[0123456789+\-*/=~!@$%^()\[\]{}<>\|,\.\?\"]")
 
 p_en_chars = re.compile(r"[a-zA-Z]+")
-
+pdf_progress = ""
 
 def remove_lang_independent(t):
     return re.sub(p_chars_lang_independent, "", t)
@@ -79,8 +79,11 @@ def translate_pdf_auto(pdf_fn, source_lang="auto", target_lang="zh", translation
 
     pdf = canvas.Canvas(translated_fn)
     p = 1
+    global pdf_progress  #######
+    pdf_progress = ""
     for page_layout in extract_pages(pdf_fn):  # for each page in pdf file
         print("*"*20, "Page", p, "*"*20, "\n")
+        pdf_progress = "#" * p
         for element in page_layout:
             if isinstance(element, LTTextBoxHorizontal):
                 x, y, w, h = int(element.x0), int(element.y0), int(element.width), int(element.height)
@@ -116,7 +119,7 @@ def translate_pdf_auto(pdf_fn, source_lang="auto", target_lang="zh", translation
         p += 1
 
     pdf.save()
-
+    pdf_progress = ""
     return translated_fn
 
 
