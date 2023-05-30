@@ -42,7 +42,7 @@ class Translators(object):
         return translators, lang_pairs, langs_api
 
     def support_languages(self):
-        return self.lang_pairs, self.from_langs, self.to_langs
+        return self.lang_pairs, self.from_langs, self.to_langs, self.langs_api
 
     def get_translator(self, source_lang, target_lang):
         """ Get and load translator for lang pair

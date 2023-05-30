@@ -101,8 +101,7 @@ def create_app(args):
 
     translators = Translators()
 
-    lang_pairs, from_langs, to_langs = translators.support_languages()
-    langs_api = translators.langs_api
+    lang_pairs, from_langs, to_langs, langs_api = translators.support_languages()
 
     api_keys_db = None
 
