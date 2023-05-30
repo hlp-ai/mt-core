@@ -61,7 +61,7 @@ class Translators(object):
         elif isinstance(translator, Translator):
             return translator
         else:
-            print("Loading translator {}...".format(lang_pair))
+            print("Loading translator for {}...".format(lang_pair))
             self.translators[lang_pair] = load_translator(model_or_config_dir=translator["model_or_config_dir"],
                                                           sp_src_path=translator["sp_src_path"],
                                                           lang_pair=lang_pair)
