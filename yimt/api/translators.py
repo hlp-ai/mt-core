@@ -20,8 +20,6 @@ class Translators(object):
         print("Available translators:", self.translators)
         print("Available language pairs:", self.lang_pairs)
 
-        self.word_translators = {}
-
     def available_translators(self):
         """Get translators from config file
 
