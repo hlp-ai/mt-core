@@ -81,16 +81,17 @@ class Translator(object):
             else:
                 to_translate = texts[i:]
 
-            translations = self._translate_batch(to_translate)
+            with mutex:
+                translations = self._translate_batch(to_translate)
 
-            translations = self._post_zh(translations)
+            translations = self._post_detokenize(translations)
 
             results.extend(translations)
             done += len(to_translate)
         return results
 
-    def _post_zh(self, translations):
-        if self.to_lang == "zh":
+    def _post_detokenize(self, translations):
+        if self.to_lang == "zh":  # TODO: other languages
             new_translations = []
             for t in translations:
                 t = detok_zh_str(t)
@@ -116,8 +117,7 @@ class Translator(object):
         """
         source_sents, breaks = paragraph_tokenizer(src, self.from_lang)
 
-        with mutex:
-            translations = self.translate_list(source_sents)
+        translations = self.translate_list(source_sents)
 
         translation = paragraph_detokenizer(translations, breaks)
 
@@ -135,6 +135,7 @@ class Translator(object):
         if not isinstance(text, (list, tuple)):
             text = [text]
 
+        # Pretokenize
         if self.from_lang == "zh" or self.from_lang == "ja" or self.from_lang == "th":
             text = [" ".join(word_segment(t, self.from_lang)) for t in text]
 
