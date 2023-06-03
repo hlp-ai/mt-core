@@ -17,7 +17,7 @@ from yimt.files.translate_tag import translate_html
 
 
 from yimt.service import remove_translated_files
-from yimt.service.api_keys import Database
+from yimt.service.api_keys import APIKeyDB
 from yimt.service.utils import path_traversal_check, SuspiciousFileOperation
 
 log_service = get_logger(log_filename="service.log", name="service")
@@ -107,7 +107,7 @@ def create_app(args):
 
     if args.req_limit > 0 or args.api_keys or args.daily_req_limit > 0:
         print("Applying request limit...")
-        api_keys_db = Database() if args.api_keys else None
+        api_keys_db = APIKeyDB() if args.api_keys else None
 
         from flask_limiter import Limiter
 

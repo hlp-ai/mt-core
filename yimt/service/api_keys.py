@@ -7,7 +7,7 @@ from expiringdict import ExpiringDict
 DEFAULT_DB_PATH = "./api_keys.db"
 
 
-class Database:
+class APIKeyDB:
     def __init__(self, db_path=DEFAULT_DB_PATH, max_cache_len=1000, max_cache_age=30):
         self.db_path = db_path
         self.cache = ExpiringDict(max_len=max_cache_len, max_age_seconds=max_cache_age)
@@ -26,9 +26,7 @@ class Database:
         req_limit = self.cache.get(api_key)
         if req_limit is None:
             # DB Lookup
-            stmt = self.c.execute(
-                "SELECT req_limit FROM api_keys WHERE api_key = ?", (api_key,)
-            )
+            stmt = self.c.execute("SELECT req_limit FROM api_keys WHERE api_key = ?", (api_key,))
             row = stmt.fetchone()
             if row is not None:
                 self.cache[api_key] = row[0]
@@ -65,33 +63,29 @@ class Database:
 
 
 def manage():
+    """
+    keys
+    keys add <# of requests per sec> --key <user_id>
+    keys remove --key <user_id>
+
+    """
     parser = argparse.ArgumentParser(description="YiMT Key Management Tools")
-    subparsers = parser.add_subparsers(
-        help="", dest="command", required=True, title="Command List"
-    )
+    subparsers = parser.add_subparsers(help="", dest="command", required=True, title="Command List")
 
     keys_parser = subparsers.add_parser("keys", help="Manage API keys database")
-    keys_subparser = keys_parser.add_subparsers(
-        help="", dest="sub_command", title="Command List"
-    )
+    keys_subparser = keys_parser.add_subparsers(help="", dest="sub_command", title="Command List")
 
     keys_add_parser = keys_subparser.add_parser("add", help="Add API keys to database")
-    keys_add_parser.add_argument(
-        "req_limit", type=int, help="Request Limits (per second)"
-    )
-    keys_add_parser.add_argument(
-        "--key", type=str, default="auto", required=False, help="API Key"
-    )
+    keys_add_parser.add_argument("req_limit", type=int, help="Request Limits (per second)")
+    keys_add_parser.add_argument("--key", type=str, default="auto", required=False, help="API Key")
 
-    keys_remove_parser = keys_subparser.add_parser(
-        "remove", help="Remove API keys to database"
-    )
+    keys_remove_parser = keys_subparser.add_parser("remove", help="Remove API keys to database")
     keys_remove_parser.add_argument("--key", type=str, help="API Key")
 
     args = parser.parse_args()
 
     if args.command == "keys":
-        db = Database()
+        db = APIKeyDB()
         if args.sub_command is None:
             # Print keys
             keys = db.all()
