@@ -152,6 +152,18 @@ def create_app(args):
     def denied(e):
         return jsonify({"error": str(e.description)}), 403
 
+    @app.after_request
+    def after_request(response):
+        response.headers.add("Access-Control-Allow-Origin", "*")  # Allow CORS from anywhere
+        response.headers.add(
+            "Access-Control-Allow-Headers", "Authorization, Content-Type"
+        )
+        response.headers.add("Access-Control-Expose-Headers", "Authorization")
+        response.headers.add("Access-Control-Allow-Methods", "GET, POST")
+        response.headers.add("Access-Control-Allow-Credentials", "true")
+        response.headers.add("Access-Control-Max-Age", 60 * 60 * 24 * 20)
+        return response
+
     ##############################################################################################
     #
     # Path for Web server
@@ -189,18 +201,6 @@ def create_app(args):
             abort(404)
 
         return render_template('mobile_text.html')
-
-    @app.after_request
-    def after_request(response):
-        response.headers.add("Access-Control-Allow-Origin", "*")  # Allow CORS from anywhere
-        response.headers.add(
-            "Access-Control-Allow-Headers", "Authorization, Content-Type"
-        )
-        response.headers.add("Access-Control-Expose-Headers", "Authorization")
-        response.headers.add("Access-Control-Allow-Methods", "GET, POST")
-        response.headers.add("Access-Control-Allow-Credentials", "true")
-        response.headers.add("Access-Control-Max-Age", 60 * 60 * 24 * 20)
-        return response
 
     ##############################################################################################
     #
