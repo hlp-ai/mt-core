@@ -280,8 +280,8 @@ def translate_pdf_auto(pdf_fn, source_lang="auto", target_lang="zh", translation
                     translator = Translators().get_translator(source_lang, target_lang)
 
                 translation = translator.translate_paragraph(t)
-                print_to_canvas(translation, x, y, w, h, pdf)
-                print_to_canvas(t, x, y, w, h, pdf, ft)
+                print_to_canvas(translation, x, y, w, h, pdf, ft)
+                # print_to_canvas(t, x, y, w, h, pdf, ft)
 
         pdf.showPage()
         p += 1
