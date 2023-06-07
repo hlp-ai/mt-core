@@ -65,7 +65,7 @@ class APIKeyDB:
 def manage():
     """
     keys
-    keys add <# of requests per sec> --key <user_id>
+    keys add <# of requests per minute> --key <user_id>
     keys remove --key <user_id>
 
     """
