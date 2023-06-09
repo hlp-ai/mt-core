@@ -5,7 +5,6 @@ import abc
 import tensorflow as tf
 
 from yimt.core.data import dataset as dataset_util
-from yimt.core.layers.reducer import JoinReducer
 from yimt.core.utils import misc
 
 
@@ -279,7 +278,7 @@ class MultiInputter(Inputter):
 
     @property
     def num_outputs(self):
-        if self.reducer is None or isinstance(self.reducer, JoinReducer):
+        if self.reducer is None:
             return len(self.inputters)
         return 1
 

@@ -156,19 +156,6 @@ class SumReducer(Reducer):
         return self.reduce(padded), combined_length
 
 
-class MultiplyReducer(Reducer):
-    """A reducer that multiplies the inputs."""
-
-    def reduce(self, inputs):
-        return functools.reduce(lambda a, x: a * x, inputs)
-
-    def reduce_sequence(self, inputs, sequence_lengths):
-        padded, combined_length = pad_n_with_identity(
-            inputs, sequence_lengths, identity_values=1
-        )
-        return self.reduce(padded), combined_length
-
-
 class ConcatReducer(Reducer):
     """A reducer that concatenates the inputs."""
 
@@ -216,40 +203,3 @@ class ConcatReducer(Reducer):
             return accumulator, combined_length
         else:
             raise ValueError("Unsupported concatenation on axis {}".format(axis))
-
-
-class JoinReducer(Reducer):
-    """A reducer that joins its inputs in a single tuple."""
-
-    def reduce(self, inputs):
-        output = []
-        for elem in inputs:
-            if isinstance(elem, tuple) and not hasattr(elem, "_fields"):
-                for e in elem:
-                    output.append(e)
-            else:
-                output.append(elem)
-        return tuple(output)
-
-    def reduce_sequence(self, inputs, sequence_lengths):
-        return self.reduce(inputs), self.reduce(sequence_lengths)
-
-
-class DenseReducer(ConcatReducer):
-    """A reducer that concatenates its inputs in depth and applies a linear transformation."""
-
-    def __init__(self, output_size, activation=None, **kwargs):
-        """Initializes the reducer.
-
-        Args:
-          output_size: The output size of the linear transformation.
-          activation: Activation function (a callable).
-            Set it to ``None`` to maintain a linear activation.
-          **kwargs: Additional layer arguments.
-        """
-        super().__init__(axis=-1, **kwargs)
-        self.dense = tf.keras.layers.Dense(output_size, activation=activation)
-
-    def reduce(self, inputs):
-        inputs = super().reduce(inputs)
-        return self.dense(inputs)
