@@ -456,31 +456,6 @@ class ModelTest(tf.test.TestCase):
         model.initialize(data_config)
         self.assertFalse(model.decoder.output_layer.use_bias)
 
-    def testBeamSearchWithMultiSourceEncoder(self):
-        shared_vocabulary = test_util.make_vocab(
-            os.path.join(self.get_temp_dir(), "vocab.txt"), ["1", "2", "3"]
-        )
-        data_config = {
-            "source_1_vocabulary": shared_vocabulary,
-            "source_2_vocabulary": shared_vocabulary,
-            "target_vocabulary": shared_vocabulary,
-        }
-        params = {
-            "beam_width": 2,
-        }
-        model = models.Transformer(
-            inputters.ParallelInputter(
-                [inputters.WordEmbedder(32), inputters.WordEmbedder(32)]
-            ),
-            inputters.WordEmbedder(32),
-            num_layers=3,
-            num_units=32,
-            num_heads=8,
-            ffn_inner_dim=64,
-        )
-        model.initialize(data_config, params=params)
-        model.serve_function().get_concrete_function()
-
     def testTrainModelOnBatch(self):
         _, _, data_config = self._makeToyEnDeData()
         optimizer = tf.keras.optimizers.Adam()

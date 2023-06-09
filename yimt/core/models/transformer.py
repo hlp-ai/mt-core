@@ -5,7 +5,7 @@ import tensorflow as tf
 
 from yimt.core import inputters, config as config_util
 from yimt.core.decoders import SelfAttentionDecoder
-from yimt.core.encoders.encoder import ParallelEncoder
+# from yimt.core.encoders.encoder import ParallelEncoder
 from yimt.core.encoders.self_attention_encoder import SelfAttentionEncoder
 from yimt.core.layers.position import SinusoidalPositionEncoder
 from yimt.core.layers.transformer import MultiHeadAttentionReduction
@@ -111,13 +111,13 @@ class Transformer(SequenceToSequence):
             )
             for _ in range(source_inputter.num_outputs)
         ]
-        if len(encoders) > 1:
-            encoder = ParallelEncoder(
-                encoders if not share_encoders else encoders[0],
-                outputs_reducer=None,
-            )
-        else:
-            encoder = encoders[0]
+        # if len(encoders) > 1:
+        #     encoder = ParallelEncoder(
+        #         encoders if not share_encoders else encoders[0],
+        #         outputs_reducer=None,
+        #     )
+        # else:
+        encoder = encoders[0]
         decoder = SelfAttentionDecoder(
             num_decoder_layers,
             num_units=num_units,
