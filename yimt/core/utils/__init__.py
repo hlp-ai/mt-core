@@ -37,9 +37,7 @@ from yimt.core.utils.losses import (
 from yimt.core.utils.misc import format_translation_output
 from yimt.core.utils.scorers import (
     BLEUScorer,
-    ROUGEScorer,
     Scorer,
-    TERScorer,
     make_scorers,
     register_scorer,
 )
