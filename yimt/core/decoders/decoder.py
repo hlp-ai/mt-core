@@ -15,7 +15,6 @@ class Decoder(tf.keras.layers.Layer):
 
     def __init__(
         self,
-        num_sources=1,
         vocab_size=None,
         output_layer=None,
         output_layer_bias=True,
@@ -28,7 +27,6 @@ class Decoder(tf.keras.layers.Layer):
         to initialize this decoder instance.
 
         Args:
-          num_sources: The number of source contexts expected by this decoder.
           vocab_size: The output vocabulary size (optional if :obj:`output_layer` is set).
           output_layer: The output projection layer (optional).
           output_layer_bias: Add bias after the output projection layer.
@@ -39,7 +37,7 @@ class Decoder(tf.keras.layers.Layer):
             supported by this decoder.
         """
         super().__init__(**kwargs)
-        self.num_sources = num_sources
+        self.num_sources = 1
         self.output_layer = None
         self.output_layer_bias = output_layer_bias
         self.memory = None

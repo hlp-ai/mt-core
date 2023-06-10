@@ -462,7 +462,6 @@ class SelfAttentionDecoderLayer(tf.keras.layers.Layer):
         num_units,
         num_heads,
         ffn_inner_dim,
-        num_sources=1,
         dropout=0.1,
         attention_dropout=0.1,
         ffn_dropout=0.1,
@@ -479,7 +478,6 @@ class SelfAttentionDecoderLayer(tf.keras.layers.Layer):
           num_heads: The number of heads in the multi-head attention.
           ffn_inner_dim: The number of units of the inner linear transformation
             in the feed forward layer.
-          num_sources: The number of source contexts.
           dropout: The probability to drop units from the outputs.
           attention_dropout: The probability to drop units from the attention.
           ffn_dropout: The probability to drop units from the activation output in
@@ -505,7 +503,7 @@ class SelfAttentionDecoderLayer(tf.keras.layers.Layer):
             self.self_attention, dropout, pre_norm=pre_norm
         )
         self.attention = []
-        for _ in range(num_sources):
+        for _ in range(1):
             attention = MultiHeadAttention(
                 num_heads,
                 num_units,

@@ -129,7 +129,6 @@ class Transformer(SequenceToSequence):
             ffn_activation=ffn_activation,
             mha_bias=mha_bias,
             position_encoder_class=position_encoder_class,
-            num_sources=source_inputter.num_outputs,
             maximum_relative_position=maximum_relative_position,
             attention_reduction=attention_reduction,
             pre_norm=pre_norm,

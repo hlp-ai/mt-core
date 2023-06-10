@@ -87,13 +87,6 @@ class DecoderTest(tf.test.TestCase):
         self.assertTrue(decoder.initialized)
         self._testDecoder(decoder)
 
-    def testSelfAttentionDecoderMultiSource(self):
-        num_sources = 2
-        decoder = decoders.SelfAttentionDecoder(
-            2, num_units=6, num_heads=2, ffn_inner_dim=12, num_sources=num_sources
-        )
-        self._testDecoder(decoder, num_sources=num_sources)
-
     def testSelfAttentionDecoderWithoutSourceLength(self):
         batch_size = 4
         depth = 6

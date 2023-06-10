@@ -178,17 +178,6 @@ class InputterTest(tf.test.TestCase):
         oov_tokens = embedder.get_oov_tokens(features)
         self.assertListEqual(oov_tokens.numpy().flatten().tolist(), [b"!"])
 
-    def testWordEmbedderWithInGraphTokenizer(self):
-        vocab_file = self._makeTextFile("vocab.txt", ["the", "world", "hello", "￭"])
-        embedder = text_inputter.WordEmbedder(embedding_size=10)
-        data_config = {
-            "vocabulary": vocab_file,
-            "tokenization": {"type": "CharacterTokenizer"},
-        }
-        embedder.initialize(data_config)
-        self.assertIn("text", embedder.input_signature())
-        self._testServing(embedder)
-
     def testWordEmbedderWithCompression(self):
         vocab_file = self._makeTextFile("vocab.txt", ["the", "world", "hello", "￭"])
         data_file = self._makeTextFile(
