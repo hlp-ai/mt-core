@@ -24,14 +24,14 @@ def _generate_source_context(batch_size, depth, num_sources=1, dtype=tf.float32)
 class DecoderTest(tf.test.TestCase):
 
     def _testDecoder(
-        self, decoder, initial_state_fn=None, num_sources=1, dtype=tf.float32
+        self, decoder, dtype=tf.float32
     ):
         batch_size = 4
         vocab_size = 10
         time_dim = 5
         depth = 6
         memory, memory_sequence_length, initial_state = _generate_source_context(
-            batch_size, depth, num_sources=num_sources, dtype=dtype
+            batch_size, depth, num_sources=1, dtype=dtype
         )
 
         decoder.initialize(vocab_size=vocab_size)
