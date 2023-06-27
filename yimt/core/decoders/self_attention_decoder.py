@@ -157,15 +157,10 @@ class SelfAttentionDecoder(decoder.Decoder):
         self,
         inputs,
         sequence_length=None,
-        initial_state=None,
         memory=None,
         memory_sequence_length=None,
-        input_fn=None,
         training=None,
     ):
-        _ = initial_state
-        _ = input_fn
-
         outputs, state, attention = self._run(
             inputs,
             sequence_length=sequence_length,

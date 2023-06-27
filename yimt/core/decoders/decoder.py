@@ -136,7 +136,6 @@ class Decoder(tf.keras.layers.Layer):
         inputs,
         length_or_step=None,
         state=None,
-        input_fn=None,
         training=None,
     ):
         """Runs the decoder layer on either a complete sequence (e.g. for training
@@ -148,7 +147,6 @@ class Decoder(tf.keras.layers.Layer):
           length_or_step: For 3D :obj:`inputs`, the length of each sequence. For 2D
             :obj:`inputs`, the current decoding timestep.
           state: The decoder state.
-          input_fn: A callable taking sampled ids and returning the decoding inputs.
           training: Run in training mode.
 
         Returns:
@@ -183,10 +181,8 @@ class Decoder(tf.keras.layers.Layer):
             logits, state, attention = self.forward(
                 inputs,
                 sequence_length=length_or_step,
-                initial_state=state,
                 memory=self.memory,
                 memory_sequence_length=self.memory_sequence_length,
-                input_fn=input_fn,
                 training=training,
             )
         else:
@@ -197,10 +193,8 @@ class Decoder(tf.keras.layers.Layer):
         self,
         inputs,
         sequence_length=None,
-        initial_state=None,
         memory=None,
         memory_sequence_length=None,
-        input_fn=None,
         training=None,
     ):
         """Runs the decoder on full sequences.
@@ -208,10 +202,8 @@ class Decoder(tf.keras.layers.Layer):
         Args:
           inputs: The 3D decoder input.
           sequence_length: The length of each input sequence.
-          initial_state: The initial decoder state.
           memory: Memory values to query.
           memory_sequence_length: Memory values length.
-          input_fn: A callable taking sampled ids and returning the decoding inputs.
           training: Run in training mode.
 
         Returns:
