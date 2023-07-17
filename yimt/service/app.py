@@ -300,7 +300,7 @@ def create_app(args):
         return jsonify(resp)
 
     @app.post("/translate_image")
-    # @access_check
+    @access_check
     def translate_image():
         """Translate image from a language to another"""
         # if args.disable_image_translation:
