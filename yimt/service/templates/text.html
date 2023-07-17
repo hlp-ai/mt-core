@@ -36,6 +36,51 @@
             }    
         }
 
+        var xhr;
+
+        function uploadImage(){
+            var fileObj = document.getElementById("select_image").files[0];
+            var files = document.getElementById("select_image").files;
+            if(files.length==0)
+            {
+                return;
+            }
+            source_lang = document.getElementById('source').value;
+            target_lang = document.getElementById('target').value;
+
+            END_POINT = window.localStorage.getItem("server");
+            API_KEY = window.localStorage.getItem("key");
+            if(END_POINT=="")
+            {
+                END_POINT = "http://127.0.0.1:5555";
+            }
+		    console.log(fileObj);
+		    var form = new FormData();
+		    form.append("file", fileObj);
+		    form.append("source", source_lang);
+		    form.append("target", target_lang);
+            form.append("api_key", API_KEY);
+
+		    var url = END_POINT + "/translate_image";
+		    xhr = new XMLHttpRequest();
+		    xhr.open("post", url, true);
+		    xhr.onload = uploadComplete;
+		    xhr.send(form);
+        }
+
+        function uploadComplete(evt) {
+			//alert(evt.target.responseText);
+			res_json = JSON.parse(evt.target.responseText);
+			if(res_json.error){
+			  alert(res_json.error);
+			  return;
+			}
+			//alert(res_json)
+			//alert(res_json.originalText);
+            document.getElementById('q').value = res_json.originalText;
+            document.getElementById('translation').value = res_json.translatedText;
+		}
+
         async function translate_func(){
             qstr = document.getElementById('q').value;
             qstr = qstr.trim();
@@ -79,13 +124,13 @@
         <input type="button" class="url_setting_hide" value="关闭" onclick="url_setting_hide_func()">
         <input type="button" class="url_button" id="url_button" value="设置" onclick="url_resetting_func()">
     </div>
-   
+
     <div class="fanyi__nav">
         <div class="fanyi__nav__container">
                 <a href="/" class="fanyi__nav__logo"></a>
                 <div class="nav_left">
                     <a target="_blank" class="nav" href="/file">文档翻译</a><a target="_blank" class="nav">翻译API</a><a target="_blank" class="nav" href="/">登录</a><a target="_blank" id="url_setting_label" class="nav" >设置</a>
-                </div>  
+                </div>
         </div>
         <script>
             function url_setting_func()
@@ -95,19 +140,19 @@
                 document.getElementById("url").value=END_POINT;
                 document.getElementById("api_key").value=API_KEY;
             }
-            
+
             function url_resetting_func()
             {
                 END_POINT = document.getElementById("url").value;
                 window.localStorage.setItem("server", END_POINT);
-                
+
                 document.getElementById("url_setting_block").style.visibility='hidden';
                 document.getElementById("mask").style.display='none';
 
                 API_KEY = document.getElementById("api_key").value;
                 window.localStorage.setItem("key",API_KEY);
             }
-         
+
             function url_setting_hide_func()
             {
                 document.getElementById("url_setting_block").style.visibility='hidden';
@@ -188,7 +233,7 @@
                         function getc_num()
                         {
                             document.getElementById("c1").innerHTML=document.getElementById("q").value.length;
-                        }         
+                        }
                     </script>
 
                     <a id="inputDelete" class="input__original_delete"></a>
@@ -201,11 +246,56 @@
                             document.getElementById("q").value='';
                             document.getElementById("translation").value='';
                             getc_num();
-                        }    
+                        }
                         document.getElementById("inputDelete").addEventListener("click", clear_func);
+
+                        document.getElementById("q").addEventListener('paste',function(e){
+                            var data = e.clipboardData||window.clipboardData;
+                            var blob = data.items[0].getAsFile();
+                            var isImg = (blob&&1)||-1;
+                            //alert(isImg);
+                            var reader = new FileReader();
+                            if(isImg >= 0)
+                            {       
+                                reader.readAsDataURL(blob);
+                            }
+                            reader.onload = function(evt)
+                            {
+                                var base64_str = evt.target.result;
+                                console.log(base64_str);
+                                document.getElementById("q").value = "";
+                                document.getElementById("paste_img").src = base64_str;
+                                document.getElementById("img_show").style.display='block';
+                                
+                                /*
+                                source_lang = document.getElementById('source').value;
+                                target_lang = document.getElementById('target').value;
+                                END_POINT = window.localStorage.getItem("server");
+                                API_KEY = window.localStorage.getItem("key");
+                                if(END_POINT=="")
+                                {
+                                    END_POINT = "http://127.0.0.1:5555";
+                                }  
+                                var form = new FormData();
+		                        form.append("base64", base64_str);
+		                        form.append("source", source_lang);
+		                        form.append("target", target_lang);
+                                form.append("api_key", API_KEY);                     
+                                var url = END_POINT + "/translate_image";
+		                        xhr = new XMLHttpRequest();
+		                        xhr.open("post", url, true);
+		                        xhr.onload = uploadComplete;
+		                        xhr.send(form);
+                                */
+                            }
+                        });
                     </script>
                 </div>
-                
+                <div class="img_show" id="img_show">
+                    <img class="paste_img" id="paste_img" src="">
+                </div>
+                <div class="fanyi__operations--image--font" >翻译图片</div>
+                <input type="file" id="select_image" class="fanyi__operations--image" onchange="uploadImage()">
                 <!--<input type="button" value="翻译文档" class="fanyi__operations--file" onclick="window.location.href='/file'">-->
             </div>
 

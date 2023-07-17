@@ -299,6 +299,54 @@ def create_app(args):
         }
         return jsonify(resp)
 
+    @app.post("/translate_image")
+    @access_check
+    def translate_image():
+        """Translate image from a language to another"""
+        # if args.disable_image_translation:
+        # abort(403, description="Image translation are disabled on this server.")
+
+        source_lang = request.form.get("source")
+        target_lang = request.form.get("target")
+        api_key = request.form.get("api_key")
+        file = request.files['file']
+
+        if not file:
+            abort(400, description="Invalid request: missing file parameter")
+        if not source_lang:
+            abort(400, description="Invalid request: missing source parameter")
+        if not target_lang:
+            abort(400, description="Invalid request: missing target parameter")
+
+        if file.filename == '':
+            abort(400, description="Invalid request: empty file")
+
+        log_service.info("/translate_file: " + file.filename)
+
+        file_type = os.path.splitext(file.filename)[1]
+
+        # if not support(file_type):
+            # abort(400, description="Invalid request: file format not supported")
+
+        try:
+            filename = str(uuid.uuid4()) + '.' + secure_filename(file.filename)
+            filepath = os.path.join(get_upload_dir(), filename)
+            file.save(filepath)
+
+            translated_file_path = translate_doc(filepath, source_lang, target_lang)
+            translated_filename = os.path.basename(translated_file_path)
+
+            log_service.info("->Translated: from " + filepath + " to " + translated_filename)
+
+            return jsonify(
+                {
+                    'originalText': "originalText1",
+                    'translatedText': "translatedText1"
+                }
+            )
+        except Exception as e:
+            abort(500, description=e)
+
     @app.post("/translate_file")
     @access_check
     def translate_file():
@@ -378,3 +426,5 @@ def create_app(args):
         return send_file(return_data, as_attachment=True, download_name=download_filename)
 
     return app
+
+
