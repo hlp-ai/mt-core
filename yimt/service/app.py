@@ -300,7 +300,7 @@ def create_app(args):
         return jsonify(resp)
 
     @app.post("/translate_image")
-    @access_check
+    # @access_check
     def translate_image():
         """Translate image from a language to another"""
         # if args.disable_image_translation:
@@ -321,7 +321,7 @@ def create_app(args):
         if file.filename == '':
             abort(400, description="Invalid request: empty file")
 
-        log_service.info("/translate_file: " + file.filename)
+        log_service.info("/translate_image: " + file.filename)
 
         file_type = os.path.splitext(file.filename)[1]
 
@@ -333,10 +333,10 @@ def create_app(args):
             filepath = os.path.join(get_upload_dir(), filename)
             file.save(filepath)
 
-            translated_file_path = translate_doc(filepath, source_lang, target_lang)
-            translated_filename = os.path.basename(translated_file_path)
+            # translated_file_path = translate_doc(filepath, source_lang, target_lang)
+            # translated_filename = os.path.basename(translated_file_path)
 
-            log_service.info("->Translated: from " + filepath + " to " + translated_filename)
+            # log_service.info("->Translated: from " + filepath + " to " + translated_filename)
 
             return jsonify(
                 {
