@@ -8,6 +8,7 @@ from html import unescape
 from flask import (Flask, abort, jsonify, render_template, request, send_file, url_for)
 from werkzeug.utils import secure_filename
 
+from yimt.api.text_recognizer import TextRecognizers
 from yimt.api.text_splitter import may_combine_paragraph
 from yimt.api.translators import Translators
 from yimt.api.utils import detect_lang, get_logger
@@ -100,6 +101,7 @@ def create_app(args):
         remove_translated_files.setup(get_upload_dir())
 
     translators = Translators()
+    recognizers = TextRecognizers()
 
     lang_pairs, from_langs, to_langs, langs_api = translators.support_languages()
 
@@ -315,6 +317,8 @@ def create_app(args):
             abort(400, description="Invalid request: missing file parameter")
         if not source_lang:
             abort(400, description="Invalid request: missing source parameter")
+        if source_lang == "auto":
+            abort(400, description="Require source language when translating image")
         if not target_lang:
             abort(400, description="Invalid request: missing target parameter")
 
@@ -338,10 +342,25 @@ def create_app(args):
 
             # log_service.info("->Translated: from " + filepath + " to " + translated_filename)
 
+            text = recognizers.recognize(filepath, source_lang)
+
+            if text is None:
+                abort(400, description="NO OCR")
+
+            src = text
+            lang = source_lang + "-" + target_lang
+
+            translator = translators.get_translator(source_lang, target_lang)
+            if translator is None:
+                abort(400, description="Language pair %s is not supported" % lang)
+
+            src = may_combine_paragraph(src)
+            translation = translator.translate_paragraph(src)
+
             return jsonify(
                 {
-                    'originalText': "originalText1",
-                    'translatedText': "translatedText1"
+                    'originalText': text,
+                    'translatedText': translation
                 }
             )
         except Exception as e:
