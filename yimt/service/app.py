@@ -101,6 +101,22 @@ def run_ocr(image_path, source_lang, queue):
     queue.put(text)
 
 
+def run_translate(src, text_format, source_lang, target_lang, queue):
+    translators = Translators()
+
+    translator = translators.get_translator(source_lang, target_lang)
+    if translator is None:
+        return None
+
+    if text_format == "html":
+        translation = str(translate_html(translator, src))
+    else:
+        src = may_combine_paragraph(src)
+        translation = translator.translate_paragraph(src)
+
+    queue.put(translation)
+
+
 def create_app(args):
     app = Flask(__name__)
 
@@ -360,15 +376,21 @@ def create_app(args):
             if text is None:
                 abort(400, description="NO OCR")
 
-            src = text
-            lang = source_lang + "-" + target_lang
+            queue = multiprocessing.Queue()
+            p = multiprocessing.Process(target=run_translate, args=(text, "text", source_lang, target_lang, queue,))
+            p.start()
+            p.join()
+            translation = queue.get()
 
-            translator = translators.get_translator(source_lang, target_lang)
-            if translator is None:
-                abort(400, description="Language pair %s is not supported" % lang)
-
-            src = may_combine_paragraph(src)
-            translation = translator.translate_paragraph(src)
+            # src = text
+            # lang = source_lang + "-" + target_lang
+            #
+            # translator = translators.get_translator(source_lang, target_lang)
+            # if translator is None:
+            #     abort(400, description="Language pair %s is not supported" % lang)
+            #
+            # src = may_combine_paragraph(src)
+            # translation = translator.translate_paragraph(src)
 
             return jsonify(
                 {
