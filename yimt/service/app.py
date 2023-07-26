@@ -94,6 +94,13 @@ def get_routes_limits(default_req_limit, daily_req_limit, api_keys_db):
     return res
 
 
+def run_ocr(image_path, source_lang, queue):
+    recognizers = TextRecognizers()
+    text = recognizers.recognize(image_path, source_lang)
+
+    queue.put(text)
+
+
 def create_app(args):
     app = Flask(__name__)
 
@@ -101,7 +108,7 @@ def create_app(args):
         remove_translated_files.setup(get_upload_dir())
 
     translators = Translators()
-    recognizers = TextRecognizers()
+    # recognizers = TextRecognizers()
 
     lang_pairs, from_langs, to_langs, langs_api = translators.support_languages()
 
@@ -342,7 +349,13 @@ def create_app(args):
 
             # log_service.info("->Translated: from " + filepath + " to " + translated_filename)
 
-            text = recognizers.recognize(filepath, source_lang)
+            import multiprocessing
+
+            queue = multiprocessing.Queue()
+            p = multiprocessing.Process(target=run_ocr, args=(filepath, source_lang, queue,))
+            p.start()
+            p.join()
+            text = queue.get()
 
             if text is None:
                 abort(400, description="NO OCR")
