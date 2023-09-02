@@ -188,6 +188,15 @@ class Translator(object):
         return texts
 
 
+class DummyTranslator(Translator):
+
+    def __init__(self):
+        super().__init__("")
+
+    def _translate_batch(self, texts):
+        return [['译']*len(t) for t in texts]
+
+
 def get_model_from_checkpoint(config_file):
     config = load_config([config_file])
 

@@ -1,7 +1,7 @@
 import os
 import yaml
 
-from yimt.api.translator import load_translator, Translator
+from yimt.api.translator import load_translator, Translator, DummyTranslator
 
 
 class Translators(object):
@@ -44,7 +44,7 @@ class Translators(object):
     def support_languages(self):
         return self.lang_pairs, self.from_langs, self.to_langs, self.langs_api
 
-    def get_translator(self, source_lang, target_lang):
+    def get_translator(self, source_lang, target_lang, debug=False):
         """ Get and load translator for lang pair
 
         Args:
@@ -54,6 +54,9 @@ class Translators(object):
         Returns:
             Translator if exist for language pair, otherwise None
         """
+        if debug:
+            return DummyTranslator()
+
         lang_pair = source_lang + "-" + target_lang
         translator = self.translators.get(lang_pair)
         if translator is None:
