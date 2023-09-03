@@ -1,17 +1,9 @@
 """Admin GUI entry"""
-import tkinter as tk
-from functools import partial
-from tkinter import *
-
-from yimt.admin.app_frame import create_average, create_export, create_eval, create_infer, create_translate
-from yimt.admin.continue_frame import create_ft, create_mix_ft
-from yimt.admin.train_frame import create_sp_train, create_sp_tokenize, create_build_vocab, create_edit_config, \
-    create_train, create_pretrain
-from yimt.admin.corpus_frame import create_tsv2mono_corpus, create_mono2tsv_corpus, create_merge_corpus, \
-    create_normalize_corpus, create_filter_corpus, create_dedup_corpus, create_han2hans_corpus, create_sample_corpus, \
-    create_split_corpus, create_merge_moses_corpus, create_tok_mono, create_detok_zh, create_unzip_corpus, \
-    create_partition_corpus, create_dedup_rel_corpus, create_score_filter_corpus
-from yimt.admin.compare_frame import create_trans,create_sarcebleu_trans
+from yimt.admin.app_frame import *
+from yimt.admin.continue_frame import *
+from yimt.admin.train_frame import *
+from yimt.admin.corpus_frame import *
+from yimt.admin.compare_frame import create_sarcebleu_trans
 
 
 def on_menu(frame):
@@ -41,46 +33,6 @@ if __name__ == "__main__":
     create_mono2tsv_corpus(mono2tsv_frame)
     frames.append(mono2tsv_frame)
 
-    unzip_frame = tk.Frame(win_main)
-    unzip_frame.pack()
-    create_unzip_corpus(unzip_frame)
-    frames.append(unzip_frame)
-
-    merge_frame = tk.Frame(win_main)
-    merge_frame.pack()
-    create_merge_corpus(merge_frame)
-    frames.append(merge_frame)
-
-    merge_moses_frame = tk.Frame(win_main)
-    merge_moses_frame.pack()
-    create_merge_moses_corpus(merge_moses_frame)
-    frames.append(merge_moses_frame)
-
-    normalize_frame = tk.Frame(win_main)
-    normalize_frame.pack()
-    create_normalize_corpus(normalize_frame)
-    frames.append(normalize_frame)
-
-    filter_frame=tk.Frame(win_main)
-    filter_frame.pack()
-    create_filter_corpus(filter_frame)
-    frames.append(filter_frame)
-
-    score_filter_frame = tk.Frame(win_main)
-    score_filter_frame.pack()
-    create_score_filter_corpus(score_filter_frame)
-    frames.append(score_filter_frame)
-
-    dedup_frame = tk.Frame(win_main)
-    dedup_frame.pack()
-    create_dedup_corpus(dedup_frame)
-    frames.append(dedup_frame)
-
-    dedup_rel_frame = tk.Frame(win_main)
-    dedup_rel_frame.pack()
-    create_dedup_rel_corpus(dedup_rel_frame)
-    frames.append(dedup_rel_frame)
-
     han2Hans_frame = tk.Frame(win_main)
     han2Hans_frame.pack()
     create_han2hans_corpus(han2Hans_frame)
@@ -95,11 +47,6 @@ if __name__ == "__main__":
     partition_frame.pack()
     create_partition_corpus(partition_frame)
     frames.append(partition_frame)
-
-    split_frame = tk.Frame(win_main)
-    split_frame.pack()
-    create_split_corpus(split_frame)
-    frames.append(split_frame)
 
     tokenize_frame = tk.Frame(win_main)
     tokenize_frame.pack()
@@ -176,11 +123,6 @@ if __name__ == "__main__":
     create_translate(translate_frame)
     frames.append(translate_frame)
 
-    translation_frame = tk.Frame(win_main)
-    translation_frame.pack()
-    create_trans(translation_frame)
-    frames.append(translation_frame)
-
     bleu_frame = tk.Frame(win_main)
     bleu_frame.pack()
     create_sarcebleu_trans(bleu_frame)
@@ -194,26 +136,13 @@ if __name__ == "__main__":
     corpus_menu.add_command(label="TSV2Mono",command=partial(on_menu, tsv2mono_frame))
     corpus_menu.add_command(label="Mono2TSV",command=partial(on_menu,mono2tsv_frame))
     corpus_menu.add_separator()
-    corpus_menu.add_command(label="Unzip Files", command=partial(on_menu, unzip_frame))
-    corpus_menu.add_command(label="Merge Moses Files", command=partial(on_menu, merge_moses_frame))
-    corpus_menu.add_command(label="Merge Files", command=partial(on_menu, merge_frame))
-    corpus_menu.add_command(label="Normalize",command=partial(on_menu,normalize_frame))
-    corpus_menu.add_command(label="Dedup", command=partial(on_menu, dedup_frame))
-    corpus_menu.add_command(label="Filter",command=partial(on_menu,filter_frame))
-    corpus_menu.add_command(label="Split", command=partial(on_menu, split_frame))
-    corpus_menu.add_command(label="Score and Filter", command=partial(on_menu, score_filter_frame))
-    corpus_menu.add_separator()
-    corpus_menu.add_command(label="Hant2Hans", command=partial(on_menu, han2Hans_frame))
     corpus_menu.add_command(label="Sample", command=partial(on_menu, sample_frame))
     corpus_menu.add_command(label="Partition", command=partial(on_menu, partition_frame))
-    corpus_menu.add_command(label="DedupRel", command=partial(on_menu, dedup_rel_frame))
     corpus_menu.add_separator()
     corpus_menu.add_command(label="Tokenize File", command=partial(on_menu, tokenize_frame))
     corpus_menu.add_command(label="DeTokenize Chinese Text", command=partial(on_menu, detokenize_frame))
     corpus_menu.add_separator()
     corpus_menu.add_command(label="Exit", command=win_main.quit)
-
-
 
     mainmenu.add_cascade(label="Corpus", menu=corpus_menu)
 
@@ -239,14 +168,10 @@ if __name__ == "__main__":
     app_menu.add_command(label="Evaluate", command=partial(on_menu, eval_frame))
     app_menu.add_separator()
     app_menu.add_command(label="Translate interactively", command=partial(on_menu, translate_frame))
+    app_menu.add_separator()
+    app_menu.add_command(label="Calculate Bleu", command=partial(on_menu, bleu_frame))
 
     mainmenu.add_cascade(label="Application", menu=app_menu)
-
-    Trans_menu = Menu(mainmenu, tearoff=False)
-    Trans_menu.add_command(label="Other APIs", command=partial(on_menu, translation_frame))
-    Trans_menu.add_command(label="Calculate Bleu", command=partial(on_menu, bleu_frame))
-
-    mainmenu.add_cascade(label="Compare", menu=Trans_menu)
 
     win_main.config(menu=mainmenu)
 
