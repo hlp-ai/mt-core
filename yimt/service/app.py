@@ -351,10 +351,14 @@ def create_app(args):
             abort(500, description=e)
 
     @app.post("/translate_image2text")
+    # @access_check
     def translate_image2text():
         json = get_json_dict(request)
         image_64_string = json.get("base64")
-        # print(image_64_string)
+        token = json.get("token")
+        source_lang = json.get("source_lang")
+        target_lang = json.get("source_lang")
+        # print(json) # for test
         import base64
         image_data = base64.b64decode(image_64_string)
         with open("decoded_image.png", "wb") as image_file:
@@ -365,13 +369,19 @@ def create_app(args):
         return jsonify(resp)
 
     @app.post("/translate_audio2text")
+    # @access_check
     def translate_audio2text():
         json = get_json_dict(request)
         audio_64_string = json.get("base64")
-        # print(audio_64_string)
+        format = json.get("format")
+        rate = json.get("rate")
+        channel = json.get("channel")
+        token = json.get("token")
+        len = json.get("len")
+        # print(json) # for test
         import base64
         audio_data = base64.b64decode(audio_64_string)
-        with open("decoded_audio.mp3", "wb") as audio_file:
+        with open("decoded_audio.wav", "wb") as audio_file:
             audio_file.write(audio_data)
         resp = {
             'translatedText': "test text for 'audio to text' "
@@ -379,14 +389,21 @@ def create_app(args):
         return jsonify(resp)
 
     @app.post("/translate_text2audio")
+    # @access_check
     def translate_text2audio():
         json = get_json_dict(request)
+        token = json.get("token")
         text = json.get("text")
         print(text)  # for test
         import base64
-        audio_64_string = base64.b64encode(open("On the Run.mp3", "rb").read())  # 这里设置本地音频路径
+        audio_64_string = base64.b64encode(open("test_audio.wav", "rb").read())  # 这里设置本地音频路径
         # print(audio_64_string.decode('utf-8')) # for test
-        return audio_64_string.decode('utf-8')
+        type = "wav"
+        resp = {
+            'base64': audio_64_string.decode('utf-8'),
+            'type': type
+        }
+        return jsonify(resp)
 
     @app.get("/download_file/<string:filename>")
     def download_file(filename: str):
