@@ -25,7 +25,6 @@ class SelfAttentionDecoder(decoder.Decoder):
         ffn_activation=tf.nn.relu,
         mha_bias=True,
         position_encoder_class=SinusoidalPositionEncoder,
-        num_sources=1,
         maximum_relative_position=None,
         attention_reduction=transformer.MultiHeadAttentionReduction.FIRST_HEAD_LAST_LAYER,
         pre_norm=True,
@@ -49,7 +48,6 @@ class SelfAttentionDecoder(decoder.Decoder):
           position_encoder_class: The :class:`yimt.layers.PositionEncoder`
             class to use for position encoding (or a callable that returns an
             instance).
-          num_sources: The number of source contexts expected by this decoder.
           maximum_relative_position: Maximum relative position representation
             (from https://arxiv.org/abs/1803.02155).
           attention_reduction: A :class:`yimt.layers.MultiHeadAttentionReduction`
@@ -58,7 +56,7 @@ class SelfAttentionDecoder(decoder.Decoder):
             sub-layer. Otherwise it is applied after.
           **kwargs: Additional layer arguments.
         """
-        super().__init__(num_sources=num_sources, **kwargs)
+        super().__init__(**kwargs)
         self.num_units = num_units
         self.num_heads = num_heads
         self.dropout = dropout
@@ -72,7 +70,6 @@ class SelfAttentionDecoder(decoder.Decoder):
                 self.num_units,
                 self.num_heads,
                 ffn_inner_dim,
-                num_sources=num_sources,
                 dropout=dropout,
                 attention_dropout=attention_dropout,
                 ffn_dropout=ffn_dropout,
@@ -160,15 +157,10 @@ class SelfAttentionDecoder(decoder.Decoder):
         self,
         inputs,
         sequence_length=None,
-        initial_state=None,
         memory=None,
         memory_sequence_length=None,
-        input_fn=None,
         training=None,
     ):
-        _ = initial_state
-        _ = input_fn
-
         outputs, state, attention = self._run(
             inputs,
             sequence_length=sequence_length,

@@ -139,7 +139,7 @@ def average_checkpoints(
     """Averages object-based checkpoints.
 
     Args:
-      model_dir: The directory containing checkpoints.
+      model_dir: The directory containing checkpoints, or a list of checkpoint paths.
       output_dir: The directory that will contain the averaged checkpoint.
       trackables: A dictionary containing the trackable objects included in the
         checkpoint.
@@ -156,18 +156,22 @@ def average_checkpoints(
       ValueError: if no checkpoints are found in :obj:`model_dir`.
 
     See Also:
-      :func:`yimt.utils.average_checkpoints_into_layer`
+      :func:`yimt.core.utils.average_checkpoints_into_layer`
     """
-    if model_dir == output_dir:
-        raise ValueError("Model and output directory must be different")
     model = trackables.get(model_key)
     if model is None:
         raise ValueError("%s not found in trackables %s" % (model_key, trackables))
 
-    checkpoint_state = tf.train.get_checkpoint_state(model_dir)
-    if checkpoint_state is None:
-        raise ValueError("No checkpoints found in %s" % model_dir)
-    checkpoints_path = checkpoint_state.all_model_checkpoint_paths
+    if isinstance(model_dir, list):
+        checkpoints_path = list(sorted(model_dir, key=get_step_from_checkpoint_prefix))
+    else:
+        if model_dir == output_dir:
+            raise ValueError("Model and output directory must be different")
+        checkpoint_state = tf.train.get_checkpoint_state(model_dir)
+        if checkpoint_state is None:
+            raise ValueError("No checkpoints found in %s" % model_dir)
+        checkpoints_path = checkpoint_state.all_model_checkpoint_paths
+
     if len(checkpoints_path) > max_count:
         checkpoints_path = checkpoints_path[-max_count:]
 
@@ -209,7 +213,7 @@ def average_checkpoints_into_layer(checkpoints, layer, layer_prefix):
         variable.assign(tf.zeros_like(variable))
 
     # Get a map from variable names in the checkpoint to variables in the layer.
-    names_to_variables = misc.get_variables_name_mapping(layer, root_key=layer_prefix)
+    names_to_variables = misc.get_variables_name_mapping(layer, layer_prefix)
 
     num_checkpoints = len(checkpoints)
     tf.get_logger().info("Averaging %d checkpoints...", num_checkpoints)

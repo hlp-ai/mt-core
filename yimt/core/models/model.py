@@ -160,6 +160,18 @@ class Model(tf.keras.layers.Layer):
         loss = self.compute_loss(outputs, labels, training=False)
         return loss, predictions
 
+    def score(self, features, labels):
+        """Scores labels.
+
+        Args:
+          features: A nested structure of features ``tf.Tensor``.
+          labels: A nested structure of labels ``tf.Tensor``.
+
+        Returns:
+          The score results.
+        """
+        raise NotImplementedError("This model does not define a score function")
+
     def train(self, features, labels, optimizer, loss_scale=None):
         """Computes and applies the gradients for a batch of examples.
 

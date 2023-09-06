@@ -127,46 +127,6 @@ class ReducerTest(tf.test.TestCase):
         self.assertAllEqual(expected_a, padded_a)
         self.assertAllEqual(expected_b, padded_b)
 
-    def testMultiplyReducerWithSequence(self):
-        a = [[[1], [-1], [-1]], [[1], [2], [3]], [[1], [2], [-1]]]
-        b = [[[1], [2], [3], [4]], [[1], [2], [-1], [-1]], [[1], [2], [-1], [-1]]]
-        expected = [[[1], [2], [3], [4]], [[1], [4], [3], [0]], [[1], [4], [0], [0]]]
-        length_a = [1, 3, 2]
-        length_b = [4, 2, 2]
-
-        reduced, length = reducer.MultiplyReducer()(
-            [tf.constant(a, dtype=tf.float32), tf.constant(b, dtype=tf.float32)],
-            [tf.constant(length_a), tf.constant(length_b)],
-        )
-
-        reduced, length = self.evaluate([reduced, length])
-        self.assertAllEqual(expected, reduced)
-        self.assertAllEqual([4, 3, 2], length)
-
-    def testMultiplyReducerWithSequenceAndMaxTime(self):
-        a = [[[1], [-1], [-1]], [[1], [2], [3]], [[1], [2], [-1]]]
-        b = [
-            [[1], [2], [3], [4], [-1]],
-            [[1], [2], [-1], [-1], [-1]],
-            [[1], [2], [-1], [-1], [-1]],
-        ]
-        expected = [
-            [[1], [2], [3], [4], [0]],
-            [[1], [4], [3], [0], [0]],
-            [[1], [4], [0], [0], [0]],
-        ]
-        length_a = [1, 3, 2]
-        length_b = [4, 2, 2]
-
-        reduced, length = reducer.MultiplyReducer()(
-            [tf.constant(a, dtype=tf.float32), tf.constant(b, dtype=tf.float32)],
-            [tf.constant(length_a), tf.constant(length_b)],
-        )
-
-        reduced, length = self.evaluate([reduced, length])
-        self.assertAllEqual(expected, reduced)
-        self.assertAllEqual([4, 3, 2], length)
-
     def testConcatInDepthWithSequence(self):
         a = [[[1], [-1], [-1]], [[1], [2], [3]], [[1], [2], [-1]]]
         b = [[[1], [2], [3], [4]], [[1], [2], [-1], [-1]], [[1], [2], [-1], [-1]]]
@@ -234,20 +194,6 @@ class ReducerTest(tf.test.TestCase):
         self.assertAllEqual(expected, reduced)
         self.assertAllEqual([5, 5, 4], length)
 
-    def testJoinReducer(self):
-        self.assertTupleEqual((1, 2, 3), reducer.JoinReducer()([1, 2, 3]))
-        self.assertTupleEqual((1, 2, 3), reducer.JoinReducer()([(1,), (2,), (3,)]))
-        self.assertTupleEqual((1, 2, 3), reducer.JoinReducer()([1, (2, 3)]))
-
-        # Named tuples should not be unpacked.
-        State = collections.namedtuple("State", ["h", "c"])
-        self.assertTupleEqual(
-            (State(h=1, c=2), State(h=3, c=4), State(h=5, c=6)),
-            reducer.JoinReducer()(
-                [State(h=1, c=2), (State(h=3, c=4), State(h=5, c=6))]
-            ),
-        )
-
     @parameterized.expand(
         [
             [reducer.SumReducer(), [1, 2, 3], [4, 5, 6], [5, 7, 9]],
@@ -259,19 +205,6 @@ class ReducerTest(tf.test.TestCase):
         z = reducer.zip_and_reduce(x, y)
         z = self.evaluate(z)
         self.assertAllEqual(z, expected_z)
-
-    def testDenseReducer(self):
-        inputs = [
-            tf.random.uniform([3, 4]),
-            tf.random.uniform([3, 12]),
-            tf.random.uniform([3, 6]),
-        ]
-        dense_reducer = reducer.DenseReducer(10, activation=tf.nn.relu)
-        output = dense_reducer(inputs)
-        self.assertTrue(dense_reducer.built)
-        self.assertNotEmpty(dense_reducer.variables)
-        self.assertListEqual(output.shape.as_list(), [3, 10])
-        self.assertAllGreaterEqual(output, 0)
 
 
 if __name__ == "__main__":

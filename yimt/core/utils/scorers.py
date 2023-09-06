@@ -5,8 +5,6 @@ import abc
 import sacrebleu
 import tensorflow as tf
 
-from rouge import FilesRouge
-
 from yimt.core.utils import misc
 
 
@@ -60,23 +58,6 @@ def _get_lines(path):
     return lines
 
 
-@register_scorer(name="rouge")
-class ROUGEScorer(Scorer):
-    """ROUGE scorer based on https://github.com/pltrdy/rouge."""
-
-    def __init__(self):
-        super().__init__("rouge")
-
-    @property
-    def scores_name(self):
-        return {"rouge-1", "rouge-2", "rouge-l"}
-
-    def __call__(self, ref_path, hyp_path):
-        scorer = FilesRouge(metrics=list(self.scores_name))
-        rouge_scores = scorer.get_scores(hyp_path, ref_path, avg=True)
-        return {name: rouge_scores[name]["f"] for name in self.scores_name}
-
-
 @register_scorer(name="bleu")
 class BLEUScorer(Scorer):
     """Scorer using sacreBLEU."""
@@ -89,23 +70,6 @@ class BLEUScorer(Scorer):
         ref_stream = _get_lines(ref_path)
         bleu = sacrebleu.corpus_bleu(sys_stream, [ref_stream], force=True)
         return bleu.score
-
-
-@register_scorer(name="ter")
-class TERScorer(Scorer):
-    """TER scorer."""
-
-    def __init__(self):
-        super().__init__("ter")
-
-    def __call__(self, ref_path, hyp_path):
-        sys_stream = _get_lines(hyp_path)
-        ref_stream = _get_lines(ref_path)
-        ter = sacrebleu.corpus_ter(sys_stream, [ref_stream])
-        return ter.score
-
-    def lower_is_better(self):
-        return True
 
 
 def make_scorers(names):

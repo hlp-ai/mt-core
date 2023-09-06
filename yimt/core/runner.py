@@ -190,13 +190,15 @@ class Runner(object):
         eval_config = config["eval"]
 
         batch_type = train_config["batch_type"]
+        batch_size = train_config["batch_size"]
         batch_size_multiple = 8 if mixed_precision and batch_type == "tokens" else 1
+        batch_autotune_mode = train_config.get("batch_autotune_mode")
 
         dataset_fn = (
             lambda input_context: model.examples_inputter.make_training_dataset(
                 data_config["train_features_file"],
                 data_config.get("train_labels_file"),
-                train_config["batch_size"],
+                batch_size,
                 batch_type=batch_type,
                 batch_size_multiple=batch_size_multiple,
                 shuffle_buffer_size=train_config["sample_buffer_size"],
@@ -209,7 +211,7 @@ class Runner(object):
                 prefetch_buffer_size=train_config.get("prefetch_buffer_size"),
                 cardinality_multiple=input_context.num_replicas_in_sync,
                 weights=data_config.get("train_files_weights"),
-                batch_autotune_mode=train_config.get("batch_autotune_mode"),
+                batch_autotune_mode=batch_autotune_mode,
             )
         )
 
@@ -229,16 +231,22 @@ class Runner(object):
                 evaluator = evaluation.Evaluator.from_config(model, config)
 
         # Set gradients accumulation based on the requested effective batch size.
-        if train_config.get("effective_batch_size") is not None:
+        effective_batch_size = train_config.get("effective_batch_size")
+        if effective_batch_size is not None:
             accum_steps = _count_batch_accum(
-                train_config["batch_size"],
-                train_config["effective_batch_size"],
+                batch_size,
+                effective_batch_size,
                 num_replicas=num_replicas,
             )
+            if batch_autotune_mode and accum_steps > 2:
+                # When autotuning the batch size, the memory usage should be the same
+                # whether we are accumulating 2 steps or N steps.
+                accum_steps = 2
+                effective_batch_size = batch_size * num_replicas * accum_steps
             tf.get_logger().info(
                 "Accumulate gradients of %d iterations to reach effective batch size of %d",
                 accum_steps,
-                train_config["effective_batch_size"],
+                effective_batch_size,
             )
         else:
             accum_steps = 1
@@ -307,12 +315,15 @@ class Runner(object):
         )
         return evaluator(step)
 
-    def average_checkpoints(self, output_dir, max_count=8):
+    def average_checkpoints(self, output_dir, max_count=8, checkpoint_paths=None):
         """Averages checkpoints.
 
         Args:
           output_dir: The directory that will contain the averaged checkpoint.
           max_count: The maximum number of checkpoints to average.
+          checkpoint_paths: The list of checkpoints to average. If not set,
+            the last :obj:`max_count` checkpoints of the current model directory
+            are averaged.
 
         Returns:
           The path to the directory containing the averaged checkpoint.
@@ -327,7 +338,10 @@ class Runner(object):
         model.create_variables(optimizer=optimizer)
         trackables = dict(model=model, optimizer=optimizer)
         output_dir = checkpoint_util.average_checkpoints(
-            checkpoint.model_dir, output_dir, trackables, max_count=max_count
+            self.model_dir if checkpoint_paths is None else checkpoint_paths,
+            output_dir,
+            trackables,
+            max_count=max_count,
         )
         _forward_model_description(self.model_dir, output_dir)
         self._config["model_dir"] = output_dir

@@ -19,12 +19,14 @@ class EmbeddingsSharingLevel(object):
      * ``SOURCE_TARGET_INPUT``: share source and target word embeddings
      * ``TARGET``: share target word embeddings and softmax weights
      * ``ALL``: share words embeddings and softmax weights
+     * ``AUTO``: automatically share embeddings when using the same vocabulary file.
     """
 
     NONE = 0
     SOURCE_TARGET_INPUT = 1
     TARGET = 2
     ALL = 3
+    AUTO = 4
 
     @staticmethod
     def share_input_embeddings(level):
@@ -67,30 +69,12 @@ class SequenceToSequence(model.Model):
 
         Raises:
           TypeError: if :obj:`target_inputter` is not a
-            :class:`yimt.inputters.WordEmbedder` (same for
-            :obj:`source_inputter` when embeddings sharing is enabled).
+            :class:`yimt.inputters.WordEmbedder`
         """
         if not isinstance(target_inputter, inputters.WordEmbedder):
             raise TypeError("Target inputter must be a WordEmbedder")
-        if EmbeddingsSharingLevel.share_input_embeddings(share_embeddings):
-            if isinstance(source_inputter, inputters.ParallelInputter):
-                source_inputters = source_inputter.inputters
-            else:
-                source_inputters = [source_inputter]
-            for inputter in source_inputters:
-                if not isinstance(inputter, inputters.WordEmbedder):
-                    raise TypeError(
-                        "Sharing embeddings requires all inputters to be a "
-                        "WordEmbedder"
-                    )
 
-        examples_inputter = SequenceToSequenceInputter(
-            source_inputter,
-            target_inputter,
-            share_parameters=EmbeddingsSharingLevel.share_input_embeddings(
-                share_embeddings
-            ),
-        )
+        examples_inputter = SequenceToSequenceInputter(source_inputter, target_inputter)
         super().__init__(examples_inputter)
         self.encoder = encoder
         self.decoder = decoder
@@ -139,10 +123,56 @@ class SequenceToSequence(model.Model):
             )
             self.labels_inputter.set_noise(noiser, in_place=False)
 
+        if self.share_embeddings != EmbeddingsSharingLevel.NONE:
+            all_inputters = self.examples_inputter.get_leaf_inputters()
+
+            if self.share_embeddings == EmbeddingsSharingLevel.AUTO:
+                if all(
+                    isinstance(inputter, inputters.WordEmbedder)
+                    and inputter.vocabulary_file == all_inputters[0].vocabulary_file
+                    for inputter in all_inputters
+                ):
+                    self.share_embeddings = EmbeddingsSharingLevel.ALL
+                else:
+                    self.share_embeddings = EmbeddingsSharingLevel.TARGET
+
+            if EmbeddingsSharingLevel.share_input_embeddings(self.share_embeddings):
+                if not all(
+                    isinstance(inputter, inputters.WordEmbedder)
+                    for inputter in all_inputters
+                ):
+                    raise TypeError(
+                        "Sharing embeddings requires all inputters to be a WordEmbedder"
+                    )
+
+                self.examples_inputter.share_parameters = True
+
     def build(self, input_shape):
         super().build(input_shape)
         if EmbeddingsSharingLevel.share_target_embeddings(self.share_embeddings):
             self.decoder.reuse_embeddings(self.labels_inputter.embedding)
+
+    def score(self, features, labels):
+        outputs, _ = self(features, labels=labels)
+        cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(
+            labels["ids_out"], outputs["logits"]
+        )
+        weights = tf.sequence_mask(labels["length"], dtype=cross_entropy.dtype)
+        masked_cross_entropy = cross_entropy * weights
+        scores = tf.reduce_sum(masked_cross_entropy, axis=1)
+        results = {
+            "cross_entropy": cross_entropy,
+            "score": scores,
+            "tokens": labels["tokens"],
+            "length": self.decoder_inputter.get_length(
+                labels, ignore_special_tokens=True
+            ),
+        }
+        for key_to_forward in ("attention", "index"):
+            value = outputs.get(key_to_forward)
+            if value is not None:
+                results[key_to_forward] = value
+        return results
 
     def call(self, features, labels=None, training=None, step=None):
         # Encode the source.
