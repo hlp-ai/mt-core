@@ -176,7 +176,7 @@ def create_app(args):
         if args.disable_web_ui:
             abort(404)
 
-        return render_template('text.html')
+        return render_template('reference_view.html')
 
     @app.route("/file")
     @limiter.exempt
@@ -396,7 +396,7 @@ def create_app(args):
         text = json.get("text")
         print(text)  # for test
         import base64
-        audio_64_string = base64.b64encode(open("test_audio.wav", "rb").read())  # 这里设置本地音频路径
+        audio_64_string = base64.b64encode(open("dida.wav", "rb").read())  # 这里设置本地音频路径
         # print(audio_64_string.decode('utf-8')) # for test
         type = "wav"
         resp = {
