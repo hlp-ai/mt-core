@@ -176,7 +176,7 @@ def create_app(args):
         if args.disable_web_ui:
             abort(404)
 
-        return render_template('reference_view.html')
+        return render_template('text.html')
 
     @app.route("/file")
     @limiter.exempt
