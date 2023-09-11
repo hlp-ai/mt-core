@@ -47,8 +47,8 @@ class Translator(object):
         """
         self.sp_source_model = spm.SentencePieceProcessor(model_file=sp_src_path)
         self.lang_pair = lang_pair
-        self.from_lang = "en"
-        self.to_lang = "zh"
+        self.from_lang = None
+        self.to_lang = None
         if self.lang_pair is not None:
             self.from_lang = self.lang_pair.split("-")[0]
             self.to_lang = self.lang_pair.split("-")[1]
