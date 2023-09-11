@@ -40,12 +40,26 @@ def main():
         action="store_true",
         help="If set, do not add special sequence tokens (start, end) in the vocabulary.",
     )
+    parser.add_argument("--custom_symbol_file", default=None, help="user defined symbols file")
     args = parser.parse_args()
+
+    user_defined_symbols = []
+    if args.custom_symbol_file is not None:
+        tf.get_logger().info("Loading user defined symbols...")
+        with open(args.custom_symbol_file) as uf:
+            for line in uf:
+                line = line.strip()
+                if len(line) > 0:
+                    user_defined_symbols.append(line)
 
     special_tokens = [constants.PADDING_TOKEN]
     if not args.without_sequence_tokens:
         special_tokens.append(constants.START_OF_SENTENCE_TOKEN)
         special_tokens.append(constants.END_OF_SENTENCE_TOKEN)
+
+    if len(user_defined_symbols) > 0:
+        for t in user_defined_symbols:
+            special_tokens.append(t)
 
     vocab = data.Vocab(special_tokens=special_tokens)
     num_oov_buckets = 1

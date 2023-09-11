@@ -131,6 +131,13 @@ def create_build_vocab(parent):
     entry_vocab.grid(row=2, column=1, padx=10, pady=5)
     tk.Button(parent, text="...", command=partial(ask_dir, entry_vocab)).grid(row=2, column=2, padx=10, pady=5)
 
+    tk.Label(parent, text="User Defined Symbols File").grid(row=3, column=0, padx=10, pady=5, sticky="e")
+    entry_symbols_file = tk.Entry(parent, width=50)
+    entry_symbols_file.grid(row=3, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_symbols_file)).grid(row=3, column=2,
+                                                                                                 padx=10,
+                                                                                                 pady=5)
+
     def go():
         corpus_file = entry_corpus.get()
         if len(corpus_file.strip()) == 0:
@@ -151,13 +158,18 @@ def create_build_vocab(parent):
 
         print(corpus_file, vocab_size, vocab_path)
 
-        build_vocab_cmd = "python ../core/bin/build_vocab.py --size {} --save_vocab {} {}"
+        symbols_file = entry_symbols_file.get().strip()
+        cmd_ex = ""
+        if len(symbols_file) > 0:
+            cmd_ex = " --custom_symbol_file {}".format(symbols_file)
+
+        build_vocab_cmd = "python ../core/bin/build_vocab.py --size {} --save_vocab {} {}" + cmd_ex
 
         os.popen(build_vocab_cmd.format(vocab_size, vocab_path, corpus_file)).readlines()
 
         tk.messagebox.showinfo(title="Info", message="Vocab created.")
 
-    tk.Button(parent, text="Build Vocab", command=go).grid(row=3, column=1, padx=10, pady=5)
+    tk.Button(parent, text="Build Vocab", command=go).grid(row=4, column=1, padx=10, pady=5)
 
 
 def create_pretrain(parent):
