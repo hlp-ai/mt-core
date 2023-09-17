@@ -28,7 +28,6 @@ from yimt.core.utils.exporters import (
     register_exporter,
 )
 from yimt.core.utils.losses import (
-    cross_entropy_loss,
     cross_entropy_sequence_loss,
     guided_alignment_cost,
     max_margin_loss,

@@ -77,33 +77,6 @@ def cross_entropy_sequence_loss(
     return loss, loss_normalizer, loss_token_normalizer
 
 
-def cross_entropy_loss(logits, labels, label_smoothing=0.0, training=None, weight=None):
-    """Computes the cross entropy loss.
-
-    Args:
-      logits: The unscaled probabilities with shape :math:`[B, V]`.
-      labels: The true labels with shape :math:`[B]`.
-      label_smoothing: The label smoothing value.
-      training: Compute training loss.
-      weight: The weight of each example with shape :math:`[B]`.
-
-    Returns:
-      The cumulated loss and the loss normalizer.
-    """
-    cross_entropy = _softmax_cross_entropy(logits, labels, label_smoothing, training)
-
-    if weight is not None:
-        weight = tf.cast(weight, cross_entropy.dtype)
-        cross_entropy *= weight
-        loss_normalizer = tf.reduce_sum(weight)
-    else:
-        batch_size = tf.shape(cross_entropy)[0]
-        loss_normalizer = tf.cast(batch_size, cross_entropy.dtype)
-
-    loss = tf.reduce_sum(cross_entropy)
-    return loss, loss_normalizer
-
-
 def guided_alignment_cost(
     attention_probs, gold_alignment, sequence_length=None, cost_type="ce", weight=1
 ):
