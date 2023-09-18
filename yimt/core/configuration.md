@@ -135,13 +135,16 @@ params:
   # (optional) Number of hypotheses to return (default: 1). Set 0 to return all
   # available hypotheses. This value is also set by infer/n_best.
   num_hypotheses: 1
+
   # (optional) Length penaly weight to use during beam search (default: 0).
   length_penalty: 0.2
+
   # (optional) Sample predictions from the top K most likely tokens (requires
   # beam_width to 1). If 0, sample from the full output distribution (default: 1).
   sampling_topk: 1
   # (optional) High temperatures generate more random samples (default: 1).
   sampling_temperature: 1
+
   # (optional) Sequence of noise to apply to the decoding output. Each element
   # should be a noise type (can be: "dropout", "replacement", "permutation") and
   # the module arguments
@@ -150,6 +153,7 @@ params:
     - dropout: 0.1
     - replacement: [0.1, ｟unk｠]
     - permutation: 3
+
   # (optional) Define the subword marker. This is useful to apply noise at the
   # word level instead of the subword level (default: ￭).
   decoding_subword_token: ￭
@@ -157,6 +161,7 @@ params:
   # or a joiner (as in BPE).
   # If unspecified, will infer  directly from decoding_subword_token.
   decoding_subword_token_is_spacer: false
+
   # (optional) Minimum length of decoded sequences, end token excluded (default: 0).
   minimum_decoding_length: 0
   # (optional) Maximum length of decoded sequences, end token excluded (default: 250).
@@ -178,6 +183,7 @@ params:
   contrastive_learning: false
   # (optional) The value of the parameter eta in the max-margin loss (default: 0.1).
   max_margin_eta: 0.1
+
   # (optional) Size of output on an exported TensorFlow Lite model
   tflite_output_size: 250
 
