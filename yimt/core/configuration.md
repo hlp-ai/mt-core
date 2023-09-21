@@ -171,12 +171,6 @@ params:
   # highest attention (default: false).
   replace_unknown_target: false
 
-  # (optional) The type of guided alignment cost to compute (can be: "null", "ce", "mse",
-  # default: "null").
-  guided_alignment_type: null
-  # (optional) The weight of the guided alignment cost (default: 1).
-  guided_alignment_weight: 1
-
   # (optional) Enable contrastive learning mode, see
   # https://www.aclweb.org/anthology/P19-1623 (default: false).
   # See also "decoding_subword_token" that is used by this mode.
