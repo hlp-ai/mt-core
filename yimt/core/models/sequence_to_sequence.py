@@ -438,25 +438,7 @@ class SequenceToSequence(model.Model):
             average_in_time=params.get("average_loss_in_time", False),
             training=training,
         )
-        if training:
-            gold_alignments = labels.get("alignment")
-            guided_alignment_type = params.get("guided_alignment_type")
-            if gold_alignments is not None and guided_alignment_type is not None:
-                if attention is None:
-                    tf.get_logger().warning(
-                        "This model did not return attention vectors; "
-                        "guided alignment will not be applied"
-                    )
-                else:
-                    loss += losses.guided_alignment_cost(
-                        attention[:, :-1],  # Do not constrain last timestep.
-                        gold_alignments,
-                        sequence_length=self.labels_inputter.get_length(
-                            labels, ignore_special_tokens=True
-                        ),
-                        cost_type=guided_alignment_type,
-                        weight=params.get("guided_alignment_weight", 1),
-                    )
+
         return loss, loss_normalizer, loss_token_normalizer
 
     def format_prediction(self, prediction, params=None):
@@ -503,17 +485,8 @@ class SequenceToSequenceInputter(inputters.ExampleInputter):
             features_inputter,
             labels_inputter,
             share_parameters=share_parameters,
-            accepted_annotations={"train_alignments": self._register_alignment},
         )
         labels_inputter.set_decoder_mode(mark_start=True, mark_end=True)
-
-    def _register_alignment(self, features, labels, alignment):
-        labels["alignment"] = text.alignment_matrix_from_pharaoh(
-            alignment,
-            self.features_inputter.get_length(features, ignore_special_tokens=True),
-            self.labels_inputter.get_length(labels, ignore_special_tokens=True),
-        )
-        return features, labels
 
 
 def mask_attention(attention, source_length, source_has_bos, source_has_eos):
