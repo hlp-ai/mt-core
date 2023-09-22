@@ -57,9 +57,6 @@ data:
   # files were configured (default: null).
   train_files_weights: null
 
-  # (optional) Pharaoh alignments of the training files.
-  train_alignments: data/toy-ende/alignments-train.txt
-
   # (optional) File containing the weight of each example (one weight per line).
   # The loss value of each example is multiplied by its corresponding weight.
   example_weights: data/toy-ende/weights-train.txt

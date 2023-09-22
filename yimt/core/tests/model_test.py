@@ -30,7 +30,7 @@ def _seq2seq_model(training=None, shared_embeddings=False):
 
 
 class ModelTest(tf.test.TestCase):
-    def _makeToyEnDeData(self, with_alignments=False, with_weights=False):
+    def _makeToyEnDeData(self, with_weights=False):
         data_config = {}
         features_file = test_util.make_data_file(
             os.path.join(self.get_temp_dir(), "src.txt"),
@@ -62,16 +62,6 @@ class ModelTest(tf.test.TestCase):
         data_config["target_vocabulary"] = test_util.make_vocab_from_file(
             os.path.join(self.get_temp_dir(), "tgt_vocab.txt"), labels_file
         )
-        if with_alignments:
-            # Dummy and incomplete alignments.
-            data_config["train_alignments"] = test_util.make_data_file(
-                os.path.join(self.get_temp_dir(), "alignments.txt"),
-                [
-                    "0-0 1-0 2-2 3-4 4-4 5-6",
-                    "0-1 1-1 1-3 2-3 4-4",
-                    "0-0 1-0 2-2 3-4 4-4 5-6",
-                ],
-            )
         if with_weights:
             data_config["example_weights"] = test_util.make_data_file(
                 os.path.join(self.get_temp_dir(), "weights.txt"), ["0.6", "1", "1e-2"]
@@ -249,44 +239,6 @@ class ModelTest(tf.test.TestCase):
             prediction_heads=["text", "log_probs"],
             params=params,
         )
-
-    @parameterized.expand([["ce"], ["mse"]])
-    def testSequenceToSequenceWithGuidedAlignment(self, ga_type):
-        model, params = _seq2seq_model(training=True)
-        params["guided_alignment_type"] = ga_type
-        features_file, labels_file, data_config = self._makeToyEnDeData(
-            with_alignments=True
-        )
-        model.initialize(data_config, params=params)
-        model.create_variables()
-        dataset = model.examples_inputter.make_training_dataset(
-            features_file, labels_file, 16
-        )
-        features, labels = next(iter(dataset))
-        self.assertIn("alignment", labels)
-        outputs, _ = model(features, labels=labels, training=True)
-        loss = model.compute_loss(outputs, labels, training=True)
-        loss = loss[0] / loss[1]
-
-    def testSequenceToSequenceWithGuidedAlignmentAndWeightedDataset(self):
-        model, _ = _seq2seq_model()
-        features_file, labels_file, data_config = self._makeToyEnDeData(
-            with_alignments=True
-        )
-        model.initialize(data_config)
-        with self.assertRaisesRegex(ValueError, "expected to match"):
-            model.examples_inputter.make_training_dataset(
-                [features_file, features_file], [labels_file, labels_file], 16
-            )
-        data_config["train_alignments"] = [
-            data_config["train_alignments"],
-            data_config["train_alignments"],
-        ]
-        model.initialize(data_config)
-        dataset = model.examples_inputter.make_training_dataset(
-            [features_file, features_file], [labels_file, labels_file], 16
-        )
-        self.assertIsInstance(dataset, tf.data.Dataset)
 
     def testSequenceToSequenceWithWeightedExamples(self):
         model, params = _seq2seq_model(training=True)
