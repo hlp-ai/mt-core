@@ -498,14 +498,12 @@ def training_pipeline(
     labels_length_fn=None,
     maximum_features_length=None,
     maximum_labels_length=None,
-    single_pass=False,
     num_shards=1,
     shard_index=0,
     num_threads=None,
     dataset_size=None,
     shuffle_buffer_size=None,
     prefetch_buffer_size=None,
-    cardinality_multiple=1,
 ):
     """Transformation that applies most of the dataset operations commonly used
     for training on sequence data:
@@ -540,7 +538,6 @@ def training_pipeline(
         the features sequence(s). ``None`` to not constrain the length.
       maximum_labels_length: The maximum length of the labels sequence.
         ``None`` to not constrain the length.
-      single_pass: If ``True``, makes a single pass over the training data.
       num_shards: The number of data shards (usually the number of workers in a
         distributed setting).
       shard_index: The shard index this data pipeline should read from.
@@ -550,8 +547,6 @@ def training_pipeline(
       shuffle_buffer_size: The number of elements from which to sample.
       prefetch_buffer_size: The number of batches to prefetch asynchronously. If
         ``None``, use an automatically tuned value.
-      cardinality_multiple: Ensure that the dataset cardinality is a multiple of
-        this value when :obj:`single_pass` is ``True``.
 
     Returns:
       A ``tf.data.Dataset`` transformation.
@@ -571,10 +566,6 @@ def training_pipeline(
             dataset_size //= num_shards
 
     def _make_weighted_dataset(datasets, weights):
-        if single_pass:
-            raise ValueError(
-                "single_pass parameter is not compatible with weighted datasets"
-            )
         if not datasets:
             raise ValueError("At least one dataset is required")
         if weights is not None and len(weights) != len(datasets):
@@ -645,11 +636,9 @@ def training_pipeline(
             )
         )
         dataset = dataset.apply(filter_irregular_batches(batch_multiplier))
-        if not single_pass:
-            if not is_weighted_dataset:  # Weighted dataset is repeated before sampling.
-                dataset = dataset.repeat()
-        else:
-            dataset = dataset.apply(make_cardinality_multiple_of(cardinality_multiple))
+        if not is_weighted_dataset:  # Weighted dataset is repeated before sampling.
+            dataset = dataset.repeat()
+
         dataset = dataset.prefetch(prefetch_buffer_size)
         return dataset
 

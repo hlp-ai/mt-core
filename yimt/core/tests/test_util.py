@@ -12,8 +12,7 @@ from yimt.core.utils import misc
 
 def get_test_data_dir():
     test_dir = os.path.dirname(os.path.realpath(__file__))
-    root_dir = os.path.join(test_dir, "../..", "..")
-    test_data = os.path.join(root_dir, "testdata")
+    test_data = os.path.join(test_dir, "testdata")
     return test_data
 
 

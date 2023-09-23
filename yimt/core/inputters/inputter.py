@@ -617,12 +617,10 @@ class ExampleInputterAdapter:
         length_bucket_width=None,
         maximum_features_length=None,
         maximum_labels_length=None,
-        single_pass=False,
         num_shards=1,
         shard_index=0,
         num_threads=4,
         prefetch_buffer_size=None,
-        cardinality_multiple=1,
         weights=None,
         batch_autotune_mode=False,
     ):
@@ -653,15 +651,12 @@ class ExampleInputterAdapter:
             the features sequence(s). ``None`` to not constrain the length.
           maximum_labels_length: The maximum length of the labels sequence.
             ``None`` to not constrain the length.
-          single_pass: If ``True``, makes a single pass over the training data.
           num_shards: The number of data shards (usually the number of workers in a
             distributed setting).
           shard_index: The shard index this data pipeline should read from.
           num_threads: The number of elements processed in parallel.
           prefetch_buffer_size: The number of batches to prefetch asynchronously. If
             ``None``, use an automatically tuned value.
-          cardinality_multiple: Ensure that the dataset cardinality is a multiple of
-            this value when :obj:`single_pass` is ``True``.
           weights: An optional list of weights to create a weighted dataset out of
             multiple training files.
           batch_autotune_mode: When enabled, all batches are padded to the maximum
@@ -766,14 +761,12 @@ class ExampleInputterAdapter:
             length_bucket_width=length_bucket_width,
             features_length_fn=features_length_fn,
             labels_length_fn=labels_length_fn,
-            single_pass=single_pass,
             num_shards=num_shards,
             shard_index=shard_index,
             num_threads=num_threads,
             dataset_size=self.get_dataset_size(data_files),
             shuffle_buffer_size=shuffle_buffer_size,
             prefetch_buffer_size=prefetch_buffer_size,
-            cardinality_multiple=cardinality_multiple,
         )(dataset)
         return dataset
 

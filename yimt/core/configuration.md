@@ -200,8 +200,6 @@ train:
 
   # (optional) Maximum training step. If not set, train forever.
   max_step: 1000000
-  # (optional) If true, makes a single pass over the training data (default: false).
-  single_pass: false
 
   # (optional) The maximum length of feature sequences during training (default: null).
   maximum_features_length: 70

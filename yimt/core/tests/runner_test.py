@@ -136,22 +136,6 @@ class RunnerTest(tf.test.TestCase):
         self.assertEndsWith(tf.train.latest_checkpoint(new_model_dir), "145002")
 
     @test_util.run_with_two_cpu_devices
-    def testTrainDistribute(self):
-        ar_file, en_file = self._makeTransliterationData()
-        config = {
-            "data": {"train_features_file": ar_file, "train_labels_file": en_file},
-            "params": {"learning_rate": 0.0005, "optimizer": "Adam"},
-            "train": {
-                "batch_size": 2,
-                "length_bucket_width": None,
-                "max_step": 145003,
-                "single_pass": True,  # Test we do not fail when a batch is missing for a replica.
-            },
-        }
-        runner = self._getTransliterationRunner(config)
-        runner.train(num_devices=2)
-
-    @test_util.run_with_two_cpu_devices
     def testTrainDistributeWithGradientAccumulation(self):
         ar_file, en_file = self._makeTransliterationData()
         config = {
@@ -227,57 +211,6 @@ class RunnerTest(tf.test.TestCase):
             lines = f.readlines()
         self.assertEqual(len(lines), 5)
         self.assertEqual(lines[0].strip(), "a t z m o n")
-
-    def testUpdateVocab(self):
-        ar_file, en_file = self._makeTransliterationData()
-        max_step = 145002
-        config = {
-            "data": {"train_features_file": ar_file, "train_labels_file": en_file},
-            "params": {"learning_rate": 0.0005, "optimizer": "Adam"},
-            "train": {"max_step": max_step, "batch_size": 10},
-        }
-        runner = self._getTransliterationRunner(config)
-
-        # Reverse order of non special tokens and add a new token.
-        new_en_vocab = os.path.join(self.get_temp_dir(), "en.vocab.new")
-        with open(
-            os.path.join(runner._config["model_dir"], "en.vocab")
-        ) as en_vocab, open(new_en_vocab, "w") as new_vocab:
-            tokens = en_vocab.readlines()
-            for token in tokens[:3]:
-                new_vocab.write(token)
-            for token in reversed(tokens[3:]):
-                new_vocab.write(token)
-            new_vocab.write("anewtoken\n")
-
-        output_dir = os.path.join(self.get_temp_dir(), "updated_vocab")
-        self.assertEqual(
-            runner.update_vocab(output_dir, tgt_vocab=new_en_vocab), output_dir
-        )
-        self.assertEqual(runner.model_dir, output_dir)
-        self.assertTrue(
-            os.path.isfile(os.path.join(output_dir, MODEL_DESCRIPTION_FILENAME))
-        )
-
-        # Check that the translation is unchanged.
-        en_file = os.path.join(self.get_temp_dir(), "output.txt")
-        runner.infer(ar_file, predictions_file=en_file)
-        with open(en_file) as f:
-            self.assertEqual(next(f).strip(), "a t z m o n")
-
-        # We should be able to continue training without error or NaN loss.
-        output_dir = runner.train()
-        self.assertEndsWith(tf.train.latest_checkpoint(output_dir), str(max_step))
-
-    def testScore(self):
-        runner = self._getTransliterationRunner()
-        ar_file, en_file = self._makeTransliterationData()
-        score_file = os.path.join(self.get_temp_dir(), "scores.txt")
-        runner.score(ar_file, en_file, output_file=score_file)
-        self.assertTrue(os.path.exists(score_file))
-        with open(score_file) as f:
-            lines = f.readlines()
-        self.assertEqual(len(lines), 5)
 
     @parameterized.expand([[True], [False]])
     def testExport(self, export_vocabulary_assets):

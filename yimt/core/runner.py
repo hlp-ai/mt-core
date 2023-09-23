@@ -205,7 +205,6 @@ class Runner(object):
                 length_bucket_width=train_config["length_bucket_width"],
                 maximum_features_length=train_config.get("maximum_features_length"),
                 maximum_labels_length=train_config.get("maximum_labels_length"),
-                single_pass=train_config.get("single_pass", False),
                 num_shards=input_context.num_input_pipelines,
                 shard_index=input_context.input_pipeline_id,
                 prefetch_buffer_size=train_config.get("prefetch_buffer_size"),
