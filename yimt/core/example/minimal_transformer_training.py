@@ -41,8 +41,9 @@ def main():
             "train_labels_file": args.tgt,
         },
         "train": {
-            "save_checkpoints_steps": 200,
-            "max_step": 2400,
+            "save_checkpoints_steps": 10,
+            "max_step": 100,
+            "save_summary_steps": 10,
             "keep_checkpoint_max": 2,
         }
     }
