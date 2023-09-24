@@ -30,7 +30,7 @@ def _seq2seq_model(training=None, shared_embeddings=False):
 
 
 class ModelTest(tf.test.TestCase):
-    def _makeToyEnDeData(self, with_weights=False):
+    def _makeToyEnDeData(self):
         data_config = {}
         features_file = test_util.make_data_file(
             os.path.join(self.get_temp_dir(), "src.txt"),
@@ -62,10 +62,6 @@ class ModelTest(tf.test.TestCase):
         data_config["target_vocabulary"] = test_util.make_vocab_from_file(
             os.path.join(self.get_temp_dir(), "tgt_vocab.txt"), labels_file
         )
-        if with_weights:
-            data_config["example_weights"] = test_util.make_data_file(
-                os.path.join(self.get_temp_dir(), "weights.txt"), ["0.6", "1", "1e-2"]
-            )
         return features_file, labels_file, data_config
 
     def _makeToyLMData(self):
@@ -239,23 +235,6 @@ class ModelTest(tf.test.TestCase):
             prediction_heads=["text", "log_probs"],
             params=params,
         )
-
-    def testSequenceToSequenceWithWeightedExamples(self):
-        model, params = _seq2seq_model(training=True)
-        features_file, labels_file, data_config = self._makeToyEnDeData(
-            with_weights=True
-        )
-        model.initialize(data_config, params=params)
-        dataset = model.examples_inputter.make_training_dataset(
-            features_file, labels_file, 16
-        )
-        features, labels = next(iter(dataset))
-        self.assertIn("weight", labels)
-        outputs, _ = model(features, labels=labels, training=True)
-        weighted_loss, _, _ = model.compute_loss(outputs, labels, training=True)
-        labels.pop("weight")
-        default_loss, _, _ = model.compute_loss(outputs, labels, training=True)
-        self.assertNotEqual(weighted_loss, default_loss)
 
     def testSequenceToSequenceWithReplaceUnknownTarget(self):
         model, params = _seq2seq_model()
