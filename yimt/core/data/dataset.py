@@ -204,62 +204,6 @@ def filter_examples_by_length(
     return lambda dataset: dataset.filter(_predicate)
 
 
-def make_cardinality_multiple_of(divisor):
-    """Transformation that ensures that the dataset cardinality is a multiple of
-    :obj:`divisor`.
-
-    Example:
-
-      >>> dataset = tf.data.Dataset.range(7)
-      >>> dataset = dataset.apply(yimt.data.make_cardinality_multiple_of(10))
-      >>> len(list(iter(dataset)))
-      10
-
-    Args:
-      divisor: The value that should divide the dataset size.
-
-    Returns:
-      A ``tf.data.Dataset`` transformation.
-
-    Tip:
-      This transformation is useful when training multiple replicas on a finite
-      dataset. It ensures that each replica receives a non empty batch in the last
-      training iteration.
-    """
-    if divisor == 1:
-        return lambda dataset: dataset
-
-    def _continue_iter(num_consumed, element):
-        # Continue iterating if the current element is from the original dataset or
-        # if the number of consumed batches is not a multiple of divisor.
-        is_original = element[0]
-        return tf.math.logical_or(
-            is_original, tf.math.not_equal(num_consumed % divisor, 0)
-        )
-
-    def _retrieve_element(num_consumed, element):
-        _ = num_consumed
-        return element[1]
-
-    def _transform(dataset):
-        # Nothing to do for infinite datasets.
-        if dataset.cardinality() == tf.data.INFINITE_CARDINALITY:
-            return dataset
-
-        # Concatenate extra batches with a flag.
-        extra_batches = dataset.repeat()
-        dataset = dataset.map(lambda *x: (tf.constant(True), x))
-        extra_batches = extra_batches.map(lambda *x: (tf.constant(False), x))
-        dataset = dataset.concatenate(extra_batches)
-
-        # Take all original batches and the number of extra batches required.
-        dataset = dataset.enumerate()
-        dataset = dataset.take_while(_continue_iter)
-        return dataset.map(_retrieve_element)  # Retrieve the element only.
-
-    return _transform
-
-
 def random_shard(shard_size, dataset_size):
     """Transformation that shards the dataset in a random order.
 

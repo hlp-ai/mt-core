@@ -72,12 +72,6 @@ class DatasetTest(tf.test.TestCase):
         with self.assertRaises(StopIteration):
             next(iterator)
 
-    @parameterized.expand([[11, 5, 15], [10, 5, 10], [5, 20, 20]])
-    def testMakeCardinalityMultipleOf(self, dataset_size, divisor, expected_size):
-        dataset = tf.data.Dataset.range(dataset_size)
-        dataset = dataset.apply(dataset_util.make_cardinality_multiple_of(divisor))
-        self.assertLen(list(iter(dataset)), expected_size)
-
     def testRandomShard(self):
         dataset_size = 42
         shard_size = 3

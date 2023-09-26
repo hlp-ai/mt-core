@@ -7,7 +7,6 @@ from yimt.core.data.dataset import (
     filter_irregular_batches,
     get_dataset_size,
     inference_pipeline,
-    make_cardinality_multiple_of,
     random_shard,
     shuffle_dataset,
     training_pipeline,
