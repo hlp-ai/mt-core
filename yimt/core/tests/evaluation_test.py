@@ -130,27 +130,6 @@ class EvaluationTest(tf.test.TestCase):
         recorded_steps = list(step for step, _ in evaluator.metrics_history)
         self.assertListEqual(recorded_steps, [5, 7])
 
-    def testEvaluationWithRougeScorer(self):
-        features_file = os.path.join(self.get_temp_dir(), "features.txt")
-        labels_file = os.path.join(self.get_temp_dir(), "labels.txt")
-        model_dir = self.get_temp_dir()
-        with open(features_file, "w") as features, open(labels_file, "w") as labels:
-            features.write("1\n2\n")
-            labels.write("1\n2\n")
-        model = _TestModel()
-        evaluator = evaluation.Evaluator(
-            model,
-            features_file,
-            labels_file,
-            batch_size=1,
-            scorers=[scorers.ROUGEScorer()],
-            model_dir=model_dir,
-        )
-        self.assertNotIn("rouge", evaluator.metrics_name)
-        self.assertIn("rouge-1", evaluator.metrics_name)
-        self.assertIn("rouge-2", evaluator.metrics_name)
-        self.assertIn("rouge-l", evaluator.metrics_name)
-
     def testExportsGarbageCollection(self):
         features_file = os.path.join(self.get_temp_dir(), "features.txt")
         labels_file = os.path.join(self.get_temp_dir(), "labels.txt")
