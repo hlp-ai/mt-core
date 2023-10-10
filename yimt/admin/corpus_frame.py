@@ -79,35 +79,6 @@ def create_mono2tsv_corpus(parent):
                                                                                                   padx=10, pady=5)
 
 
-def create_han2hans_corpus(parent):
-    tk.Label(parent, text="input").grid(row=0, column=0, padx=10, pady=5, sticky="e")
-    entry_han2hans_in = tk.Entry(parent, width=50)
-    entry_han2hans_in.grid(row=0, column=1, padx=10, pady=5)
-    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_han2hans_in)).grid(row=0, column=2,
-                                                                                                padx=10, pady=5)
-
-    tk.Label(parent, text="output").grid(row=1, column=0, padx=10, pady=5, sticky="e")
-    entry_han2hans_out = tk.Entry(parent, width=50)
-    entry_han2hans_out.grid(row=1, column=1, padx=10, pady=5)
-    tk.Button(parent, text="...", command=partial(ask_save_file, entry=entry_han2hans_out)).grid(row=1, column=2,
-                                                                                                 padx=10, pady=5)
-
-    def go():
-        corpus_han2hans_in = entry_han2hans_in.get().strip()
-        corpus_han2hans_out = entry_han2hans_out.get().strip()
-        if len(corpus_han2hans_in) == 0 or len(corpus_han2hans_out) == 0:
-            tk.messagebox.showinfo(title="Info", message="Some parameter empty.")
-            return
-
-        convert_cmd = "python ../corpus/bin/hant2hans.py {} {}"
-        os.popen(convert_cmd.format(corpus_han2hans_in, corpus_han2hans_out)).readlines()
-
-        tk.messagebox.showinfo(title="Info", message="done")
-
-    tk.Button(parent, text="Convert file in traditional Chinese into file in simplified Chinese", \
-              command=go).grid(row=5, column=1, padx=10, pady=5)
-
-
 def create_sample_corpus(parent):
     tk.Label(parent, text="TSV File/Source File").grid(row=0, column=0, padx=10, pady=5, sticky="e")
     entry_sample_in1 = tk.Entry(parent, width=50)

@@ -33,11 +33,6 @@ if __name__ == "__main__":
     create_mono2tsv_corpus(mono2tsv_frame)
     frames.append(mono2tsv_frame)
 
-    han2Hans_frame = tk.Frame(win_main)
-    han2Hans_frame.pack()
-    create_han2hans_corpus(han2Hans_frame)
-    frames.append(han2Hans_frame)
-
     sample_frame = tk.Frame(win_main)
     sample_frame.pack()
     create_sample_corpus(sample_frame)
