@@ -5,7 +5,7 @@ import uuid
 from functools import wraps
 from html import unescape
 
-from flask import (Flask, abort, jsonify, render_template, request, send_file, url_for)
+from flask import (Flask, abort, jsonify, render_template, request, send_file, url_for,g)
 from werkzeug.utils import secure_filename
 from yimt.api.translators import Translators
 from yimt.api.utils import detect_lang, get_logger
@@ -17,9 +17,10 @@ from yimt.files.translate_tag import translate_html
 from yimt.service import remove_translated_files
 from yimt.service.api_keys import Database
 from yimt.service.utils import path_traversal_check, SuspiciousFileOperation
+from cachelib import SimpleCache
 
 log_service = get_logger(log_filename="service.log", name="service")
-
+cache = SimpleCache()
 
 def get_upload_dir():
     upload_dir = os.path.join(tempfile.gettempdir(), "yimt-files-translate")
@@ -93,7 +94,6 @@ def get_routes_limits(default_req_limit, daily_req_limit, api_keys_db):
 
 def create_app(args):
     app = Flask(__name__)
-
     if not args.disable_files_translation:  # clean uploaded files periodically
         remove_translated_files.setup(get_upload_dir())
 
@@ -162,7 +162,6 @@ def create_app(args):
     def index():
         if args.disable_web_ui:
             abort(404)
-
         return render_template('text.html')
 
     @app.route("/file")
@@ -188,6 +187,14 @@ def create_app(args):
             abort(404)
 
         return render_template('mobile_text.html')
+
+    @app.route("/reference")
+    @limiter.exempt
+    def reference():
+        if args.disable_web_ui:
+            abort(404)
+
+        return render_template('reference.html')
 
     @app.after_request
     def after_request(response):
@@ -335,10 +342,19 @@ def create_app(args):
             filepath = os.path.join(get_upload_dir(), filename)
             file.save(filepath)
 
+
             translated_file_path = translate_doc(filepath, source_lang, target_lang)
             translated_filename = os.path.basename(translated_file_path)
 
-            # log_service.info("->Translated: from " + filepath + " to " + translated_filename)
+            # translated_filename = os.path.basename(filepath)  # for test
+            # translated_file_path = filepath  # for test
+            suffix = filepath.split(".")[-1]
+            cache.set('file_path', filepath)  # 保存源文件路径到本地
+            cache.set('translated_file_path', translated_file_path)
+            cache.set('file_type', suffix)
+            # print("cache.set('file_type', suffix):"+cache.get('file_type'))
+
+            log_service.info("->Translated: from " + filepath + " to " + translated_filename)
 
             return jsonify(
                 {
@@ -373,6 +389,88 @@ def create_app(args):
             return None
         # print("progress:" + progress)  # 测试用
         return progress
+
+    @app.post("/get_file_type")
+    # @access_check
+    def get_file_type():
+        # cache.clear()
+        # cache.set('file_path', file_path)
+        # print("file_path: "+cache.get('file_path'))
+        # suffix = file_path.split(".")[-1]
+        print("get_file_type: "+cache.get('file_type'))  #
+        # cache.set('file_type', suffix)
+        return cache.get('file_type')
+
+    @app.post("/get_blob_file")
+    # @access_check
+    def get_blob_file():
+        json = get_json_dict(request)
+        is_target = json.get("is_target")
+        # file_path = "templates/test.xlsx"
+        if is_target == True:
+            file_path = cache.get('translated_file_path')
+            # print("is_target")
+        else:
+            file_path = cache.get('file_path')
+            # print("is_original")
+        # print("get_blob_file_path:" + file_path)  # for test
+        import base64
+        file_64_string = base64.b64encode(open(file_path, "rb").read())
+        # print(file_64_string.decode('utf-8'))  # for test
+        resp = {
+            'base64': file_64_string.decode('utf-8')
+        }
+        return jsonify(resp)
+
+    @app.post("/get_download")
+    def get_download():
+        translate_file_path = cache.get('translated_file_path')
+        # print("download trans_path:" + translate_file_path)  # for test
+        return url_for('download_file', filename=os.path.basename(translate_file_path), _external=True)
+
+    @app.get("/media_original")
+    def media_original():
+        # print("media_original")
+        return send_file("templates/media_original.html")
+
+    @app.get("/media_target")
+    def media_target():
+        # print("media_target")
+        return send_file("templates/media_target.html")
+
+    @app.get("/pptx_original")
+    def pptx_original():
+        # print("path_original:")
+        # print("path:" + cache.get('file_path'))
+        return send_file(cache.get('file_path'))
+
+    @app.get("/pptx_target")
+    def pptx_target():
+        # print("path_target:")
+        # print("path:" + cache.get('file_path'))
+        return send_file(cache.get('translated_file_path'))
+
+    @app.get("/tph_original")
+    def tph_original():
+        # print("tph_original:")
+        file_type = cache.get('file_type')
+        # print("type:"+file_type)
+        if file_type == 'docx' or file_type == 'pptx' or file_type == 'xlsx':
+            return send_file("templates/media_original.html")
+        file_path = cache.get('file_path')
+        # print("tph_original:"+ file_path)
+        return send_file(file_path)
+
+    @app.get("/tph_target")
+    def tph_target():
+        # print("tph_target:")
+        file_type = cache.get('file_type')
+        # print("type:" + file_type)
+        if file_type == 'docx' or file_type == 'pptx' or file_type == 'xlsx':
+            return send_file("templates/media_target.html")
+        file_path = cache.get('translated_file_path')
+        # print("tph_target:" + file_path)
+        return send_file(file_path)
 
     @app.get("/download_file/<string:filename>")
     def download_file(filename: str):
