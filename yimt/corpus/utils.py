@@ -285,44 +285,6 @@ def from_xml(xml_file, attr="[@translator='A']"):
             print(seg.text, file=ofh)
 
 
-def extract_zips(zips_dir, out_dir=None):
-    """Unzip zip files in a directory into out directory"""
-    if out_dir is None:
-        out_dir = os.path.join(zips_dir, "unzip")
-
-    zips = os.listdir(zips_dir)
-    for zipf in zips:
-        if not zipf.endswith(".zip"):
-            continue
-
-        print("Unzip " + zipf)
-
-        zFile = zipfile.ZipFile(os.path.join(zips_dir, zipf), "r")
-        for fileM in zFile.namelist():
-            if fileM.rfind(".") == len(fileM)-3 or fileM.rfind(".") == len(fileM)-6:
-                zFile.extract(fileM, out_dir)
-        zFile.close()
-
-
-def extract_gzips(zips_dir, out_dir=None):
-    """Unzip gz files in a directory into out directory"""
-    if out_dir is None:
-        out_dir = os.path.join(zips_dir, "unzip")
-
-    if not os.path.exists(out_dir):
-        os.mkdir(out_dir)
-
-    zips = os.listdir(zips_dir)
-    for zipf in zips:
-        if not zipf.endswith(".gz"):
-            continue
-
-        print("Unzip " + zipf)
-
-        gf = gzip.GzipFile(mode="rb", filename=os.path.join(zips_dir, zipf))
-        open(os.path.join(out_dir, zipf.replace(".gz", "")), "wb").write(gf.read())
-
-
 def merge_moses(in_dir, source_lang=None, target_lang=None, out_dir=None):
     assert source_lang is not None or target_lang is not None
 
