@@ -215,28 +215,6 @@ def split(files, num_per_file):
     print(cnt)
 
 
-def merge(data_root, out_fn):
-    """Merge files in a directory into one file"""
-    data_files = [os.path.join(data_root, f) for f in os.listdir(data_root)]
-
-    out_path = os.path.join(data_root, out_fn)
-    out_f = io.open(out_path, "w", encoding="utf-8")
-
-    cnt = 0
-    for f in data_files:
-        in_f = io.open(f, encoding="utf-8")
-        for line in in_f:
-            line = line.strip()
-            if len(line) > 0:
-                out_f.write(line + "\n")
-                cnt += 1
-                if cnt % 100000 == 0:
-                    print(cnt)
-
-    print(cnt)
-    out_f.close()
-
-
 def hant_2_hans(hant_str: str):
     """Traditional Chinese to Simplified Chinese"""
     return zhconv.convert(hant_str, 'zh-hans')
