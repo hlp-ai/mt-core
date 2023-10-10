@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>使用指南</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 50px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .step {
+            margin-bottom: 50px;
+        }
+        .step h2 {
+            margin-top: 0;
+        }
+        .step img {
+            max-width: 100%;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>使用指南</h1>
+    <div class="container">
+        <div class="step">
+            <h2>步骤一：下载插件</h2>
+            <p>首先，您需要下载我们的插件。点击下方链接即可下载插件。</p>
+            <!-- <a href="/download_extension" id="downloadLink" download>
+                下载插件
+            </a> -->
+            <a href="https://codeload.github.com/hlp-ai/mt-browser/zip/refs/heads/main" id="downloadLink" download>
+                下载插件
+            </a>
+        </div>
+        <div class="step">
+            <h2>步骤二：安装插件</h2>
+            <p>下载完成后，您需要将插件安装到您的浏览器中。具体步骤如下：</p>
+            <ol>
+                <li>对于 Chrome 浏览器：</li>
+                <ul>
+                    <li>打开您的 Chrome 浏览器，并进入扩展程序页面（chrome://extensions/）。</li>
+                    <li>开启“开发者模式”。</li>
+                    <li>点击“加载已解压的扩展程序”按钮，选择您下载的插件所在的文件夹。</li>
+                    <li>安装成功后，您可以在浏览器的扩展程序栏中看到您的插件图标。</li>
+                </ul>
+                <img src="../static/img/chrome.png" alt="安装插件">
+                <li>对于 Edge 浏览器：</li>
+                <ul>
+                    <li>打开您的 Edge 浏览器，并进入扩展程序页面（edge://extensions/）。</li>
+                    <li>开启“开发者模式”。</li>
+                    <li>点击“加载已解压的扩展程序”按钮，选择您下载的插件所在的文件夹。</li>
+                    <li>安装成功后，您可以在浏览器的扩展程序栏中看到您的插件图标。</li>
+                </ul>
+                <img src="../static/img/Edge.png" alt="安装插件">
+                <li>对于 Firefox 浏览器：</li>
+                <ul>
+                    <li>打开您的 Firefox 浏览器，并进入附加组件页面。</li>
+                    <li>点击“齿轮”图标，选择“调试附加组件”。</li>
+                    <li>点击“临时载入附加组件”按钮，选择您下载的插件所在的文件夹，选取manifest.json文件。</li>
+                    <li>安装成功后，您可以在浏览器的附加组件栏中看到您的插件图标。</li>
+                </ul>
+                <img src="../static/img/firefox2.png" alt="安装插件">
+            </ol>
+        </div>
+        <div class="step">
+            <h2>步骤三：使用插件</h2>
+            <p>安装完成后，您可以开始使用我们的插件了。具体使用方法如下：</p>
+            <ol>
+                <li>打开您需要翻译的页面。</li>
+                <li>点击插件图标，弹出翻译窗口。</li>
+                <li>在翻译窗口中选择您需要翻译的目标语言。</li>
+                <li>点击“翻译网页”按钮，即可获得翻译结果。</li>
+            </ol>
+            <p>此外，您还可以使用划词翻译功能</p>
+            <ol>
+                <li>在网页中选取需要翻译的文本</li>
+                <li>右键鼠标打开菜单选项</li>
+                <li>选择翻译的目标语言</li>
+                <li>点击菜单项中的语言选项即可直接翻译所选文本</li>
+            </ol>
+            <img src="../static/img/use.png" width="70%" alt="使用插件">
+        </div>
+        <div class="version">
+            <h2>版本说明</h2>
+            <p>本插件可以用在以下版本的浏览器上：</p>
+            <ul>
+                <li>Chrome 70 及以上版本</li>
+                <li>Edge 80 及以上版本</li>
+                <li>Firefox 80 及以上版本</li>
+            </ul>
+        </div>
+    </div>
+    <script>
+        // var downloadLink = document.getElementById('downloadLink');
+        // downloadLink.addEventListener('click', function() {
+        //     var xhr = new XMLHttpRequest();
+        //     xhr.open('GET', "/download_extension", true);
+        //     xhr.responseType = 'blob';
+        //     xhr.onload = function() {
+        //         if (this.status === 200) {
+        //             var blob = this.response;
+        //             var url = URL.createObjectURL(blob);
+        //             downloadLink.href = url;
+        //             downloadLink.download = 'mt-browser.zip';
+        //         }
+        //     };
+        //     xhr.send();
+        // });
+    </script>
+</body>
+</html>
