@@ -1,0 +1,49 @@
+.original_title,.target_title{
+    font-size: 24px;
+    font-weight: bold;
+    color: #357aa1;
+    vertical-align: bottom;
+}
+
+.target_title{
+    margin-left: 620px;
+}
+
+.file_view_original,.file_view_target{
+    position: relative;
+    display: inline-block;
+    width: 49%;
+    height: 500px;
+    font-size: 14px;
+    background: #ffffff;
+    vertical-align: top
+}
+
+.file_view_original{
+    margin-right: 2%;
+}
+
+.document-container{
+    position: absolute;
+    left: 0px;
+    width: 100%;
+    height: 500px;
+    margin-bottom: 10px;
+    margin-top: 0px;
+}
+
+.tph-container{
+    width: 100%;
+    height: 500px;
+    left: 0px;
+}
+
+.download_area{
+    height: 35px;
+    text-align: center;
+}
+
+.download_link{
+    font-size: 20px;
+}
+
