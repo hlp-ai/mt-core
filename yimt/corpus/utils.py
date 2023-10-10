@@ -182,39 +182,6 @@ def count_lines(fn):
     return lines
 
 
-def split(files, num_per_file):
-    """Split corpus into multiple files with the same lines"""
-    in_files = [io.open(f, encoding="utf-8") for f in files]
-
-    cnt = 0
-    n_f = 0
-
-    print("File", n_f)
-    out_files = [io.open("{}-{}".format(f, n_f), "w", encoding="utf-8") for f in files]
-
-    for p in zip(*in_files):
-        cnt += 1
-
-        for i in range(len(out_files)):
-            out_files[i].write(p[i].strip() + "\n")
-
-        if cnt % 100000 == 0:
-            print(cnt)
-
-        if cnt % num_per_file == 0:
-            for f in out_files:
-                f.close()
-            n_f += 1
-
-            out_files = [io.open("{}-{}".format(f, n_f), "w", encoding="utf-8") for f in files]
-            print("File", n_f)
-
-    for f in out_files:
-        f.close()
-
-    print(cnt)
-
-
 def hant_2_hans(hant_str: str):
     """Traditional Chinese to Simplified Chinese"""
     return zhconv.convert(hant_str, 'zh-hans')
