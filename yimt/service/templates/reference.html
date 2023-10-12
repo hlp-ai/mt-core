@@ -1,0 +1,212 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head> 
+    <link rel="stylesheet" type="text/css" href="../static/text.css">
+    <link rel="stylesheet" type="text/css" href="../static/reference.css">
+
+    <!-- jquery -->
+    <script type="text/javascript" src="../static/plugin/jquery-2.2.1.min.js"></script>
+    <script type="text/javascript" src="../static/plugin/jquery.media.js"></script>
+
+    <!-- docx --> 
+    <script crossorigin src="https://unpkg.com/jszip/dist/jszip.min.js"></script>
+    <script src="../static/plugin/docx-preview.js"></script>
+
+    <!-- pptx --> 
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>  
+    <link rel="stylesheet" type="text/css" href="../static/plugin/pptx/pptxjs.css">
+    <link rel="stylesheet" href="../static/plugin/pptx/nv.d3.min.js.下载"> 
+    <script type="text/javascript" src="../static/plugin/pptx/jszip.min.js.下载"></script> <!-- v2.. , NOT v.3.. -->
+    <script type="text/javascript" src="../static/plugin/pptx/filereader.js.下载"></script> <!--https://github.com/meshesha/filereader.js -->
+    <script type="text/javascript" src="../static/plugin/pptx/d3.min.js.下载"></script> <!-- for charts graphs -->
+    <script type="text/javascript" src="../static/plugin/pptx/nv.d3.min.js.下载"></script> <!-- for charts graphs -->
+    <script type="text/javascript" src="../static/plugin/pptx/pptxjs.min.js.下载"></script>
+    <script type="text/javascript" src="../static/plugin/pptx/divs2slides.js.下载"></script> <!-- for slide show -->
+
+    <!-- xlsx --> 
+    <script type="text/javascript" src="../static/plugin/xlsx/xlsx.core.min.js"></script>
+        
+    <script>
+        var file_type = "";
+        var END_POINT = window.localStorage.getItem("server");
+        var uuid = window.localStorage.getItem("uuid")
+        window.onload = function()
+        {
+            get_download();
+            //get_file_type();
+           
+        }
+        async function get_download()
+        {
+            END_POINT = "http://127.0.0.1:5555";           
+            let xhr = new XMLHttpRequest();
+            var form = new FormData();
+		    form.append("uuid", uuid);
+            xhr.open('POST',END_POINT + "/get_download");
+            xhr.send(form);
+            xhr.onreadystatechange = function () {
+                console.log("get_download: "+ xhr.responseText);
+                document.getElementById('download_link').innerHTML = "<a href=" + xhr.responseText + ">下载翻译文件</a>";
+            }
+        }
+
+        function get_file_type()
+        {
+            END_POINT = "http://127.0.0.1:5555";           
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST',END_POINT + "/get_file_type");
+            var form = new FormData();
+		    form.append("uuid", uuid);
+            xhr.send(form);
+            xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {  
+                file_type = xhr.responseText;
+                console.log("file_type: "+file_type);
+                window.localStorage.setItem("file_type", file_type);  //保存file_type，传递给media.html
+            }}
+        }
+	</script>
+
+    <title>YiMT Doc Translation</title>
+</head>
+
+<body>
+    <div class="mask" id="mask"></div>
+    <div class="url_setting_block" id="url_setting_block">
+        <label id="translation_setting_label">翻译设置</label>
+        <div id="translation_setting_block1">
+            <label id="server_label">服务器：</label>
+            <input type="text" class="url" id="url">
+        </div>
+        <div id="translation_setting_block2">
+            <label id="api_key_label">API KEY：</label>
+            <input type="text" class="api_key" id="api_key" placeholder="api_key">
+        </div>
+        <input type="button" class="url_setting_hide" value="关闭" onclick="url_setting_hide_func()">
+        <input type="button" class="url_button" id="url_button" value="设置" onclick="url_resetting_func()">
+    </div>
+   
+    <div class="fanyi__nav">
+        <div class="fanyi__nav__container">
+            <a href="/" class="fanyi__nav__logo"></a>
+            <div class="nav_left">
+                <a target="_blank" class="nav" href="/file">文档翻译</a><a target="_blank" class="nav">翻译API</a><a target="_blank" class="nav" href="/">登录</a><a target="_blank" id="url_setting_label" class="nav" >设置</a>
+            </div>
+        </div>
+
+        <script>
+            function url_setting_func()
+            {
+                END_POINT = window.localStorage.getItem("server");
+                API_KEY = window.localStorage.getItem("key");
+                if(END_POINT=="")
+                {
+                    END_POINT = "http://127.0.0.1:5555";
+                }
+
+                document.getElementById("url_setting_block").style.visibility='visible';
+                document.getElementById("mask").style.display='block';
+                document.getElementById("url").value=END_POINT;
+                document.getElementById("api_key").value=API_KEY;
+            }
+
+            function url_resetting_func()
+            {
+                END_POINT = document.getElementById("url").value;
+                window.localStorage.setItem("server", END_POINT);
+
+                API_KEY = document.getElementById("api_key").value;
+                window.localStorage.setItem("key", API_KEY);
+
+                document.getElementById("url_setting_block").style.visibility='hidden';
+                document.getElementById("mask").style.display='none';
+            }
+         
+            function url_setting_hide_func()
+            {
+                document.getElementById("url_setting_block").style.visibility='hidden';
+                document.getElementById("mask").style.display='none'
+            }
+
+            document.getElementById("url_setting_label").addEventListener("click", url_setting_func);
+        </script>
+    </div>
+
+    <div class="restriction">
+        <div class="fanyi__operations">
+            <div class="fanyi__operations--left">
+                <div id="toolbar">
+                    <span class="original_title">原文文档</span>
+                    <span class="target_title">目标文档</span>
+                </div>
+            </div>
+        </div>
+    
+        <div class="fanyi__input">
+ 
+            <div class="file_view_original">
+                <!-- <iframe class="document-container" id="document-container" src="http://127.0.0.1:5555/media_original"></iframe> -->
+                <iframe class="document-container" id="document-container"  src="http://127.0.0.1:5555/tph_original"></iframe>
+            </div>
+
+            <div class="file_view_target">
+                <!-- <iframe class="document-container" id="document-container2" src="http://127.0.0.1:5555/media_target"></iframe> -->
+                <iframe class="document-container" id="document-container2"  src="http://127.0.0.1:5555/tph_target"></iframe>
+            </div>
+            <script>
+                
+                var API_KEY = "";
+                var END_POINT = "http://127.0.0.1:5555";
+            </script>
+           
+        </div>
+
+        <div class ="download_area">
+            <span id="download_link" class="download_link">下载链接</span>
+        </div>
+
+        <div class="inside__products" style="display: block;">
+            <div class="product1_area">
+                <div class="product1_image">
+                                      
+                </div>
+            </div>
+            <div class="product2_area">
+                <div class="product21_area">
+                    <div class="product21_image">
+                    </div>
+                    <div class="product2_head">
+                        翻译插件
+                    </div>
+                    <div class="product2_text">
+                        简单好用的插件，支持Edge、Chrome等各类浏览器使用。
+                    </div>
+                </div>
+
+                <div class="product22_area">
+                    <div class="product22_image">
+    
+                    </div>
+                    <div class="product2_head">
+                        翻译APP
+                    </div>
+                    <div class="product2_text">
+                        高效便携的手机翻译APP，支持各类安卓手机，功能强大。
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        
+    </div>
+    <div class="fanyi__footer">
+        <div class="bottom__nav" style="display: block;">
+            <a target="_blank" class="nav2" href="/">成长计划</a><span class="c_fnl">|</span><a target="_blank" class="nav2" href="/">关于YIMT</a><span class="c_fnl">|</span><a target="_blank" class="nav2" href="/">官方博客</a>
+            <p>Copyright 2021-2022 by Liu Xiaofeng</p>
+        </div>   
+    </div>
+</body>
+</html>
