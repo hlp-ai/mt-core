@@ -1,14 +1,8 @@
-import gzip
 import io
-import os
 import random
-import re
-import zipfile
 
 import regex
 import zhconv
-import lxml.etree as ET
-
 
 def is_ascii_char(s):
     """Is it an ASCII char"""
@@ -194,40 +188,6 @@ def norm(s):
     s = s.lower()
     s = regex.sub(not_letter, "", s)
     return s
-
-
-def from_sgm(sgm_path, out_path):
-    """Convert sgm file of WMT into plain text"""
-    pattern = re.compile(r"<seg id=\"\d+\">(.+?)</seg>")
-
-    lines = "\r".join(io.open(sgm_path, encoding="utf-8").readlines())
-
-    out_f = io.open(out_path, "w", encoding="utf-8")
-
-    for m in re.finditer(pattern, lines):
-        print(m.group(1))
-        out_f.write(m.group(1) + "\n")
-
-    out_f.close()
-
-
-def from_xml(xml_file, attr="[@translator='A']"):
-    """Convert XML file of WMT into plain text"""
-    output_stem = xml_file[:-4]
-
-    pair = xml_file.split(".")[-2]
-    src, tgt = pair.split("-")
-
-    tree = ET.parse(xml_file)
-    # NOTE: Assumes exactly one translation
-
-    with open(output_stem + "." + src, "w", encoding="utf-8") as ofh:
-        for seg in tree.getroot().findall(".//src//seg"):
-            print(seg.text, file=ofh)
-
-    with open(output_stem + "." + tgt, "w", encoding="utf-8") as ofh:
-        for seg in tree.getroot().findall(".//ref" + attr + "//seg" ):
-            print(seg.text, file=ofh)
 
 
 not_letter = regex.compile(r'[^\p{L}]')
