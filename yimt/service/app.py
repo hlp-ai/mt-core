@@ -202,6 +202,14 @@ def create_app(args):
 
         return render_template('mobile_text.html')
 
+    @app.route('/usage')
+    @limiter.exempt
+    def usage():
+        if args.disable_web_ui:
+            abort(404)
+
+        return render_template('usage.html')
+
     ##############################################################################################
     #
     # Interface for translation service
