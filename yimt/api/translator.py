@@ -9,26 +9,26 @@ from yimt.core.config import MODEL_DESCRIPTION_FILENAME, load_model_from_file
 from yimt.core.utils import checkpoint as checkpoint_util
 
 from yimt.api.text_splitter import paragraph_detokenizer, paragraph_tokenizer, word_segment
-from yimt.corpus.tokenize_file import detok_zh_str
+from yimt.corpus.tokenize_file import is_en_punct
+from yimt.corpus.utils import is_ascii_char
 
 
-def load_translator(model_or_config_dir, sp_src_path, lang_pair=None):
-    """Create translator form config or model
+def detok_pretok_str(s):
+    result = ""
+    i = 0
+    while i < len(s):
+        if s[i] == " ":
+            if (i > 0 and is_en_punct(s[i-1])) or (i < len(s)-1 and is_en_punct(s[i+1])):
+                i += 1
+                continue
 
-    Args:
-        param model_or_config_dir: model directory or config yaml file
-        sp_src_path: SentencePiece model file for source language
-        lang_pair: lang pair supported by translator
+            if (i > 0 and is_ascii_char(s[i-1])) and (i < len(s)-1 and is_ascii_char(s[i+1])):
+                result += " "
+        else:
+            result += s[i]
+        i += 1
 
-    Returns:
-        a Translator
-    """
-    if ctranslate2.contains_model(model_or_config_dir):  # CTranslate2 model
-        return TranslatorCT2(model_or_config_dir, sp_src_path, lang_pair)
-    elif os.path.exists(os.path.join(model_or_config_dir, "saved_model.pb")):  # SavedModel
-        return TranslatorSaved(model_or_config_dir, sp_src_path, lang_pair)
-    else:  # checkpoint
-        return TranslatorCkpt(model_or_config_dir, sp_src_path, lang_pair)
+    return result
 
 
 # Access translation function mutually
@@ -38,7 +38,8 @@ mutex = threading.Lock()
 class Translator(object):
     """Translator base class"""
 
-    def __init__(self, sp_src_path, lang_pair=None, batch_size=64):
+    def __init__(self, sp_src_path, lang_pair=None, batch_size=64,
+                 pretok_src=False, pretok_tgt=False):
         """
         Args:
             sp_src_path: SentencePiece model file for source language
@@ -53,6 +54,8 @@ class Translator(object):
             self.from_lang = self.lang_pair.split("-")[0]
             self.to_lang = self.lang_pair.split("-")[1]
         self.batch_size = batch_size
+        self.pretok_src = pretok_src
+        self.pretok_tgt = pretok_tgt
 
     def _translate_batch(self, texts):
         """Translates a batch of texts.
@@ -91,13 +94,15 @@ class Translator(object):
         return results
 
     def _post_detokenize(self, translations):
-        if self.to_lang == "zh":  # TODO: other languages
+        # if self.to_lang == "zh":  # TODO: other languages
+        if self.pretok_tgt:
             new_translations = []
             for t in translations:
-                t = detok_zh_str(t)
-                t = t.replace(",", "，")
-                t = t.replace(";", "；")
-                t = t.replace(":", "：")
+                t = detok_pretok_str(t)
+                if self.to_lang == "zh":
+                    t = t.replace(",", "，")
+                    t = t.replace(";", "；")
+                    t = t.replace(":", "：")
                 new_translations.append(t)
             return new_translations
         else:
@@ -136,7 +141,8 @@ class Translator(object):
             text = [text]
 
         # Pretokenize
-        if self.from_lang == "zh" or self.from_lang == "ja" or self.from_lang == "th":
+        # if self.from_lang == "zh" or self.from_lang == "ja" or self.from_lang == "th":
+        if self.pretok_src:
             text = [" ".join(word_segment(t, self.from_lang)) for t in text]
 
         tokens = self.sp_source_model.encode(text, out_type=str)
@@ -217,13 +223,13 @@ def get_model_from_checkpoint(config_file):
 class TranslatorCkpt(Translator):
     """A checkpoint based translator with SentencePieced tokenization"""
 
-    def __init__(self, config_file, sp_src_path, lang_pair):
+    def __init__(self, config_file, sp_src_path, lang_pair, pretok_src=False, pretok_tgt=False):
         """Load model
 
         :param config_file: configuration file path
         :param sp_src_path: SentencePiece model file for source language
         """
-        super().__init__(sp_src_path, lang_pair)
+        super().__init__(sp_src_path, lang_pair, pretok_src=pretok_src, pretok_tgt=pretok_tgt)
         self._model = get_model_from_checkpoint(config_file)
 
     def _translate_batch(self, texts):
@@ -244,8 +250,8 @@ class TranslatorCkpt(Translator):
 class TranslatorSaved(Translator):
     """A TF SavedModel based translator with SentencePieced tokenization"""
 
-    def __init__(self, export_dir, sp_src_path, lang_pair):
-        super().__init__(sp_src_path, lang_pair)
+    def __init__(self, export_dir, sp_src_path, lang_pair, pretok_src=False, pretok_tgt=False):
+        super().__init__(sp_src_path, lang_pair, pretok_src=pretok_src, pretok_tgt=pretok_tgt)
 
         self._imported = tf.saved_model.load(export_dir)
         self._translate_fn = self._imported.signatures["serving_default"]
@@ -260,13 +266,13 @@ class TranslatorSaved(Translator):
 class TranslatorCT2(Translator):
     """A CTranslate2 based translator with SentencePieced tokenization"""
 
-    def __init__(self, model_dir, sp_src_path, lang_pair):
+    def __init__(self, model_dir, sp_src_path, lang_pair, pretok_src=False, pretok_tgt=False):
         """load model
 
         :param model_dir: ctranslate2 model directory
         :param sp_src_path: SentencePiece model file for source language
         """
-        super().__init__(sp_src_path, lang_pair)
+        super().__init__(sp_src_path, lang_pair, pretok_src=pretok_src, pretok_tgt=pretok_tgt)
 
         if ctranslate2.contains_model(model_dir):
             # self.cpu_num = os.cpu_count()

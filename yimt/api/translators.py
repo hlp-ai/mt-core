@@ -1,7 +1,28 @@
 import os
+
+import ctranslate2
 import yaml
 
-from yimt.api.translator import load_translator, Translator, DummyTranslator
+from yimt.api.translator import Translator, DummyTranslator, TranslatorCT2, TranslatorSaved, TranslatorCkpt
+
+
+def load_translator(model_or_config_dir, sp_src_path, lang_pair=None, pretok_src=False, pretok_tgt=False):
+    """Create translator form config or model
+
+    Args:
+        param model_or_config_dir: model directory or config yaml file
+        sp_src_path: SentencePiece model file for source language
+        lang_pair: lang pair supported by translator
+
+    Returns:
+        a Translator
+    """
+    if ctranslate2.contains_model(model_or_config_dir):  # CTranslate2 model
+        return TranslatorCT2(model_or_config_dir, sp_src_path, lang_pair, pretok_src=pretok_src, pretok_tgt=pretok_tgt)
+    elif os.path.exists(os.path.join(model_or_config_dir, "saved_model.pb")):  # SavedModel
+        return TranslatorSaved(model_or_config_dir, sp_src_path, lang_pair, pretok_src=pretok_src, pretok_tgt=pretok_tgt)
+    else:  # checkpoint
+        return TranslatorCkpt(model_or_config_dir, sp_src_path, lang_pair, pretok_src=pretok_src, pretok_tgt=pretok_tgt)
 
 
 class Translators(object):
@@ -65,7 +86,6 @@ class Translators(object):
             return translator
         else:
             print("Loading translator for {}...".format(lang_pair))
-            self.translators[lang_pair] = load_translator(model_or_config_dir=translator["model_or_config_dir"],
-                                                          sp_src_path=translator["sp_src_path"],
-                                                          lang_pair=lang_pair)
+            translator["lang_pair"] = lang_pair
+            self.translators[lang_pair] = load_translator(**translator)
             return self.translators[lang_pair]
