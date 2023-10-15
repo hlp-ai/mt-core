@@ -38,11 +38,6 @@ if __name__ == "__main__":
     create_sample_corpus(sample_frame)
     frames.append(sample_frame)
 
-    partition_frame = tk.Frame(win_main)
-    partition_frame.pack()
-    create_partition_corpus(partition_frame)
-    frames.append(partition_frame)
-
     tokenize_frame = tk.Frame(win_main)
     tokenize_frame.pack()
     create_tok_mono(tokenize_frame)
@@ -132,7 +127,6 @@ if __name__ == "__main__":
     corpus_menu.add_command(label="Mono2TSV",command=partial(on_menu,mono2tsv_frame))
     corpus_menu.add_separator()
     corpus_menu.add_command(label="Sample", command=partial(on_menu, sample_frame))
-    corpus_menu.add_command(label="Partition", command=partial(on_menu, partition_frame))
     corpus_menu.add_separator()
     corpus_menu.add_command(label="Tokenize File", command=partial(on_menu, tokenize_frame))
     corpus_menu.add_command(label="DeTokenize Chinese Text", command=partial(on_menu, detokenize_frame))

@@ -7,7 +7,7 @@ from tkinter import ttk
 from functools import partial
 
 from yimt.admin.win_utils import ask_open_file, ask_dir
-from yimt.api.translator import load_translator
+from yimt.api.translators import load_translator
 from yimt.core.ex.exec_eval import run_eval, run_infer
 
 
