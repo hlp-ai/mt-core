@@ -198,6 +198,8 @@ class DummyTranslator(Translator):
 
     def __init__(self):
         super().__init__("")
+        self.from_lang = 'en'
+        self.to_lang = 'zh'
 
     def _translate_batch(self, texts):
         return [['译']*len(t) for t in texts]
