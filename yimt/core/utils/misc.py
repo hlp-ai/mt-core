@@ -9,7 +9,8 @@ import sys
 import numpy as np
 
 import tensorflow as tf
-from opennmt.utils import compat
+
+from yimt.core.utils import compat
 
 _CHECKPOINT_VARIABLE_SUFFIX = ".ATTRIBUTES/VARIABLE_VALUE"
 
