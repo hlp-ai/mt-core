@@ -94,15 +94,19 @@ class Translator(object):
         return results
 
     def _post_detokenize(self, translations):
-        # if self.to_lang == "zh":  # TODO: other languages
+        if self.to_lang == "zh":  # TODO: other languages
+            new_translations = []
+            for t in translations:
+                t = t.replace(",", "，")
+                t = t.replace(";", "；")
+                t = t.replace(":", "：")
+                new_translations.append(t)
+            translations = new_translations
+
         if self.pretok_tgt:
             new_translations = []
             for t in translations:
                 t = detok_pretok_str(t)
-                if self.to_lang == "zh":
-                    t = t.replace(",", "，")
-                    t = t.replace(";", "；")
-                    t = t.replace(":", "：")
                 new_translations.append(t)
             return new_translations
         else:
