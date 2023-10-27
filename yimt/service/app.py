@@ -196,6 +196,14 @@ def create_app(args):
 
         return render_template('reference.html')
 
+    @app.route('/api_usage')
+    @limiter.exempt
+    def usage():
+        if args.disable_web_ui:
+            abort(404)
+
+        return render_template('api_usage.html')
+
     @app.after_request
     def after_request(response):
         response.headers.add("Access-Control-Allow-Origin", "*")  # Allow CORS from anywhere
@@ -370,10 +378,7 @@ def create_app(args):
         # print("checking progress")  # 测试用
         file = request.files['file']
         file_type = os.path.splitext(file.filename)[1]
-        if file_type == ".txt":
-            from yimt.files.translate_txt import txt_progress
-            progress = txt_progress
-        elif file_type == ".pdf":
+        if file_type == ".pdf":
             from yimt.files.translate_pdf import pdf_progress
             progress = pdf_progress
         elif file_type == ".docx" or file_type == ".doc":
