@@ -5,8 +5,14 @@
     vertical-align: bottom;
 }
 
+.original_title{
+    position: absolute;
+    left: 0px;
+}
+
 .target_title{
-    margin-left: 620px;
+    position: absolute;
+    left: 51%;
 }
 
 .file_view_original,.file_view_target{
@@ -45,5 +51,17 @@
 
 .download_link{
     font-size: 20px;
+    position: absolute;
+    right: 0px;
+
+}
+
+.fanyi__operations {
+    font-size: 0;
+    letter-spacing: 0;
+    width: 100%;
+    right: 0px;
+    position: relative;
+    z-index: 2
 }
 
