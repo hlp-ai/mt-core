@@ -98,8 +98,9 @@
                     renderDocx(myFile)
                 }
                 const docxOptions = Object.assign(docx.defaultOptions, {
-                    ignoreWidth: true,
+                    ignoreWidth: false,
                     experimental: true,
+                    debug: true
                 });
                     
                 function renderDocx(file) {
