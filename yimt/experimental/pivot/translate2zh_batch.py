@@ -3,9 +3,9 @@ from argparse import ArgumentParser
 
 import ctranslate2
 
-from yimt.core.ex.sp import load_spm, tokenize_file, detokenize_file
-from yimt.corpus.tokenize_file import detok_zh
-from yimt.corpus.utils import pair_to_single, single_to_pair
+from yimt.segmentation.sp import load_spm, tokenize_file_sp, detokenize_file_sp
+from yimt.segmentation.detok_zh import detok_zh_file
+from yimt.corpus.misc import pair_to_single, single_to_pair
 
 
 def _translate(translator, in_file, out_file, batch_size = 48):
@@ -110,7 +110,7 @@ if __name__ == "__main__":
 
         tok_output = to_translate + ".tok"
         print("Tokenizing {} into {}...".format(to_translate, tok_output))
-        tokenize_file(sp_en, to_translate, tok_output)
+        tokenize_file_sp(sp_en, to_translate, tok_output)
 
         out_file = tok_output + ".tozh"
         print("Translating {} into {}...".format(tok_output, out_file))
@@ -119,9 +119,9 @@ if __name__ == "__main__":
         detok_file = out_file + ".det"
 
         print("Detokenizing {} into {}...".format(out_file, detok_file))
-        detokenize_file(sp_zh, out_file, detok_file)
+        detokenize_file_sp(sp_zh, out_file, detok_file)
 
         zh_file = detok_file + ".zh"
-        detok_zh(detok_file, zh_file)
+        detok_zh_file(detok_file, zh_file)
 
         single_to_pair(un_translate, zh_file, tsv_file + ".aug2zh")

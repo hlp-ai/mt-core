@@ -51,7 +51,7 @@ def load_spm(sp_model_path):
     return spm.SentencePieceProcessor(model_file=sp_model_path)
 
 
-def tokenize(sp_model, txt):
+def tokenize_sp(sp_model, txt):
     """Tokenize text with SentencePiece
 
     :param sp_model: SentencePiece model
@@ -64,7 +64,7 @@ def tokenize(sp_model, txt):
     return tokens
 
 
-def tokenize_file(sp_model, in_fn, out_fn):
+def tokenize_file_sp(sp_model, in_fn, out_fn):
     """Tokenize file with SentencePiece model and output result into file"""
     if isinstance(sp_model, str):
         sp_model = load_spm(sp_model)
@@ -73,7 +73,7 @@ def tokenize_file(sp_model, in_fn, out_fn):
     sentences = 0
     tokens = 0
     for s in in_f:
-        tok_s = tokenize(sp_model, s)[0]
+        tok_s = tokenize_sp(sp_model, s)[0]
         sentences += 1
         tokens += len(tok_s)
         if len(tok_s) > 0:
@@ -86,17 +86,17 @@ def tokenize_file(sp_model, in_fn, out_fn):
     out_f.close()
 
 
-def detokenize(sp_model, tokens):
+def detokenize_sp(sp_model, tokens):
     """Detokenize tokens into text"""
     return sp_model.decode(tokens)
 
 
-def detok(tokens):
+def detok_sp(tokens):
     """Simple detokenization for SentencePiece"""
     return " ".join(tokens).replace(" ", "").replace("▁", " ").strip()
 
 
-def detokenize_file(sp_model, in_fn, out_fn):
+def detokenize_file_sp(sp_model, in_fn, out_fn):
     if isinstance(sp_model, str):
         sp_model = load_spm(sp_model)
     # in_f = io.open(in_fn, encoding="utf-8")
@@ -104,7 +104,7 @@ def detokenize_file(sp_model, in_fn, out_fn):
     tok_lines = [line.strip() for line in tok_lines]
     out_f = io.open(out_fn, "w", encoding="utf-8")
     for tokens in tok_lines:
-        detok_line = detokenize(sp_model, tokens.split())
+        detok_line = detokenize_sp(sp_model, tokens.split())
         out_f.write(detok_line + "\n")
 
     out_f.close()

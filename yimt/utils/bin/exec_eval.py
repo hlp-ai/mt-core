@@ -2,7 +2,7 @@
 import argparse
 import os
 
-from yimt.core.ex.sp import tokenize_file, detokenize_file
+from yimt.segmentation.sp import tokenize_file_sp, detokenize_file_sp
 
 
 def run_eval(config_path, src_path, ref_path, sp_src, sp_tgt, lang_pair):
@@ -16,7 +16,7 @@ def run_eval(config_path, src_path, ref_path, sp_src, sp_tgt, lang_pair):
 
     print("Tokenizing {} into {}...".format(src_path, src_path_tok))
     # os.popen(tok_cmd_str.format(sp_src, src_path, src_path_tok)).readlines()
-    tokenize_file(sp_src, src_path, src_path_tok)
+    tokenize_file_sp(sp_src, src_path, src_path_tok)
 
     print()
 
@@ -27,7 +27,7 @@ def run_eval(config_path, src_path, ref_path, sp_src, sp_tgt, lang_pair):
 
     print("Detokenizing {} into {}...".format(pred_path, pred_path_detok))
     # os.popen(detok_cmd_str.format(sp_tgt, pred_path, pred_path_detok)).readlines()
-    detokenize_file(sp_tgt, pred_path, pred_path_detok)
+    detokenize_file_sp(sp_tgt, pred_path, pred_path_detok)
 
     print()
 
@@ -46,7 +46,7 @@ def run_infer(config_path, src_path, sp_src, sp_tgt):
     pred_path_detok = pred_path + ".det"
 
     print("Tokenizing {} into {}...".format(src_path, src_path_tok))
-    tokenize_file(sp_src, src_path, src_path_tok)
+    tokenize_file_sp(sp_src, src_path, src_path_tok)
 
     print()
 
@@ -56,7 +56,7 @@ def run_infer(config_path, src_path, sp_src, sp_tgt):
     print()
 
     print("Detokenizing {} into {}...".format(pred_path, pred_path_detok))
-    detokenize_file(sp_tgt, pred_path, pred_path_detok)
+    detokenize_file_sp(sp_tgt, pred_path, pred_path_detok)
 
     return pred_path_detok
 

@@ -1,7 +1,7 @@
 """Train SentencePiece model from corpus"""
 import argparse
 
-from yimt.core.ex.sp import train_spm
+from yimt.segmentation.sp import train_spm
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()

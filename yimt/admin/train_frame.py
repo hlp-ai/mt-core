@@ -9,9 +9,9 @@ from functools import partial
 
 import yaml
 
-from yimt.admin.win_utils import ask_open_file, ask_save_file, ask_dir
-from yimt.core.ex.pre_train import get_sp_prefix, get_tok_file, get_vocab_file, pretrain_corpus
-from yimt.core.ex.sp import train_spm, load_spm, tokenize_file
+from yimt.admin.win_utils import ask_open_file, ask_dir
+from yimt.utils.bin.pre_train import get_sp_prefix, get_tok_file, get_vocab_file, pretrain_corpus
+from yimt.segmentation.sp import train_spm, load_spm, tokenize_file_sp
 
 
 def create_sp_train(parent):
@@ -143,7 +143,7 @@ def create_sp_tokenize(parent):
         print(corpus_file, sp_model, tok_output)
 
         sp = load_spm(sp_model)
-        tokenize_file(sp, corpus_file, tok_output)
+        tokenize_file_sp(sp, corpus_file, tok_output)
 
         tk.messagebox.showinfo(title="Info", message="Raw corpus tokenized.")
 

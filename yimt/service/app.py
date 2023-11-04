@@ -8,7 +8,7 @@ from html import unescape
 from flask import (Flask, abort, jsonify, render_template, request, send_file, url_for)
 from werkzeug.utils import secure_filename
 
-from yimt.api.text_splitter import may_combine_paragraph
+from yimt.segmentation.text_splitter import may_combine_paragraph
 from yimt.api.translators import Translators
 from yimt.api.utils import detect_lang, get_logger
 

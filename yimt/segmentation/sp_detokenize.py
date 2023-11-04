@@ -1,7 +1,7 @@
 """Detokenize file into file"""
 import argparse
 
-from yimt.core.ex.sp import load_spm, detokenize_file
+from yimt.segmentation.sp import load_spm, detokenize_file_sp
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
@@ -11,4 +11,4 @@ if __name__ == "__main__":
     args = argparser.parse_args()
 
     sp = load_spm(args.sp_model)
-    detokenize_file(sp, args.in_fn, args.out_fn)
+    detokenize_file_sp(sp, args.in_fn, args.out_fn)

@@ -1,9 +1,6 @@
 import io
 import random
 
-import regex
-import zhconv
-
 def is_ascii_char(s):
     """Is it an ASCII char"""
     return len(s) == 1 and '\u0000' < s[0] < '\u00ff'
@@ -12,6 +9,13 @@ def is_ascii_char(s):
 def is_ascii(s):
     """All are ASCII chars"""
     return all(map(is_ascii_char, s))
+
+
+EN_PUCTS = ",.?:;/<>()[]{}|\\~!@#$%^&*-+="
+
+
+def is_en_punct(s):
+    return len(s) == 1 and is_ascii_char(s) and EN_PUCTS.find(s)>=0
 
 
 def is_zh_char(s):
@@ -43,15 +47,6 @@ def same_lines(path1, path2):
         return True
     else:
         return False
-
-
-def is_bitext(file_path):
-    """The file is bitext?"""
-    with open(file_path, encoding="utf-8") as f:
-        for line in f:
-            if len(line.split("\t")) != 2:
-                return False
-        return True
 
 
 def single_to_pair(src_path, tgt_path, pair_path):
@@ -138,29 +133,3 @@ def count_lines(fn):
     print(lines)
 
     return lines
-
-
-def hant_2_hans(hant_str: str):
-    """Traditional Chinese to Simplified Chinese"""
-    return zhconv.convert(hant_str, 'zh-hans')
-
-
-not_letter = regex.compile(r'[^\p{L}]')
-
-
-def norm(s):
-    s = s.lower()
-    s = regex.sub(not_letter, "", s)
-    return s
-
-
-not_letter = regex.compile(r'[^\p{L}]')
-
-
-def norm(s, lower=True, remove_noletter=True):
-    if lower:
-        s = s.lower()
-
-    if remove_noletter:
-        s = regex.sub(not_letter, "", s)
-    return s

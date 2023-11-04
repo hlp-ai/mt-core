@@ -1,4 +1,4 @@
-from yimt.api.text_splitter import split_sentences, may_combine_paragraph, word_segment
+from yimt.segmentation.text_splitter import split_sentences, may_combine_paragraph, word_segment
 
 if __name__ == "__main__":
     t1 = "How are you? Mr. White is working."

@@ -24,7 +24,7 @@ The contents of this repository are as follows:
 + Package yimt.api: [Translator API](./yimt/api/README.md)
 + Package yimt.files: [File Translation](./yimt/files/README.md)
 + Package yimt.service: [Translation Service](./yimt/service/README.md)
-+ Package yimt.corpus: [Corpus Tools](./yimt/corpus/README.md)
++ Package yimt.corpus: [Corpus Tools](yimt/utils/README.md)
 + Package yimt.admin: [Admin GUI](./yimt/admin/README.md)
 
 ## References

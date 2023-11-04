@@ -2,7 +2,7 @@
 import argparse
 import os
 
-from yimt.corpus.utils import single_to_pair
+from yimt.utils.misc import single_to_pair
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

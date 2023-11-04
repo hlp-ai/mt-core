@@ -1,7 +1,7 @@
 """Split TSV file into source and target file"""
 import argparse
 
-from yimt.corpus.utils import pair_to_single
+from yimt.utils.misc import pair_to_single
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()

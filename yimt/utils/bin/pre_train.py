@@ -2,8 +2,8 @@
 import argparse
 import os
 
-from yimt.core.ex.sp import train_spm, load_spm, tokenize_file
-from yimt.corpus.tokenize_file import tokenize_single
+from yimt.segmentation.sp import train_spm, load_spm, tokenize_file_sp
+from yimt.segmentation.tokenize_file import tokenize_single
 
 
 def get_file_name(p):
@@ -47,11 +47,11 @@ def pretrain_corpus(raw_train_fn, raw_dev_fn=None, pretok_lang=None, vocab_size=
     tokenizer_sp = load_spm(sp_prefix + ".model")
     train_tok = os.path.join(output_path, get_tok_file(raw_train_fn))
     print("Tokenizing {} into {}".format(raw_train_fn, train_tok))
-    tokenize_file(tokenizer_sp, raw_train_fn, train_tok)
+    tokenize_file_sp(tokenizer_sp, raw_train_fn, train_tok)
     if raw_dev_fn:
         dev_tok = os.path.join(output_path, get_tok_file(raw_dev_fn))
         print("Tokenizing {} into {}".format(raw_dev_fn, dev_tok))
-        tokenize_file(tokenizer_sp, raw_dev_fn, dev_tok)
+        tokenize_file_sp(tokenizer_sp, raw_dev_fn, dev_tok)
 
     print()
 
@@ -93,8 +93,8 @@ if __name__ == "__main__":
 
     src_tokenizer_sp = load_spm(src_sp_prefix + ".model")
     print("Tokenizing train and dev file for source language...")
-    tokenize_file(src_tokenizer_sp, args.src_fn, src_train_tok)
-    tokenize_file(src_tokenizer_sp, args.dev_src_fn, src_dev_tok)
+    tokenize_file_sp(src_tokenizer_sp, args.src_fn, src_train_tok)
+    tokenize_file_sp(src_tokenizer_sp, args.dev_src_fn, src_dev_tok)
 
     print()
 
@@ -105,8 +105,8 @@ if __name__ == "__main__":
 
     tgt_tokenizer_sp = load_spm(tgt_sp_prefix + ".model")
     print("Tokenizing train and dev file for target language...")
-    tokenize_file(tgt_tokenizer_sp, args.tgt_fn, tgt_train_tok)
-    tokenize_file(tgt_tokenizer_sp, args.dev_tgt_fn, tgt_dev_tok)
+    tokenize_file_sp(tgt_tokenizer_sp, args.tgt_fn, tgt_train_tok)
+    tokenize_file_sp(tgt_tokenizer_sp, args.dev_tgt_fn, tgt_dev_tok)
 
     print()
 

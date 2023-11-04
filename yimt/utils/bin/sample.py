@@ -1,7 +1,7 @@
 """Sample some lines from corpus"""
 import argparse
 
-from yimt.corpus.utils import sample
+from yimt.utils.misc import sample
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

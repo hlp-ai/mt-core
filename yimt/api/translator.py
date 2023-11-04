@@ -8,9 +8,8 @@ from yimt.core import load_config
 from yimt.core.config import MODEL_DESCRIPTION_FILENAME, load_model_from_file
 from yimt.core.utils import checkpoint as checkpoint_util
 
-from yimt.api.text_splitter import paragraph_detokenizer, paragraph_tokenizer, word_segment
-from yimt.corpus.tokenize_file import is_en_punct
-from yimt.corpus.utils import is_ascii_char
+from yimt.segmentation.text_splitter import paragraph_detokenizer, paragraph_tokenizer, word_segment
+from yimt.utils.misc import is_ascii_char, is_en_punct
 
 
 def detok_pretok_str(s):

@@ -388,7 +388,7 @@ class SequenceToSequence(model.Model):
 
         predictions = {"log_probs": log_probs}
         if self.labels_inputter.tokenizer.in_graph:
-            detokenized_text = self.labels_inputter.tokenizer.detokenize(
+            detokenized_text = self.labels_inputter.tokenizer.detokenize_sp(
                 tf.reshape(target_tokens, [batch_size * beam_size, -1]),
                 sequence_length=tf.reshape(sampled_length, [batch_size * beam_size]),
             )
@@ -456,7 +456,7 @@ class SequenceToSequence(model.Model):
             if "tokens" in prediction:
                 target_length = prediction["length"][i]
                 tokens = prediction["tokens"][i][:target_length]
-                sentence = self.labels_inputter.tokenizer.detokenize(tokens)
+                sentence = self.labels_inputter.tokenizer.detokenize_sp(tokens)
             else:
                 sentence = prediction["text"][i].decode("utf-8")
             score = None

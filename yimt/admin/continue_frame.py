@@ -1,11 +1,10 @@
-import os
 import tkinter as tk
 from tkinter import *
 import tkinter.messagebox
 from functools import partial
 
 from yimt.admin.win_utils import ask_open_file, ask_dir
-from yimt.core.ex.fine_tune import main
+from yimt.utils.bin.fine_tune import main
 
 
 def create_ft(parent):

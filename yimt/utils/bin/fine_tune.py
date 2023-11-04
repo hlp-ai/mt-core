@@ -7,7 +7,7 @@ from pprint import pprint
 
 import yaml
 from yimt.core.utils.misc import merge_dict
-from yimt.corpus.tokenize_file import tokenize_single
+from yimt.segmentation.tokenize_file import tokenize_single
 
 
 def copy_to_dir(fn, dst):

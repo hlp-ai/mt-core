@@ -1,7 +1,7 @@
 """Tokenize file with SentencePiece"""
 import argparse
 
-from yimt.core.ex.sp import load_spm, tokenize_file
+from yimt.segmentation.sp import load_spm, tokenize_file_sp
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
@@ -16,4 +16,4 @@ if __name__ == "__main__":
         out_fn = args.out_fn
 
     sp = load_spm(args.sp_model)
-    tokenize_file(sp, args.in_fn, out_fn)
+    tokenize_file_sp(sp, args.in_fn, out_fn)

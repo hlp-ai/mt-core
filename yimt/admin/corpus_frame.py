@@ -1,11 +1,11 @@
-import os
 import tkinter as tk
 import tkinter.messagebox
 from functools import partial
 
 from yimt.admin.win_utils import ask_open_file, ask_save_file
-from yimt.corpus.tokenize_file import tokenize_single, detok_zh
-from yimt.corpus.utils import pair_to_single, single_to_pair, sample
+from yimt.segmentation.tokenize_file import tokenize_single
+from yimt.segmentation.detok_zh import detok_zh_file
+from yimt.utils.misc import pair_to_single, single_to_pair, sample
 
 
 def create_tsv2mono_corpus(parent):
@@ -178,7 +178,7 @@ def create_detok_zh(parent):
         if len(corpus_out) == 0:
             corpus_out = None
 
-        detok_zh(corpus_in, corpus_out)
+        detok_zh_file(corpus_in, corpus_out)
 
         tk.messagebox.showinfo(title="Info", message="done")
 
