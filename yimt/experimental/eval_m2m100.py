@@ -11,7 +11,7 @@ print("Loading m2m100 SentencePiece model...")
 sp_source_model = spm.SentencePieceProcessor(sp_model_file)
 
 print("Loading m2m100 model...")
-translator = ctranslate2.Translator(m2m100_dir, device="cuda")
+translator = ctranslate2.Translator(m2m100_dir, device="cpu")
 
 gt_tsv = r"D:\dataset\zh-x-val\flores\flores101_dev\zho_simpl-lao_dev.txt"
 srcs = []
@@ -36,7 +36,7 @@ translations = []
 
 batch_size = 8
 for i in tqdm(range(0, len(srcs), batch_size)):
-    split = srcs[i:(i+1)*batch_size]
+    split = srcs[i:i+batch_size]
     source_sents_tok = sp_source_model.encode(split, out_type=str)
     source_sents_tok = [[src_prefix] + sent for sent in source_sents_tok]
 
