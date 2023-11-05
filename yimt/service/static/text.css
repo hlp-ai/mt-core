@@ -343,7 +343,7 @@ body {
 
 .input__original_file {
     display: inline-block;
-    background: #fdfdfd;
+    background: #f4f4f4;
     width: 99.999999%;
     font-size: 14px;
     vertical-align: top;
@@ -411,7 +411,7 @@ body {
     position: relative;
     height: 180px;
     margin-top: 18px;
-    background: #fdfdfd;
+    background: #f4f4f4;
     z-index: 0;
 }
 
@@ -632,7 +632,7 @@ body {
     position:relative;
     height: 160px;
     width:100%;
-    background-color: #fdfdfd;
+    background-color: #f4f4f4;
     z-index: 0;
 
 }
@@ -673,7 +673,7 @@ body {
     height: 100%;
     width: auto;
     margin:auto;
-    background: #fdfdfd;
+    background: #f4f4f4;
     background-image: url(../static/img/file.jpg);
     background-repeat:no-repeat;
     background-position:center;
