@@ -13,6 +13,19 @@
             text-align: center;
             margin-top: 50px;
         }
+        h2 {
+            font-size: 30px;
+        }
+        h3 {
+            font-size: 24px;
+        }
+        p{
+            text-indent:2em;
+        }
+        .p1{
+            text-indent:4em;
+        }
+
         .container {
             max-width: 800px;
             margin: 0 auto;
@@ -34,92 +47,189 @@
         ul {
             line-height: 1.5;
         }
+        .ins_table{
+            position: relative;
+            left: 30px;
+        }
     </style>
 </head>
 <body>
-    <h1>翻译API：使用指南</h1>
+    <h1>易译API：使用指南</h1>
     <div class="container">
         <div class="step">
-            <h2>步骤一：下载插件</h2>
-            <p>首先，您需要下载我们的插件。点击下方链接即可下载插件。</p>
-            <!-- <a href="/download_extension" id="downloadLink" download>
-                下载插件
-            </a> -->
-            <a href="https://codeload.github.com/hlp-ai/mt-browser/zip/refs/heads/main" id="downloadLink" download>
-                下载插件
+            <h2>示例Demo代码</h2>
+            <p>示例代码下载链接如下，运行yimt/service/test.py进行功能测试。</p>
+            <a style="margin-left: 30px;" href="https://codeload.github.com/hlp-ai/mt-core/zip/refs/heads/restful" id="downloadLink" download>
+                "https://github.com/hlp-ai/mt-core/tree/restful/yimt/service"
             </a>
         </div>
         <div class="step">
-            <h2>步骤二：安装插件</h2>
-            <p>下载完成后，您需要将插件安装到您的浏览器中。具体步骤如下：</p>
-            <ol>
-                <h3>对于 Chrome 浏览器：</h3>
-                <ol>
-                    <li>打开您的 Chrome 浏览器，并进入扩展程序页面（chrome://extensions/）；</li>
-                    <li>在页面右上角开启“开发者模式”；</li>
-                    <li>点击“加载已解压的扩展程序”按钮，选择您下载的插件所在的文件夹；</li>
-                    <li>安装成功后，您可以在浏览器的扩展程序栏中看到您的插件图标。</li>
-                </ol>
-                <img src="../static/img/chrome.png" alt="安装插件">
-                <h3>对于 Edge 浏览器：</h3>
-                <ol>
-                    <li>打开您的 Edge 浏览器，并进入扩展程序页面（edge://extensions/）；</li>
-                    <li>开启“开发者模式”；</li>
-                    <li>点击“加载已解压的扩展程序”按钮，选择您下载的插件所在的文件夹；</li>
-                    <li>安装成功后，您可以在浏览器的扩展程序栏中看到您的插件图标。</li>
-                </ol>
-                <img src="../static/img/Edge.png" alt="安装插件">
-                <h3>对于 Firefox 浏览器：</h3>
-                <ol>
-                    <li>打开您的 Firefox 浏览器，并进入附加组件页面；</li>
-                    <li>点击“齿轮”图标，选择“调试附加组件”；</li>
-                    <li>点击“临时载入附加组件”按钮，选择您下载的插件所在的文件夹，选取manifest.json文件；</li>
-                    <li>安装成功后，您可以在浏览器的附加组件栏中看到您的插件图标。</li>
-                </ol>
-                <img src="../static/img/firefox2.png" alt="安装插件">
-            </ol>
+            <h2>语音识别翻译API</h2>
+            <h3>音频说明</h3>
+            <p>1、格式支持：pcm（不压缩）、wav（不压缩，pcm编码）、amr、m4a。</p>
+            <P>2、推荐pcm 采样率 ：16000、8000（仅支持普通话模型） 固定值。</P>
+            <P>3、单声道编码。</P>
+            <!-- <a href="/download_extension" id="downloadLink" download>
+                下载API
+            </a> -->
+            <h3>请求说明</h3>
+            <p>1、JSON 格式 POST 上传本地音频文件。请求端口路由：/translate_audio2text。</p>
+            <P>2、JSON参数：</p>
+            <!--<P class="p1">(1)  "base64": 上传音频的BASE64编码</P>
+                <P class="p1">(2)  "format": 上传音频格式类型：pcm/wav/amr/m4a</P>
+                <P class="p1">(3)  "rate":   音频采样率：8000/16000</P>
+                <P class="p1">(5)  "channel":声道数，默认为1</P>
+                <P class="p1">(6)  "len":    上传音频文件的字节数</P> -->
+            <div class="ins_table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>属性</th>
+                            <th>类型</th>
+                            <th>默认值</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>base64</td>
+                            <td>base64</td>
+                            <td>none</td>
+                            <td>是</td>
+                            <td>上传音频的BASE64编码</td>
+                        </tr>
+                        <tr>
+                            <td>format</td>
+                            <td>string</td>
+                            <td>none</td>
+                            <td>是</td>
+                            <td>上传音频格式类型：pcm/wav/amr/m4a</td>
+                        </tr>
+                        <tr>
+                            <td>rate</td>
+                            <td>number</td>
+                            <td>8000</td>
+                            <td>否</td>
+                            <td>音频采样率：8000/16000</td>
+                        </tr>
+                        <tr>
+                            <td>channel</td>
+                            <td>number</td>
+                            <td>1</td>
+                            <td>否</td>
+                            <td>上传音频声道数，固定为1</td>
+                        </tr>
+                        <tr>
+                            <td>len</td>
+                            <td>number</td>
+                            <td>none</td>
+                            <td>是</td>
+                            <td>上传音频文件的字节数</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <P>3、返回结果：翻译结果文本，类型：String。</p>
         </div>
         <div class="step">
-            <h2>步骤三：使用插件</h2>
-            <p>安装完成后，您可以开始使用我们的插件了。具体使用方法如下：</p>
-            <h3>一、翻译设置</h3>
-            <ol>
-                <li>在网页右上角找到扩展按钮，打开插件</li>
-                <li>点击齿轮状的设置按钮进入设置界面</li>
-                <li>配置API端点以及api_key</li>
-                <li>点击“保存设置”保存</li>
-            </ol>
-            <img src="../static/img/use1.png" width="70%" alt="打开插件">
-            <img src="../static/img/set.png" width="48%" alt="设置">
-            <img src="../static/img/set2.png" width="48%" alt="设置">
-            <h3>二、翻译网页以及恢复网页的使用说明</h3>
-            <ol>
-                <li>首先，打开您需要翻译的网页页面；</li>
-                <li>在网页右上角找到扩展按钮，打开插件；</li>
-                <li>在翻译窗口中选择您需要翻译的目标语言，源语言可以自动识别，也可以手动选择；</li>
-                <li>点击“翻译网页”按钮，即可将网页翻译为所需语言；</li>
-                <li>点击“恢复网页”按钮，即可将网页还原为原网页。</li>
-            </ol>
-            <img src="../static/img/use2.png" width="50%" alt="使用插件">
-            <h3>三、划词翻译的使用说明</h3>
-            <ol>
-                <li>在网页用鼠标中选取需要翻译的文本；</li>
-                <li>右键鼠标打开菜单选项；</li>
-                <li>选择翻译的目标语言；</li>
-                <li>点击菜单项中的语言选项即可直接翻译所选文本。</li>
-            </ol>
-            <img src="../static/img/use3.png" width="50%" alt="划词翻译">
+            <h2>图像识别翻译API</h2>
+            <h3>图像说明</h3>
+            <p>1、格式支持：jpg、png。</p>
+            <h3>请求说明</h3>
+            <p>1、JSON 格式 POST 上传本地图像文件。请求端口路由：/translate_image2text。</p>
+            <P>2、JSON参数：</p>
+            <div class="ins_table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>属性</th>
+                            <th>类型</th>
+                            <th>默认值</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>base64</td>
+                            <td>base64</td>
+                            <td>none</td>
+                            <td>是</td>
+                            <td>上传图像的BASE64编码</td>
+                        </tr>
+                        <tr>
+                            <td>source_lang</td>
+                            <td>string</td>
+                            <td>none</td>
+                            <td>是</td>
+                            <td>翻译的源语言类代码</td>
+                        </tr>
+                        <tr>
+                            <td>target_lang</td>
+                            <td>string</td>
+                            <td>none</td>
+                            <td>是</td>
+                            <td>翻译的目标语言类代码</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <P>3、返回结果：翻译结果文本，类型：String。</p>
         </div>
-        <div class="version">
-            <h2>版本说明</h2>
-            <p>本插件可以用在以下版本的浏览器上：</p>
-            <ul>
-                <li>Chrome 70 及以上版本</li>
-                <li>Edge 80 及以上版本</li>
-                <li>Firefox 80 及以上版本</li>
-            </ul>
+        <div class="step">
+            <h2>语音合成翻译API</h2>
+            <h3>请求说明</h3>
+            <p>1、JSON 格式 POST 上传本地图像文件。请求端口路由：/translate_text2audio。</p>
+            <P>2、JSON参数：</p>
+            <div class="ins_table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>属性</th>
+                            <th>类型</th>
+                            <th>默认值</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>text</td>
+                            <td>String</td>
+                            <td>none</td>
+                            <td>是</td>
+                            <td>上传的文本字符串</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <P>3、返回结果：翻译结果合成音频的BASE64编码文件，类型：BSAE64。</p>
         </div>
     </div>
+    <style type="text/css">
+        table {
+            left: 120px;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: solid 1px #6D6D6D;
+            padding: 5px 10px;
+        }
+        .mt-sm {margin-top: 8px;}
+        body {
+            background: #ffffff;
+            padding: 0;
+            margin: 0;
+        }
+        .container {
+            width: 100%;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+    </style>           
     <script>
         // var downloadLink = document.getElementById('downloadLink');
         // downloadLink.addEventListener('click', function() {
