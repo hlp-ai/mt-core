@@ -1,78 +1,88 @@
+import argparse
 import os
 
 import ctranslate2
 import sentencepiece as spm
 from tqdm import tqdm
 
-m2m100_dir = r"D:\kidden\mt\m2m100_418m"
-sp_model_file = os.path.join(m2m100_dir, "sentencepiece.model")
+if __name__ == "__main__":
+    argparser = argparse.ArgumentParser()
+    argparser.add_argument("--m2m", default=r"D:\kidden\mt\m2m100_418m")
+    argparser.add_argument("-gt", required=True)
+    argparser.add_argument("--sl", required=True)
+    argparser.add_argument("--tl", default="zh")
 
-print("Loading m2m100 SentencePiece model...")
-sp_source_model = spm.SentencePieceProcessor(sp_model_file)
+    args = argparser.parse_args()
 
-print("Loading m2m100 model...")
-translator = ctranslate2.Translator(m2m100_dir, device="cpu")
+    m2m100_dir = args.m2m
+    sp_model_file = os.path.join(m2m100_dir, "sentencepiece.model")
 
-gt_tsv = r"D:\dataset\zh-x-val\flores\flores101_dev\zho_simpl-lao_dev.txt"
-srcs = []
-zhs = []
-with open(gt_tsv, encoding="utf-8") as f:
-    for line in f:
-        line = line.strip()
-        parts = line.split("\t")
-        srcs.append(parts[1])
-        zhs.append(parts[0])
+    print("Loading m2m100 SentencePiece model...")
+    sp_source_model = spm.SentencePieceProcessor(sp_model_file)
 
-print("# of pairs:", len(srcs))
+    print("Loading m2m100 model...")
+    translator = ctranslate2.Translator(m2m100_dir, device="cpu")
 
-src_lang = "lo"
-tgt_lang = "zh"
-lang_pair = src_lang + "-" + tgt_lang
+    gt_tsv = args.gt
+    srcs = []
+    zhs = []
+    with open(gt_tsv, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            parts = line.split("\t")
+            srcs.append(parts[1])
+            zhs.append(parts[0])
 
-src_prefix = "__" + src_lang + "__"
-tgt_prefix = "__" + tgt_lang + "__"
+    print("# of pairs:", len(srcs))
 
-translations = []
+    src_lang = args.sl
+    tgt_lang = args.tl
+    lang_pair = src_lang + "-" + tgt_lang
 
-batch_size = 8
-for i in tqdm(range(0, len(srcs), batch_size)):
-    split = srcs[i:i+batch_size]
-    source_sents_tok = sp_source_model.encode(split, out_type=str)
-    source_sents_tok = [[src_prefix] + sent for sent in source_sents_tok]
+    src_prefix = "__" + src_lang + "__"
+    tgt_prefix = "__" + tgt_lang + "__"
 
-    translations_tok = translator.translate_batch(
-        source=source_sents_tok,
-        beam_size=5,
-        batch_type="tokens",
-        max_batch_size=1024,
-        replace_unknowns=True,
-        repetition_penalty=1.2,
-        target_prefix=[[tgt_prefix]]*len(split),
-    )
+    translations = []
 
-    translations_so_far = [
-        " ".join(translation[0]["tokens"])
-            .replace(" ", "")
-            .replace("▁", " ")
-        .replace(tgt_prefix, "")
-            .strip()
-        for translation in translations_tok
-    ]
-    translations.extend(translations_so_far)
+    batch_size = 8
+    for i in tqdm(range(0, len(srcs), batch_size)):
+        split = srcs[i:i + batch_size]
+        source_sents_tok = sp_source_model.encode(split, out_type=str)
+        source_sents_tok = [[src_prefix] + sent for sent in source_sents_tok]
 
-ref_file = "ref-" + lang_pair + ".txt"
-hyp_file = "hyp-" + lang_pair + ".txt"
+        translations_tok = translator.translate_batch(
+            source=source_sents_tok,
+            beam_size=5,
+            batch_type="tokens",
+            max_batch_size=1024,
+            replace_unknowns=True,
+            repetition_penalty=1.2,
+            target_prefix=[[tgt_prefix]] * len(split),
+        )
 
-with open(hyp_file, "w", encoding="utf-8") as f:
-    for trans in translations:
-        f.write(trans + "\n")
+        translations_so_far = [
+            " ".join(translation[0]["tokens"])
+                .replace(" ", "")
+                .replace("▁", " ")
+                .replace(tgt_prefix, "")
+                .strip()
+            for translation in translations_tok
+        ]
+        translations.extend(translations_so_far)
 
-with open(ref_file, "w", encoding="utf-8") as f:
-    for i in range(len(translations)):
-        f.write(zhs[i] + "\n")
+    ref_file = "ref-" + lang_pair + ".txt"
+    hyp_file = "hyp-" + lang_pair + ".txt"
 
-cal_cmd = "sacrebleu {} -i {} -l {} -f text -m bleu"
-cf = os.popen(cal_cmd.format(ref_file, hyp_file, lang_pair))
-lines = cf.readlines()
-for line in lines:
-    print(line.strip())
+    with open(hyp_file, "w", encoding="utf-8") as f:
+        for trans in translations:
+            f.write(trans + "\n")
+
+    with open(ref_file, "w", encoding="utf-8") as f:
+        for i in range(len(translations)):
+            f.write(zhs[i] + "\n")
+
+    cal_cmd = "sacrebleu {} -i {} -l {} -f text -m bleu"
+    cf = os.popen(cal_cmd.format(ref_file, hyp_file, lang_pair))
+    lines = cf.readlines()
+    for line in lines:
+        print(line.strip())
