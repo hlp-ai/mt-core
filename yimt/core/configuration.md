@@ -13,8 +13,6 @@ eval:
   # Evaluation specific configuration (evaluation frequency, scorers, etc.)
 infer:
   # Inference specific configuration (output scores, alignments, etc.)
-score:
-  # Scoring specific configuration
 ```
 
 ## Automatic configuration
