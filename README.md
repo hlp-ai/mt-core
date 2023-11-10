@@ -16,7 +16,6 @@ Transformer based Nerual Machine Translation
 12. Provide Web interface for text and file translation.
 13. Support translation volume limit and API key.
 14. Friendly GUI for training and manipulating NMT models.
-15. Tools for filtering, normalizing, merging, splitting, sampling, converting and deduping parallel corpus.
 
 ## Contents
 The contents of this repository are as follows:
@@ -24,13 +23,11 @@ The contents of this repository are as follows:
 + Package yimt.api: [Translator API](./yimt/api/README.md)
 + Package yimt.files: [File Translation](./yimt/files/README.md)
 + Package yimt.service: [Translation Service](./yimt/service/README.md)
-+ Package yimt.corpus: [Corpus Tools](yimt/utils/README.md)
 + Package yimt.admin: [Admin GUI](./yimt/admin/README.md)
 
 ## References
 1. https://github.com/OpenNMT/OpenNMT-tf
 2. https://github.com/ymoslem/DesktopTranslator
-3. https://github.com/kakaobrain/word2word
 4. https://github.com/argosopentech/translate-html
 5. https://github.com/argosopentech/argos-translate
 6. https://github.com/LibreTranslate/LibreTranslate
