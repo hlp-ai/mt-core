@@ -3,11 +3,13 @@
     height: 72px;
     box-shadow: 0 0 3px 0 rgba(0,0,0,.2);
     min-width: 960px;
-    margin-bottom: 20px
+    margin-bottom: 12px
 }
 
 .original_title,.target_title{
-    font-size: 24px;
+    font-size: 14px;
+    text-decoration:none;
+    
     font-weight: bold;
     color: #357aa1;
     vertical-align: bottom;
@@ -58,9 +60,10 @@
 }
 
 .download_link{
+    font-size: 14px;
+    text-decoration:none;
     position: absolute;
     right: 0px;
-    font-size: 24px;
     font-weight: bold;
     color: #357aa1;
     vertical-align: bottom;
@@ -75,10 +78,11 @@
     position: relative;
     z-index: 2;
     font-family: PingFang-SC-Regular;
-    height: 38px;
-    margin: 0 60px 18px 60px;
+    height: 24px;
+    margin: 0 60px 8px 20px;
     margin:auto;
     max-width: 1400px;
-    margin-bottom: 8px;
+    margin-bottom: 0px;
+
 }
 
