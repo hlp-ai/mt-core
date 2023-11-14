@@ -8,6 +8,7 @@ from yimt.utils.misc import count_lines, sample, upsample
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", required=True, help="monolingual files directory")
+    parser.add_argument("--total", type=int, default=15000000, help="total number of sentences for training SP")
     parser.add_argument("--t", type=float, default=5.0, help="sampling temperature")
     args = parser.parse_args()
 
@@ -37,6 +38,11 @@ if __name__ == "__main__":
     probs_raw = [p ** T for p in probs_raw]
     prob_total = sum(probs_raw)
     probs_normalized = [p / prob_total for p in probs_raw]
+
+    if args.total < total:
+        total = args.total
+
+    print("Total number of sentences after sampling:", total)
 
     counts_normalized = [int(p * total) for p in probs_normalized]
     print("Normalized counts and probabilities")
