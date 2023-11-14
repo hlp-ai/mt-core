@@ -120,16 +120,55 @@ def sample(files, n):
         f.close()
 
 
-def count_lines(fn):
-    print("Counting lines...")
-    lines = 0
-    interval = 500000
-    with open(fn, encoding="utf-8") as f:
-        for _ in f:
-            lines += 1
-            if lines % interval == 0:
-                print(lines)
+def upsample(files, n):
+    """"UpSample sentences from bitext or source and target file"""
+    total = count_lines(files[0])
+    print(total)
 
-    print(lines)
+    assert n>=total
+
+    out_files = [io.open("{}-{}".format(f, n), "w", encoding="utf-8") for f in files]
+
+    times = n // total
+    sampled = 0
+    for i in range(times):
+        in_files = [io.open(f, encoding="utf-8") for f in files]
+        for p in zip(*in_files):
+            for i in range(len(out_files)):
+                out_files[i].write(p[i].strip() + "\n")
+                sampled += 1
+                if sampled % 10000 == 0:
+                    print(sampled)
+        for f in in_files:
+            f.close()
+
+    scanned = 0
+    sampled = 0
+    n = n - total*times
+    sample_prob = (1.1*n) / total
+    in_files = [io.open(f, encoding="utf-8") for f in files]
+    for p in zip(*in_files):
+        scanned += 1
+        prob = random.uniform(0, 1)
+        if prob < sample_prob:
+            for i in range(len(out_files)):
+                out_files[i].write(p[i].strip() + "\n")
+            sampled += 1
+            if sampled % 10000 == 0:
+                print(scanned, sampled)
+            if sampled >= n:
+                break
+    print(scanned, sampled)
+
+    for f in out_files:
+        f.close()
+
+
+def count_lines(fn):
+    from tqdm import tqdm
+    lines = 0
+    with open(fn, encoding="utf-8") as f:
+        for _ in tqdm(f):
+            lines += 1
 
     return lines
