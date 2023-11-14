@@ -24,7 +24,13 @@ This is a book.  <toen>这是一本书。
 python -m yimt.experimental.mnmt.add_tag --tsv_file <平行语料TSV文件路径> --to tgt --token <toen>
 ```
 
-### 1.4 重采样单语语料
+### 1.4 拆分TSV语料为单语语料
+将每个语言对的TSV平行语料拆分为两个单语语料，为SentencePiece准备训练语料。命令如下：
+```shell script
+python -m yimt.utils.bin.to_single <TSV file> <src file> <tgt file>
+```
+
+### 1.5 重采样单语语料
 各种语言语料大小差别较大，为了更好的训练SentencePiece模型，需要对各语言单语语言进行重采样，使得高资源语言下采样，低资源语言上采样。将各个语言单语语料放到一个目录，执行以下命令：
 ```shell script
 python -m yimt.experimental.mnmt.resample --root <语料目录> --t <采样温度, 5.0>
