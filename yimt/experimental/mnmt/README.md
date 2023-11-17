@@ -33,5 +33,11 @@ python -m yimt.utils.bin.to_single <TSV file> <src file> <tgt file>
 ### 1.5 重采样单语语料
 各种语言语料大小差别较大，为了更好的训练SentencePiece模型，需要对各语言单语语言进行重采样，使得高资源语言下采样，低资源语言上采样。将各个语言单语语料放到一个目录，执行以下命令：
 ```shell script
-python -m yimt.experimental.mnmt.resample --root <语料目录> --t <采样温度, 5.0>
+python -m yimt.experimental.mnmt.resample --root <语料目录> [--t <采样温度, 5.0>] [--total <最后采样样本总数,15000000>]
+```
+
+### 1.6 合并采样后单语语料
+将各个单语语料采样的文件拷贝到一个目录，执行以下命令将它们合并为一个文件：
+```shell script
+python -m yimt.experimental.mnmt.merge -i <input directory> -o <output file>
 ```
