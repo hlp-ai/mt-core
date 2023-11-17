@@ -53,3 +53,6 @@ python -m yimt.experimental.mnmt.merge -i <input directory> -o <output file>
 ```shell script
 python -m yimt.segmentation.sp_train --corpus <文件路径> [--user_sym_file <自定义符号文件路径>]
 ```
+
+### 1.8 训练多语模型
+这里同其他一般NMT模型。
