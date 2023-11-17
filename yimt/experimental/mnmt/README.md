@@ -9,6 +9,10 @@
 ```shell script
 python -m yimt.segmentation.pretok_tsv --tsv_file <平行语料TSV文件路径> --tl zh
 ```
+同时切分源语言和目标语言句子：
+```shell script
+python -m yimt.segmentation.pretok_tsv --tsv_file <平行语料TSV文件路径> --tl zh --sl th
+```
 
 ### 1.3 （可选）添加目标语言标记
 若要训练中文到其他语言翻译系统，需要为各个语言对的平行语料中文句子部分添加相对应的其他语言标记。例如，英中平行语料平行句子：
@@ -40,4 +44,12 @@ python -m yimt.experimental.mnmt.resample --root <语料目录> [--t <采样温�
 将各个单语语料采样的文件拷贝到一个目录，执行以下命令将它们合并为一个文件：
 ```shell script
 python -m yimt.experimental.mnmt.merge -i <input directory> -o <output file>
+```
+
+### 1.7 训练SetencePiece模型
+可以所有语言一起训练一个SP模型。也可以中文单独训练一个SP模型，其他所有语言训练一个SP模型。
+<p>如果中文句子部分已经添加目标语言标记（1.3步），这些目标语言标记需要作为用户定义符号提供给SP训练器。将所有目标语言标记每行一个放入一个文本文件，并执行以下命令：</p>
+
+```shell script
+python -m yimt.segmentation.sp_train --corpus <文件路径> [--user_sym_file <自定义符号文件路径>]
 ```
