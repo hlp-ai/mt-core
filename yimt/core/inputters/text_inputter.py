@@ -238,7 +238,7 @@ class TextInputter(Inputter):
         )
 
     def prepare_elements(self, elements, training=None):
-        return {"tokens": self.tokenizer.tokenize_sp(elements, training=training)}
+        return {"tokens": self.tokenizer.tokenize(elements, training=training)}
 
     def make_features(self, element=None, features=None, training=None):
         """Tokenizes raw text."""
@@ -253,7 +253,7 @@ class TextInputter(Inputter):
             tokens = element["tokens"]
         else:
             element = tf.convert_to_tensor(element, dtype=tf.string)
-            tokens = self.tokenizer.tokenize_sp(element, training=training)
+            tokens = self.tokenizer.tokenize(element, training=training)
 
         if isinstance(tokens, tf.RaggedTensor):
             length = tokens.row_lengths()
