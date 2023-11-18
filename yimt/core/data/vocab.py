@@ -88,7 +88,7 @@ class Vocab(object):
             for line in text:
                 line = line.rstrip("\r\n")
                 if tokenizer:
-                    tokens = tokenizer.tokenize_sp(line)
+                    tokens = tokenizer.tokenize(line)
                 else:
                     tokens = line.split()
                 for token in tokens:
