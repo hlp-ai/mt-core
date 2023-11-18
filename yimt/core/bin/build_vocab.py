@@ -41,6 +41,11 @@ def main():
         help="If set, do not add special sequence tokens (start, end) in the vocabulary.",
     )
     parser.add_argument("--custom_symbol_file", default=None, help="user defined symbols file")
+    parser.add_argument(
+        "--from_vocab",
+        default=None,
+        help="Build from a saved sentencepiece vocabulary .",
+    )
     args = parser.parse_args()
 
     user_defined_symbols = []
@@ -64,10 +69,19 @@ def main():
     vocab = data.Vocab(special_tokens=special_tokens)
     num_oov_buckets = 1
 
-    tokenizer = tokenizers.make_tokenizer(None)
-    for data_file in args.data:
-        vocab.add_from_text(data_file, tokenizer=tokenizer)
-    vocab = vocab.prune(max_size=args.size, min_frequency=args.min_frequency)
+    if args.from_vocab is not None:
+        vocab.load(args.from_vocab, file_format="sentencepiece")
+    else:
+        tokenizer = tokenizers.make_tokenizer(None)
+        for data_file in args.data:
+            vocab.add_from_text(data_file, tokenizer=tokenizer)
+        vocab = vocab.prune(max_size=args.size, min_frequency=args.min_frequency)
+
+    # tokenizer = tokenizers.make_tokenizer(None)
+    # for data_file in args.data:
+    #     vocab.add_from_text(data_file, tokenizer=tokenizer)
+    # vocab = vocab.prune(max_size=args.size, min_frequency=args.min_frequency)
+
     vocab.pad_to_multiple(args.size_multiple, num_oov_buckets=num_oov_buckets)
     vocab.serialize(args.save_vocab)
 
