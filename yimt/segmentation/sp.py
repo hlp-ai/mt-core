@@ -73,6 +73,7 @@ def tokenize_file_sp(sp_model, in_fn, out_fn):
     sentences = 0
     tokens = 0
     for s in in_f:
+        s = s.strip()
         tok_s = tokenize_sp(sp_model, s)[0]
         sentences += 1
         tokens += len(tok_s)
