@@ -299,8 +299,11 @@ def create_app(args):
             src = may_combine_paragraph(src)
             translation = translator.translate_paragraph(src)
 
-        log_service.info("/translate: " + q + "&source=" + source_lang + "&target=" + target_lang
-                         + "&format=" + text_format + "&api_key=" + api_key + "-->" + translation)
+        log_service.info("/translate: " + "&source=" + source_lang + "&target=" + target_lang
+                         + "&format=" + text_format + "&api_key=" + api_key)
+
+        # log_service.info("/translate: " + q + "&source=" + source_lang + "&target=" + target_lang
+        #                  + "&format=" + text_format + "&api_key=" + api_key + "-->" + translation)
 
         resp = {
             'translatedText': translation
