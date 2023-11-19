@@ -163,14 +163,14 @@
                             <td>string</td>
                             <td>none</td>
                             <td>是</td>
-                            <td>翻译的源语言类代码</td>
+                            <td>源语言类二字母代码，自动识别类型:"auto"</td>
                         </tr>
                         <tr>
                             <td>target_lang</td>
                             <td>string</td>
                             <td>none</td>
                             <td>是</td>
-                            <td>翻译的目标语言类代码</td>
+                            <td>目标语言类二字母代码，自动识别类型:"auto"</td>
                         </tr>
                     </tbody>
                 </table>
@@ -206,6 +206,88 @@
             </div>
             <P>3、返回结果：翻译结果合成音频的BASE64编码文件，类型：BSAE64。</p>
         </div>
+        <div class="step">
+            <h2>文本翻译API</h2>
+            <h3>请求说明</h3>
+            <p>1、JSON 格式 POST 上传待翻译的文本。请求端口路由：/translate。</p>
+            <P>2、JSON参数：</p>
+                <div class="ins_table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>属性</th>
+                                <th>类型</th>
+                                <th>默认值</th>
+                                <th>必填</th>
+                                <th>说明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>q</td>
+                                <td>String</td>
+                                <td>none</td>
+                                <td>是</td>
+                                <td>上传的待翻译文本字符串</td>
+                            </tr>
+                            <tr>
+                                <td>source_lang</td>
+                                <td>String</td>
+                                <td>none</td>
+                                <td>是</td>
+                                <td>源语言类二字母代码，自动识别类型:"auto"</td>
+                            </tr>
+                            <tr>
+                                <td>target_lang</td>
+                                <td>String</td>
+                                <td>none</td>
+                                <td>是</td>
+                                <td>目标语言类二字母代码，自动识别类型:"auto"</td>
+                            </tr>
+                            <tr>
+                                <td>api_key</td>
+                                <td>String</td>
+                                <td>none</td>
+                                <td>是</td>
+                                <td>API密钥</td>
+                            </tr>
+                            <tr>
+                                <td>format</td>
+                                <td>String</td>
+                                <td>"text"</td>
+                                <td>否</td>
+                                <td>提交数据的类型</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            <P>3、返回结果：JSON类型数据，包含翻译结果文本字符串。</p>
+                <div class="ins_table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>属性</th>
+                                <th>类型</th>
+                                <th>说明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>translatedText</td>
+                                <td>String</td>
+                                <td>翻译结果文本字符串</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        <div class="step">
+            <h2>语言列表API</h2>
+            <h3>请求说明</h3>
+            <p>1、GET :请求端口路由：/language。</p>
+            <P>2、返回结果：翻译引擎支持的语言列表，类型：List。</p>
+        </div>
+                
     </div>
     <style type="text/css">
         table {
