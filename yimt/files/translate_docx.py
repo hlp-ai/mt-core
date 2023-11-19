@@ -13,6 +13,7 @@ from docx.oxml.table import CT_Tbl
 from docx.oxml.text.paragraph import CT_P
 from docx.table import _Cell, Table
 from docx.text.paragraph import Paragraph
+from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from yimt.api.utils import detect_lang
 
 docx_progress = ""
@@ -61,17 +62,30 @@ def handle_paragraph_txt(p, new_doc):
     """Copy and get text to be translated"""
     runs = []
     h = get_heading(p)
+    # print("p.alignment：")
+    # print(p.alignment)
+    if p.alignment == None:
+        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+
+    # print(p.paragraph_format.alignment)
     if h == 0:
         new_p = new_doc.add_paragraph()
+        new_p.paragraph_format.alignment = p.paragraph_format.alignment
+        new_p.paragraph_format.left_indent = p.paragraph_format.left_indent
+        new_p.paragraph_format.right_indent = p.paragraph_format.right_indent
+        new_p.paragraph_format.first_line_indent = p.paragraph_format.first_line_indent
+        new_p.paragraph_format.line_spacing = p.paragraph_format.line_spacing
+        new_p.paragraph_format.space_before = p.paragraph_format.space_before
+        new_p.paragraph_format.space_after = p.paragraph_format.space_after
     else:
         new_p = new_doc.add_heading(level=h)
-    new_p.paragraph_format.alignment = p.paragraph_format.alignment
-    new_p.paragraph_format.left_indent = p.paragraph_format.left_indent
-    new_p.paragraph_format.right_indent = p.paragraph_format.right_indent
-    new_p.paragraph_format.first_line_indent = p.paragraph_format.first_line_indent
-    new_p.paragraph_format.line_spacing = p.paragraph_format.line_spacing
-    new_p.paragraph_format.space_before = p.paragraph_format.space_before
-    new_p.paragraph_format.space_after = p.paragraph_format.space_after
+        new_p.paragraph_format.alignment = p.paragraph_format.alignment
+        new_p.paragraph_format.left_indent = p.paragraph_format.left_indent
+        new_p.paragraph_format.right_indent = p.paragraph_format.right_indent
+        new_p.paragraph_format.first_line_indent = p.paragraph_format.first_line_indent
+        new_p.paragraph_format.line_spacing = p.paragraph_format.line_spacing
+        new_p.paragraph_format.space_before = p.paragraph_format.space_before
+        new_p.paragraph_format.space_after = p.paragraph_format.space_after
 
     for r in p.runs:
         new_r = new_p.add_run()
@@ -115,7 +129,7 @@ def scan_doc(doc, new_doc):
                 # print("Image P")
                 handle_paragraph_img(p, doc, new_doc)
             else:
-                # print("Text P:", p.text)
+                # print("Text P:", p.alignment)
                 runs.extend(handle_paragraph_txt(p, new_doc))
             # yield Paragraph(child, parent)
         elif isinstance(child, CT_Tbl):
