@@ -4,6 +4,8 @@ import threading
 import ctranslate2
 import tensorflow as tf
 import sentencepiece as spm
+
+from yimt.api.tm import get_tm_saver
 from yimt.core import load_config
 from yimt.core.config import MODEL_DESCRIPTION_FILENAME, load_model_from_file
 from yimt.core.utils import checkpoint as checkpoint_util
@@ -56,6 +58,8 @@ class Translator(object):
         self.pretok_src = pretok_src
         self.pretok_tgt = pretok_tgt
 
+        self.tm_saver = get_tm_saver()
+
     def _translate_batch(self, texts):
         """Translates a batch of texts.
 
@@ -88,8 +92,13 @@ class Translator(object):
 
             translations = self._post_detokenize(translations)
 
+            self.tm_saver.save_info(self.lang_pair, to_translate, translations)
+
             results.extend(translations)
             done += len(to_translate)
+
+        self.tm_saver.flush()
+
         return results
 
     def _post_detokenize(self, translations):
