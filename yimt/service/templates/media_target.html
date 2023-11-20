@@ -15,27 +15,27 @@
         <script src="../static/plugin/docx-preview.js"></script>
 
         <!-- pptx --> 
-        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-        <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-        <script src="https://unpkg.com/element-ui/lib/index.js"></script>  
-        <link rel="stylesheet" type="text/css" href="../static/plugin/pptx/pptxjs.css">
-        <link rel="stylesheet" href="../static/plugin/pptx/nv.d3.min.js.下载"> 
-        <script type="text/javascript" src="../static/plugin/pptx/jszip.min.js.下载"></script> <!-- v2.. , NOT v.3.. -->
-        <script type="text/javascript" src="../static/plugin/pptx/filereader.js.下载"></script> <!--https://github.com/meshesha/filereader.js -->
-        <script type="text/javascript" src="../static/plugin/pptx/d3.min.js.下载"></script> <!-- for charts graphs -->
-        <script type="text/javascript" src="../static/plugin/pptx/nv.d3.min.js.下载"></script> <!-- for charts graphs -->
-        <script type="text/javascript" src="../static/plugin/pptx/pptxjs.min.js.下载"></script>
-        <script type="text/javascript" src="../static/plugin/pptx/divs2slides.js.下载"></script> <!-- for slide show -->
+        <link rel="stylesheet" href="../static/plugin/pptx/pptxjs.css">
+        <link rel="stylesheet" href="../static/plugin/pptx/nv.d3.min.css">
+
+        <script type="text/javascript" src="../static/plugin/pptx/jquery-1.11.3.min.js"></script>
+        <script type="text/javascript" src="../static/plugin/pptx/jszip.min.js"></script>
+        <script type="text/javascript" src="../static/plugin/pptx/filereader.js"></script>
+        <script type="text/javascript" src="../static/plugin/pptx/d3.min.js"></script>
+        <script type="text/javascript" src="../static/plugin/pptx/nv.d3.min.js"></script>
+        <script type="text/javascript" src="../static/plugin/pptx/pptxjs.js"></script>
+        <script type="text/javascript" src="../static/plugin/pptx/divs2slides.js"></script>
 
         <!-- xlsx --> 
         <script type="text/javascript" src="../static/plugin/xlsx/xlsx.core.min.js"></script>
         <script>
             var file_type = "";
             var END_POINT = "http://127.0.0.1:5555";
-    
+            var uuid = window.localStorage.getItem("uuid")
             window.onload = function()
             {
-                check_file_type();      
+                check_file_type(); 
+                //Show_pptx();     
             }
     
             function check_file_type()
@@ -81,7 +81,7 @@
                 get_blob_file();
 
                 async function get_blob_file(){
-                    var is_target = true;
+                    var is_target = false;
                     const res = await fetch(END_POINT + "/get_blob_file", {
                         method: "POST",
                         body: JSON.stringify({is_target:is_target}),
@@ -100,6 +100,7 @@
                 const docxOptions = Object.assign(docx.defaultOptions, {
                     ignoreWidth: false,
                     experimental: true,
+                    useBase64URL: true,
                     debug: true
                 });
                     
