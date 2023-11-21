@@ -159,7 +159,6 @@ def create_build_vocab(parent):
     tk.Label(parent, text="Size of vocab").grid(row=1, column=0, padx=10, pady=5, sticky="e")
     entry_vocab_size = tk.Entry(parent)
     entry_vocab_size.grid(row=1, column=1, padx=10, pady=5, sticky="w")
-    entry_vocab_size.insert(0, "4800")
 
     tk.Label(parent, text="Vocab path").grid(row=2, column=0, sticky="e")
     entry_vocab = tk.Entry(parent, width=50)
@@ -173,14 +172,21 @@ def create_build_vocab(parent):
                                                                                                  padx=10,
                                                                                                  pady=5)
 
+    tk.Label(parent, text="SentencePiece Vocab File").grid(row=4, column=0, padx=10, pady=5, sticky="e")
+    entry_sp_vocab = tk.Entry(parent, width=50)
+    entry_sp_vocab.grid(row=4, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_sp_vocab)).grid(row=4, column=2, padx=10,
+                                                                                           pady=5)
+
     def go():
         corpus_file = entry_corpus.get()
-        if len(corpus_file.strip()) == 0:
-            tk.messagebox.showinfo(title="Info", message="Corpus path empty.")
+        sp_vocab = entry_sp_vocab.get()
+        if len(corpus_file.strip()) == 0 and len(sp_vocab.strip()) == 0:
+            tk.messagebox.showinfo(title="Info", message="Corpus path or sp vocab empty.")
             return
 
         vocab_size = entry_vocab_size.get()
-        if len(vocab_size.strip()) == 0:
+        if len(corpus_file.strip()) > 0 and len(vocab_size.strip()) == 0:
             tk.messagebox.showinfo(title="Info", message="Vocab size empty.")
             return
 
@@ -189,22 +195,23 @@ def create_build_vocab(parent):
             tk.messagebox.showinfo(title="Info", message="Vocab path empty.")
             return
 
-        vocab_path = os.path.join(vocab_path, get_vocab_file(corpus_file))
-
-        print(corpus_file, vocab_size, vocab_path)
-
         symbols_file = entry_symbols_file.get().strip()
         cmd_ex = ""
         if len(symbols_file) > 0:
             cmd_ex = " --custom_symbol_file {}".format(symbols_file)
 
-        build_vocab_cmd = "python ../core/bin/build_vocab.py --size {} --save_vocab {} {}" + cmd_ex
-
-        os.popen(build_vocab_cmd.format(vocab_size, vocab_path, corpus_file)).readlines()
+        if len(corpus_file.strip()) > 0:
+            vocab_path = os.path.join(vocab_path, get_vocab_file(corpus_file))
+            build_vocab_cmd = "python ../core/bin/build_vocab.py --size {} --save_vocab {} {}" + cmd_ex
+            os.popen(build_vocab_cmd.format(vocab_size, vocab_path, corpus_file)).readlines()
+        elif len(sp_vocab.strip()) > 0:
+            vocab_path = os.path.join(vocab_path, get_vocab_file(sp_vocab))
+            build_vocab_cmd = "python ../core/bin/build_vocab.py --from_vocab {} --save_vocab {}" + cmd_ex
+            os.popen(build_vocab_cmd.format(sp_vocab, vocab_path)).readlines()
 
         tk.messagebox.showinfo(title="Info", message="Vocab created.")
 
-    tk.Button(parent, text="Build Vocab", command=go).grid(row=4, column=1, padx=10, pady=5)
+    tk.Button(parent, text="Build Vocab", command=go).grid(row=5, column=1, padx=10, pady=5)
 
 
 def create_pretrain(parent):
