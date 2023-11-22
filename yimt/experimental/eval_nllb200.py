@@ -7,13 +7,15 @@ from tqdm import tqdm
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
-    argparser.add_argument("--nllb", default=r"D:\kidden\mt\nllb200\nllb-200-distilled-600M-int8")
-    argparser.add_argument("--sp", default=r"D:\kidden\mt\nllb200\flores200_sacrebleu_tokenizer_spm.model")
-    argparser.add_argument("--gt", required=True)
-    argparser.add_argument("--sl", required=True)
-    argparser.add_argument("--sl2", required=True)
-    argparser.add_argument("--tl", default="zho_Hans")
-    argparser.add_argument("--tl2", default="zh")
+    argparser.add_argument("--nllb", default=r"D:\kidden\mt\nllb200\nllb-200-distilled-600M-int8",
+                           help="NLLB200 ct2 model path")
+    argparser.add_argument("--sp", default=r"D:\kidden\mt\nllb200\flores200_sacrebleu_tokenizer_spm.model",
+                           help="NLLB200 sentencepiece model path")
+    argparser.add_argument("-gt", required=True, help="zh-x tsv test file")
+    argparser.add_argument("-sl", required=True, help="NLLB language code, for example afr_Latn")
+    argparser.add_argument("-sl2", required=True, help="two-letter source language code")
+    argparser.add_argument("-tl", default="zho_Hans", help="NLLB language code")
+    argparser.add_argument("-tl2", default="zh", help="two-letter target language code")
 
     args = argparser.parse_args()
 
@@ -45,7 +47,7 @@ if __name__ == "__main__":
     translations = []
 
     batch_size = 8
-    for i in tqdm(range(0, len(srcs), batch_size)):
+    for i in tqdm(range(0, len(srcs), batch_size), desc="Translating"):
         split = srcs[i:i + batch_size]
 
         source_sentences = [sent.strip() for sent in split]
