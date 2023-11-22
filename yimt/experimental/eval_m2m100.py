@@ -7,10 +7,10 @@ from tqdm import tqdm
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
-    argparser.add_argument("--m2m", default=r"D:\kidden\mt\m2m100_418m")
-    argparser.add_argument("-gt", required=True)
-    argparser.add_argument("--sl", required=True)
-    argparser.add_argument("--tl", default="zh")
+    argparser.add_argument("--m2m", default=r"D:\kidden\mt\m2m100_418m", help="m2m-100 ct2 model path")
+    argparser.add_argument("-gt", required=True, help="zh-x tsv test file")
+    argparser.add_argument("--sl", required=True, help="two-letter source language code")
+    argparser.add_argument("--tl", default="zh", help="two-letter target language code")
 
     args = argparser.parse_args()
 
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     translations = []
 
     batch_size = 8
-    for i in tqdm(range(0, len(srcs), batch_size)):
+    for i in tqdm(range(0, len(srcs), batch_size), desc="Translating"):
         split = srcs[i:i + batch_size]
         source_sents_tok = sp_source_model.encode(split, out_type=str)
         source_sents_tok = [[src_prefix] + sent for sent in source_sents_tok]
