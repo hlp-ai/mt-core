@@ -48,6 +48,11 @@ if __name__ == "__main__":
     create_detok_zh(detokenize_frame)
     frames.append(detokenize_frame)
 
+    sp_tag_frame = tk.Frame(win_main)
+    sp_tag_frame.pack()
+    create_add_tag(sp_tag_frame)
+    frames.append(sp_tag_frame)
+
     sp_train_frame = tk.Frame(win_main)
     sp_train_frame.pack()
     create_sp_train(sp_train_frame)
@@ -136,6 +141,7 @@ if __name__ == "__main__":
     mainmenu.add_cascade(label="Corpus", menu=corpus_menu)
 
     train_menu = Menu(mainmenu, tearoff=False)
+    train_menu.add_command(label="Add Tag", command=partial(on_menu, sp_tag_frame))
     train_menu.add_command(label="Train SP", command=partial(on_menu, sp_train_frame))
     train_menu.add_command(label="Tokenize with SP", command=partial(on_menu, sp_tokenize_frame))
     train_menu.add_command(label="Build Vocab", command=partial(on_menu, build_vocab_frame))

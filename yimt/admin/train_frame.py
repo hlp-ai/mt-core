@@ -10,8 +10,44 @@ from functools import partial
 import yaml
 
 from yimt.admin.win_utils import ask_open_file, ask_dir
+from yimt.experimental.mnmt.add_tag import add_token
 from yimt.utils.bin.pre_train import get_sp_prefix, get_tok_file, get_vocab_file, pretrain_corpus
 from yimt.segmentation.sp import train_spm, load_spm, tokenize_file_sp
+
+
+def create_add_tag(parent):
+    tk.Label(parent, text="TSV Corpus path").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    entry_corpus = tk.Entry(parent, width=50)
+    entry_corpus.grid(row=0, column=1, padx=10, pady=5)
+    tk.Button(parent, text="...", command=partial(ask_open_file, entry=entry_corpus)).grid(row=0, column=2, padx=10,
+                                                                                           pady=5)
+
+    tk.Label(parent, text="Add to SRC or TGT").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    entry_to = tk.Entry(parent)
+    entry_to.grid(row=1, column=1, padx=10, pady=5, sticky="w")
+    entry_to.insert(0, "tgt")
+
+    tk.Label(parent, text="Tag").grid(row=2, column=0, padx=10, pady=5, sticky="e")
+    entry_tag = tk.Entry(parent)
+    entry_tag.grid(row=2, column=1, padx=10, pady=5, sticky="w")
+    entry_tag.insert(0, "<toen>")
+
+    def go():
+        corpus_file = entry_corpus.get()
+        if len(corpus_file.strip()) == 0:
+            tk.messagebox.showinfo(title="Info", message="Corpus path empty.")
+            return
+
+        src_or_tgt = entry_to.get()
+
+        tag = entry_tag.get()
+        add_src = True if tag.lower()=="src" else False
+
+        add_token(corpus_file, add_src, tag)
+
+        tk.messagebox.showinfo(title="Info", message="Tag added.")
+
+    tk.Button(parent, text="Add Tag to TSV File", command=go).grid(row=3, column=1, padx=10, pady=5)
 
 
 def create_sp_train(parent):
