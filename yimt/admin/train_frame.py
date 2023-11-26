@@ -38,10 +38,10 @@ def create_add_tag(parent):
             tk.messagebox.showinfo(title="Info", message="Corpus path empty.")
             return
 
-        src_or_tgt = entry_to.get()
+        src_or_tgt = entry_to.get().lower()
+        add_src = True if src_or_tgt == "src" else False
 
         tag = entry_tag.get()
-        add_src = True if tag.lower()=="src" else False
 
         add_token(corpus_file, add_src, tag)
 
