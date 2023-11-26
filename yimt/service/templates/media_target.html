@@ -81,7 +81,7 @@
                 get_blob_file();
 
                 async function get_blob_file(){
-                    var is_target = false;
+                    var is_target = true;
                     const res = await fetch(END_POINT + "/get_blob_file", {
                         method: "POST",
                         body: JSON.stringify({is_target:is_target}),
