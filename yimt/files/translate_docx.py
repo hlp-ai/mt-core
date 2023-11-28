@@ -70,23 +70,15 @@ def handle_paragraph_txt(p, new_doc):
     # print(p.paragraph_format.alignment)
     if h == 0:
         new_p = new_doc.add_paragraph()
-        new_p.paragraph_format.alignment = p.paragraph_format.alignment
-        new_p.paragraph_format.left_indent = p.paragraph_format.left_indent
-        new_p.paragraph_format.right_indent = p.paragraph_format.right_indent
-        new_p.paragraph_format.first_line_indent = p.paragraph_format.first_line_indent
-        new_p.paragraph_format.line_spacing = p.paragraph_format.line_spacing
-        new_p.paragraph_format.space_before = p.paragraph_format.space_before
-        new_p.paragraph_format.space_after = p.paragraph_format.space_after
     else:
         new_p = new_doc.add_heading(level=h)
-        new_p.paragraph_format.alignment = p.paragraph_format.alignment
-        new_p.paragraph_format.left_indent = p.paragraph_format.left_indent
-        new_p.paragraph_format.right_indent = p.paragraph_format.right_indent
-        new_p.paragraph_format.first_line_indent = p.paragraph_format.first_line_indent
-        new_p.paragraph_format.line_spacing = p.paragraph_format.line_spacing
-        new_p.paragraph_format.space_before = p.paragraph_format.space_before
-        new_p.paragraph_format.space_after = p.paragraph_format.space_after
-
+    new_p.paragraph_format.alignment = p.paragraph_format.alignment
+    new_p.paragraph_format.left_indent = p.paragraph_format.left_indent
+    new_p.paragraph_format.right_indent = p.paragraph_format.right_indent
+    new_p.paragraph_format.first_line_indent = p.paragraph_format.first_line_indent
+    new_p.paragraph_format.line_spacing = p.paragraph_format.line_spacing
+    new_p.paragraph_format.space_before = p.paragraph_format.space_before
+    new_p.paragraph_format.space_after = p.paragraph_format.space_after
     for r in p.runs:
         new_r = new_p.add_run()
         new_r.text = r.text
