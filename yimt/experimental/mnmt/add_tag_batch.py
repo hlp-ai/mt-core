@@ -9,7 +9,7 @@ if __name__ == "__main__":
     parser.add_argument("--to", default="tgt", type=str, help="add token to src or tag of tsv file")
     args = parser.parse_args()
 
-    input = args.tsv_file
+    input = args.tsv_dir
     tosrc = True
     if args.to == "tgt":
         tosrc = False
