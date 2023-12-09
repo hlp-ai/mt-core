@@ -12,6 +12,7 @@ def train_spm(corpus_fn,
               normalization_rule_name="nmt_nfkc",
               remove_extra_whitespaces=True,
               add_dummy_prefix=False,
+              split_digits=False,
               user_defined_symbols_file=None):
     """Train a SentencePiece model"""
     if user_defined_symbols_file is not None:
@@ -32,6 +33,7 @@ def train_spm(corpus_fn,
                                        normalization_rule_name=normalization_rule_name,
                                        remove_extra_whitespaces=remove_extra_whitespaces,
                                        add_dummy_prefix=add_dummy_prefix,
+                                       split_digits=split_digits,
                                        user_defined_symbols=user_defined_symbols)
     else:
         spm.SentencePieceTrainer.train(input=corpus_fn,
@@ -43,6 +45,7 @@ def train_spm(corpus_fn,
                                    shuffle_input_sentence=True,
                                    normalization_rule_name=normalization_rule_name,
                                    remove_extra_whitespaces=remove_extra_whitespaces,
+                                       split_digits=split_digits,
                                    add_dummy_prefix=add_dummy_prefix)
 
 

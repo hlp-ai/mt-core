@@ -94,6 +94,11 @@ def create_sp_train(parent):
     entry_norm.grid(row=7, column=1, padx=10, pady=5, sticky="w")
     entry_norm.insert(0, "nmt_nfkc")
 
+    tk.Label(parent, text="split_digits").grid(row=8, column=0, padx=10, pady=5, sticky="e")
+    entry_split_digits = tk.Entry(parent)
+    entry_split_digits.grid(row=8, column=1, padx=10, pady=5, sticky="w")
+    entry_split_digits.insert(0, "false")
+
     def go():
         corpus_file = entry_corpus.get()
         if len(corpus_file.strip()) == 0:
@@ -126,6 +131,12 @@ def create_sp_train(parent):
         else:
             remove_space = False
 
+        split_digits = entry_split_digits.get().strip().lower()
+        if split_digits == "true":
+            split_digits = True
+        else:
+            split_digits = False
+
         normalization = entry_norm.get().strip().lower()
 
         train_spm(corpus_file, sp_model, vocab_size,
@@ -133,11 +144,12 @@ def create_sp_train(parent):
                   coverage=entry_coverage.get(),
                   remove_extra_whitespaces=remove_space,
                   normalization_rule_name=normalization,
+                  split_digits=split_digits,
                   user_defined_symbols_file=symbols_file)
 
         tk.messagebox.showinfo(title="Info", message="SentencePiece model created.")
 
-    tk.Button(parent, text="Train SentencePiece Model", command=go).grid(row=8, column=1, padx=10, pady=5)
+    tk.Button(parent, text="Train SentencePiece Model", command=go).grid(row=9, column=1, padx=10, pady=5)
 
 
 def create_sp_tokenize(parent):
