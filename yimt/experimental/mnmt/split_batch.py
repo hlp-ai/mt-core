@@ -1,3 +1,4 @@
+"""将一个目录下的多个平行文件分割成单语文件"""
 import argparse
 import os
 

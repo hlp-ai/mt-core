@@ -1,3 +1,4 @@
+"""将一个目录下的文件合并成一个文件"""
 import argparse
 import os
 
