@@ -5,6 +5,36 @@ import os
 from yimt.utils.misc import count_lines, sample, upsample
 
 
+def resample_prob(root, T=3.0):
+    files = os.listdir(root)
+    files = [os.path.join(root, f) for f in files]
+
+    counts_raw = []
+    for f in files:
+        print("Counting lines:", f)
+        n = count_lines(f)
+        print("  ", f, ":", n)
+        counts_raw.append(n)
+
+    total = sum(counts_raw)
+    print("Total lines:", total)
+
+    probs_raw = []
+    print("Raw counts and probabilities")
+    for i, f in enumerate(files):
+        p = counts_raw[i] / float(total)
+        probs_raw.append(p)
+        print("  ", f, counts_raw[i], p)
+
+    T = 1 / T
+
+    probs_raw_temp = [p ** T for p in probs_raw]
+    prob_total = sum(probs_raw_temp)
+    probs_normalized = [p / prob_total for p in probs_raw_temp]
+
+    return zip(files, counts_raw, probs_raw, probs_normalized)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", required=True, help="monolingual files directory")

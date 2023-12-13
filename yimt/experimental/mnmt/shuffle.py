@@ -24,7 +24,6 @@ def shuffle(source, out_fn, block=2):
 
     out = open(out_fn, "w", encoding="utf-8")
     total = 0
-    INTERVAL = 500000
     n_files = len(files)
     i = 0
     print(n_files, "files left")
@@ -41,8 +40,8 @@ def shuffle(source, out_fn, block=2):
         i += 1
         if i >= n_files:
             i = 0
-        if total % INTERVAL == 0:
-            print(total, "lines")
+
+        print(total, "lines")
 
     out.close()
     print(total, "lines")
