@@ -1,3 +1,4 @@
+"""获得各个语言对的平行语料采样频率或权重，用于多平行语料加权训练"""
 import argparse
 
 from yimt.experimental.mnmt.resample import resample_prob

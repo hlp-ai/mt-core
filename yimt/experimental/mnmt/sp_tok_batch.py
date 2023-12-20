@@ -1,3 +1,4 @@
+"""对一个目录下的多个单语语料进行SP切分"""
 import argparse
 import os
 
