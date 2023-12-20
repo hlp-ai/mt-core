@@ -5,7 +5,7 @@ from yimt.experimental.mnmt.resample import resample_prob
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", required=True, help="monolingual files directory")
-    parser.add_argument("--t", type=float, default=3.0, help="sampling temperature")
+    parser.add_argument("--t", type=float, default=2.0, help="sampling temperature")
     args = parser.parse_args()
 
     root = args.root
