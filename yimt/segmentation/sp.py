@@ -87,6 +87,7 @@ def tokenize_file_sp(sp_model, in_fn, out_fn):
         if sentences % 100000 == 0:
             print("Sentences:", sentences, "Tokens:", tokens)
     print("Sentences:", sentences, "Tokens:", tokens)
+    in_f.close()
     out_f.close()
 
 
