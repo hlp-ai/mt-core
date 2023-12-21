@@ -15,7 +15,6 @@ from yimt.api.utils import detect_lang, get_logger
 from yimt.files.translate_files import support, translate_doc
 from yimt.files.translate_tag import translate_html
 
-
 from yimt.service import remove_translated_files
 from yimt.service.api_keys import APIKeyDB
 from yimt.service.utils import path_traversal_check, SuspiciousFileOperation
@@ -123,6 +122,7 @@ def create_app(args):
 
     def access_check(f):
         """Check API key"""
+
         @wraps(f)
         def func(*a, **kw):
             if args.api_keys:  # need API key
@@ -185,7 +185,7 @@ def create_app(args):
             abort(404)
 
         return render_template('file.html')
-    
+
     @app.route('/text')
     @limiter.exempt
     def text():
@@ -367,9 +367,23 @@ def create_app(args):
         json = get_json_dict(request)
         image_64_string = json.get("base64")
         token = json.get("token")
-        source_lang = json.get("source_lang")
-        target_lang = json.get("source_lang")
-        # print(json) # for test
+        source_lang = json.get("source")
+        target_lang = json.get("target")
+        q = "ocr_text"  # for test
+
+        if not source_lang:
+            abort(400, description="Invalid request: missing source parameter")
+        if not target_lang:
+            abort(400, description="Invalid request: missing target parameter")
+        if not image_64_string:
+            abort(400, description="Invalid request: missing base64 parameter")
+        if source_lang == "auto":
+            source_lang = detect_lang(q)
+        if source_lang not in from_langs:
+            abort(400, description="Source language %s is not supported" % source_lang)
+        if target_lang not in to_langs:
+            abort(400, description="Target language %s is not supported" % target_lang)
+
         import base64
         image_data = base64.b64decode(image_64_string)
         with open("decoded_image.png", "wb") as image_file:
@@ -389,7 +403,36 @@ def create_app(args):
         channel = json.get("channel")
         token = json.get("token")
         len = json.get("len")
-        # print(json) # for test
+        source_lang = json.get("source")
+        target_lang = json.get("target")
+
+        from_audio_formats = ["pcm", "wav", "amr", "m4a"]
+        q = "audio2text"  # for test
+
+        if not format:
+            abort(400, description="Invalid request: missing format parameter")
+        if not audio_64_string:
+            abort(400, description="Invalid request: missing base64 parameter")
+        if not rate:
+            abort(400, description="Invalid request: missing rate parameter")
+        if not channel:
+            abort(400, description="Invalid request: missing channel parameter")
+        if not len:
+            abort(400, description="Invalid request: missing len parameter")
+        if not source_lang:
+            abort(400, description="Invalid request: missing source parameter")
+        if not target_lang:
+            abort(400, description="Invalid request: missing target parameter")
+        if source_lang == "auto":
+            source_lang = detect_lang(q)
+        if source_lang not in from_langs:
+            abort(400, description="Source language %s is not supported" % source_lang)
+        if target_lang not in to_langs:
+            abort(400, description="Target language %s is not supported" % target_lang)
+
+        if format not in from_audio_formats:
+            abort(400, description="Audio format %s is not supported" % format)
+
         import base64
         audio_data = base64.b64decode(audio_64_string)
         with open("decoded_audio.wav", "wb") as audio_file:
@@ -405,7 +448,23 @@ def create_app(args):
         json = get_json_dict(request)
         token = json.get("token")
         text = json.get("text")
+        source_lang = json.get("source")
+        target_lang = json.get("target")
         print(text)  # for test
+
+        if not text:
+            abort(400, description="Invalid request: missing text parameter")
+        if not source_lang:
+            abort(400, description="Invalid request: missing source parameter")
+        if not target_lang:
+            abort(400, description="Invalid request: missing target parameter")
+        if source_lang == "auto":
+            source_lang = detect_lang(text)
+        if source_lang not in from_langs:
+            abort(400, description="Source language %s is not supported" % source_lang)
+        if target_lang not in to_langs:
+            abort(400, description="Target language %s is not supported" % target_lang)
+
         import base64
         audio_64_string = base64.b64encode(open("dida.wav", "rb").read())  # 这里设置本地音频路径
         # print(audio_64_string.decode('utf-8')) # for test
