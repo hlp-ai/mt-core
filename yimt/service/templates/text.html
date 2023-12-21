@@ -9,12 +9,12 @@
         var END_POINT = "http://127.0.0.1:5555";
         window.onload = function()
         {
-            var json1=window.localStorage.getItem("server");
-            var json2=window.localStorage.getItem("key");
-            API_KEY=json2;
-            if(json1!="")
+            var server = window.localStorage.getItem("server");
+            var key = window.localStorage.getItem("key");
+            API_KEY=key;
+            if(!!server)
             {
-                END_POINT=json1;
+                END_POINT = server;
             }
 
             var userAgentInfo = navigator.userAgent;
@@ -28,7 +28,7 @@
                     break;
                 }
             }
-            var tag=window.localStorage.getItem("tag");
+            var tag = window.localStorage.getItem("tag");
             //alert(tag);
             if(!flag&&tag!="jump")
             {
