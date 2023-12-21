@@ -13,9 +13,10 @@ from docx.oxml.table import CT_Tbl
 from docx.oxml.text.paragraph import CT_P
 from docx.table import _Cell, Table
 from docx.text.paragraph import Paragraph
+from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from yimt.api.utils import detect_lang
 
-
+docx_progress = ""
 def doc_to_docx(doc_fn, docx_fn):
     from win32com import client as wc
     word = wc.Dispatch('Word.Application')
@@ -61,6 +62,12 @@ def handle_paragraph_txt(p, new_doc):
     """Copy and get text to be translated"""
     runs = []
     h = get_heading(p)
+    # print("p.alignment：")
+    # print(p.alignment)
+    if p.alignment == None:
+        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+
+    # print(p.paragraph_format.alignment)
     if h == 0:
         new_p = new_doc.add_paragraph()
     else:
@@ -72,7 +79,6 @@ def handle_paragraph_txt(p, new_doc):
     new_p.paragraph_format.line_spacing = p.paragraph_format.line_spacing
     new_p.paragraph_format.space_before = p.paragraph_format.space_before
     new_p.paragraph_format.space_after = p.paragraph_format.space_after
-
     for r in p.runs:
         new_r = new_p.add_run()
         new_r.text = r.text
@@ -115,7 +121,7 @@ def scan_doc(doc, new_doc):
                 # print("Image P")
                 handle_paragraph_img(p, doc, new_doc)
             else:
-                # print("Text P:", p.text)
+                # print("Text P:", p.alignment)
                 runs.extend(handle_paragraph_txt(p, new_doc))
             # yield Paragraph(child, parent)
         elif isinstance(child, CT_Tbl):
@@ -163,13 +169,23 @@ def translate_docx_auto(in_fn, source_lang="auto", target_lang="zh", translation
     translator = Translators().get_translator(source_lang, target_lang)
 
     txt_list = [r.text for r in runs]
-
-    result_list = translator.translate_list(txt_list)
+    global docx_progress
+    docx_progress = ""
+    batch_size = 10  # 每多少个文本更新一个进度单位
+    result_list = []
+    for i in range(0, len(txt_list) // batch_size + 1):
+        batch = txt_list[i * batch_size: i * batch_size + batch_size]
+        # print(batch) # 测试用
+        result = translator.translate_list(batch)
+        result_list += result
+        docx_progress += "#"
+        print("docx_progress:" + docx_progress)  # 测试用
+    # result_list = translator.translate_list(txt_list)
     for i in range(len(runs)):
         runs[i].text = result_list[i]
 
     translated_doc.save(translated_fn)
-
+    docx_progress = ""
     return translated_fn
 
 
@@ -190,5 +206,4 @@ if __name__ == "__main__":
 
     webbrowser.open(in_file)
     webbrowser.open(translated_fn)
-
 

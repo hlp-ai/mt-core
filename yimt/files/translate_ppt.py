@@ -6,7 +6,7 @@ import os
 from pptx import Presentation
 from yimt.api.utils import detect_lang
 
-
+ppt_progress = ""
 def scan_doc(ppt, new_ppt):
     """Get text to be translated"""
     runs = []
@@ -43,13 +43,24 @@ def translate_ppt_auto(in_fn, source_lang="auto", target_lang="zh", translation_
     translator = Translators().get_translator(source_lang, target_lang)
 
     txt_list = [r.text for r in runs]
+    global ppt_progress
+    ppt_progress = ""
+    batch_size = 10  # 每多少个文本更新一个进度单位
+    result_list = []
+    for i in range(0, len(txt_list) // batch_size + 1):
+        batch = txt_list[i * batch_size: i * batch_size + batch_size]
+        result = translator.translate_list(batch)
+        result_list += result
+        # print(batch) # 测试用
+        ppt_progress += "#"
+        print("ppt_progress:" + ppt_progress)  # 测试用
 
-    result_list = translator.translate_list(txt_list)  # translate
+    # result_list = translator.translate_list(txt_list)  # translate
     for i in range(len(runs)):
         runs[i].text = result_list[i]
 
     translated_doc.save(translated_fn)
-
+    ppt_progress = ""  # 每完成一次文件翻译，归零进度
     return translated_fn
 
 
@@ -70,5 +81,4 @@ if __name__ == "__main__":
 
     webbrowser.open(in_file)
     webbrowser.open(translated_fn)
-
 

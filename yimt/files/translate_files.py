@@ -10,7 +10,7 @@ from yimt.files.translate_txt import translate_txt_auto
 
 
 def support(file_type):
-    return file_type in [".txt", ".pdf", ".html", ".htm", ".xhtml", ".xml", ".sgml", ".docx", ".doc", ".pptx"]
+    return file_type in [".txt", ".pdf", ".html", ".htm", ".xhtml", ".xml", ".sgml", ".docx", ".doc", ".pptx", ".xlsx"]
 
 
 def get_type(fn):
