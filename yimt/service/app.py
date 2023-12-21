@@ -5,7 +5,7 @@ import uuid
 from functools import wraps
 from html import unescape
 
-from flask import (Flask, abort, jsonify, render_template, request, send_file, url_for)
+from flask import (Flask, abort, jsonify, render_template, request, send_file, url_for, g)
 from werkzeug.utils import secure_filename
 from yimt.api.translators import Translators
 from yimt.api.utils import detect_lang, get_logger
@@ -15,10 +15,12 @@ from yimt.files.translate_tag import translate_html
 
 
 from yimt.service import remove_translated_files
-from yimt.service.api_keys import Database
+from yimt.service.api_keys import APIKeyDB
 from yimt.service.utils import path_traversal_check, SuspiciousFileOperation
+from cachelib import SimpleCache
 
 log_service = get_logger(log_filename="service.log", name="service")
+cache = SimpleCache()
 
 
 def get_upload_dir():
@@ -99,14 +101,13 @@ def create_app(args):
 
     translators = Translators()
 
-    lang_pairs, from_langs, to_langs = translators.support_languages()
-    langs_api = translators.langs_api
+    lang_pairs, from_langs, to_langs, langs_api = translators.support_languages()
 
     api_keys_db = None
 
     if args.req_limit > 0 or args.api_keys or args.daily_req_limit > 0:
         print("Applying request limit...")
-        api_keys_db = Database() if args.api_keys else None
+        api_keys_db = APIKeyDB() if args.api_keys else None
 
         from flask_limiter import Limiter
 
@@ -151,6 +152,18 @@ def create_app(args):
     def denied(e):
         return jsonify({"error": str(e.description)}), 403
 
+    @app.after_request
+    def after_request(response):
+        response.headers.add("Access-Control-Allow-Origin", "*")  # Allow CORS from anywhere
+        response.headers.add(
+            "Access-Control-Allow-Headers", "Authorization, Content-Type"
+        )
+        response.headers.add("Access-Control-Expose-Headers", "Authorization")
+        response.headers.add("Access-Control-Allow-Methods", "GET, POST")
+        response.headers.add("Access-Control-Allow-Credentials", "true")
+        response.headers.add("Access-Control-Max-Age", 60 * 60 * 24 * 20)
+        return response
+
     ##############################################################################################
     #
     # Path for Web server
@@ -189,17 +202,29 @@ def create_app(args):
 
         return render_template('mobile_text.html')
 
-    @app.after_request
-    def after_request(response):
-        response.headers.add("Access-Control-Allow-Origin", "*")  # Allow CORS from anywhere
-        response.headers.add(
-            "Access-Control-Allow-Headers", "Authorization, Content-Type"
-        )
-        response.headers.add("Access-Control-Expose-Headers", "Authorization")
-        response.headers.add("Access-Control-Allow-Methods", "GET, POST")
-        response.headers.add("Access-Control-Allow-Credentials", "true")
-        response.headers.add("Access-Control-Max-Age", 60 * 60 * 24 * 20)
-        return response
+    @app.route("/reference")
+    @limiter.exempt
+    def reference():
+        if args.disable_web_ui:
+            abort(404)
+
+        return render_template('reference.html')
+
+    @app.route('/usage')
+    @limiter.exempt
+    def usage():
+        if args.disable_web_ui:
+            abort(404)
+
+        return render_template('usage.html')
+
+    @app.route('/api_usage')
+    @limiter.exempt
+    def api_usage():
+        if args.disable_web_ui:
+            abort(404)
+
+        return render_template('api_usage.html')
 
     ##############################################################################################
     #
@@ -289,8 +314,8 @@ def create_app(args):
         else:
             translation = translator.translate_paragraph(src)
 
-        log_service.info("/translate: " + q + "&source=" + source_lang + "&target=" + target_lang
-                         + "&format=" + text_format + "&api_key=" + api_key + "-->" + translation)
+        log_service.info("/translate: " + "&source=" + source_lang + "&target=" + target_lang
+                         + "&format=" + text_format + "&api_key=" + api_key)
 
         resp = {
             'translatedText': translation
@@ -338,6 +363,11 @@ def create_app(args):
             translated_file_path = translate_doc(filepath, source_lang, target_lang)
             translated_filename = os.path.basename(translated_file_path)
 
+            suffix = filepath.split(".")[-1]
+            cache.set('file_path', filepath)  # 保存源文件路径到本地
+            cache.set('translated_file_path', translated_file_path)
+            cache.set('file_type', suffix)
+
             # log_service.info("->Translated: from " + filepath + " to " + translated_filename)
 
             return jsonify(
@@ -347,6 +377,225 @@ def create_app(args):
             )
         except Exception as e:
             abort(500, description=e)
+
+    @app.post("/translate_image2text")
+    # @access_check
+    def translate_image2text():
+        json = get_json_dict(request)
+        image_64_string = json.get("base64")
+        token = json.get("token")
+        source_lang = json.get("source")
+        target_lang = json.get("target")
+        q = "ocr_text"  # for test
+
+        if not source_lang:
+            abort(400, description="Invalid request: missing source parameter")
+        if not target_lang:
+            abort(400, description="Invalid request: missing target parameter")
+        if not image_64_string:
+            abort(400, description="Invalid request: missing base64 parameter")
+        if source_lang == "auto":
+            source_lang = detect_lang(q)
+        if source_lang not in from_langs:
+            abort(400, description="Source language %s is not supported" % source_lang)
+        if target_lang not in to_langs:
+            abort(400, description="Target language %s is not supported" % target_lang)
+
+        import base64
+        image_data = base64.b64decode(image_64_string)
+        with open("decoded_image.png", "wb") as image_file:
+            image_file.write(image_data)
+        resp = {
+            'translatedText': "test text for 'image to text'"
+        }
+        return jsonify(resp)
+
+    @app.post("/translate_audio2text")
+    # @access_check
+    def translate_audio2text():
+        json = get_json_dict(request)
+        audio_64_string = json.get("base64")
+        format = json.get("format")
+        rate = json.get("rate")
+        channel = json.get("channel")
+        token = json.get("token")
+        len = json.get("len")
+        source_lang = json.get("source")
+        target_lang = json.get("target")
+
+        from_audio_formats = ["pcm", "wav", "amr", "m4a"]
+        q = "audio2text"  # for test
+
+        if not format:
+            abort(400, description="Invalid request: missing format parameter")
+        if not audio_64_string:
+            abort(400, description="Invalid request: missing base64 parameter")
+        if not rate:
+            abort(400, description="Invalid request: missing rate parameter")
+        if not channel:
+            abort(400, description="Invalid request: missing channel parameter")
+        if not len:
+            abort(400, description="Invalid request: missing len parameter")
+        if not source_lang:
+            abort(400, description="Invalid request: missing source parameter")
+        if not target_lang:
+            abort(400, description="Invalid request: missing target parameter")
+        if source_lang == "auto":
+            source_lang = detect_lang(q)
+        if source_lang not in from_langs:
+            abort(400, description="Source language %s is not supported" % source_lang)
+        if target_lang not in to_langs:
+            abort(400, description="Target language %s is not supported" % target_lang)
+
+        if format not in from_audio_formats:
+            abort(400, description="Audio format %s is not supported" % format)
+
+        import base64
+        audio_data = base64.b64decode(audio_64_string)
+        with open("decoded_audio.wav", "wb") as audio_file:
+            audio_file.write(audio_data)
+        resp = {
+            'translatedText': "test text for 'audio to text' "
+        }
+        return jsonify(resp)
+
+    @app.post("/translate_text2audio")
+    # @access_check
+    def translate_text2audio():
+        json = get_json_dict(request)
+        token = json.get("token")
+        text = json.get("text")
+        source_lang = json.get("source")
+        target_lang = json.get("target")
+        print(text)  # for test
+
+        if not text:
+            abort(400, description="Invalid request: missing text parameter")
+        if not source_lang:
+            abort(400, description="Invalid request: missing source parameter")
+        if not target_lang:
+            abort(400, description="Invalid request: missing target parameter")
+        if source_lang == "auto":
+            source_lang = detect_lang(text)
+        if source_lang not in from_langs:
+            abort(400, description="Source language %s is not supported" % source_lang)
+        if target_lang not in to_langs:
+            abort(400, description="Target language %s is not supported" % target_lang)
+
+        import base64
+        audio_64_string = base64.b64encode(open("dida.wav", "rb").read())  # 这里设置本地音频路径
+        # print(audio_64_string.decode('utf-8')) # for test
+        type = "wav"
+        resp = {
+            'base64': audio_64_string.decode('utf-8'),
+            'type': type
+        }
+        return jsonify(resp)
+
+    @app.route("/translate_file_progress", methods=['GET', 'POST'])
+    def get_translate_progress():
+        progress = ""
+        # print("checking progress")  # 测试用
+        file = request.files['file']
+        file_type = os.path.splitext(file.filename)[1]
+        if file_type == ".pdf":
+            from yimt.files.translate_pdf import pdf_progress
+            progress = pdf_progress
+        elif file_type == ".docx" or file_type == ".doc":
+            from yimt.files.translate_docx import docx_progress
+            progress = docx_progress
+        elif file_type in [".html", ".htm", ".xhtml", ".xml"]:
+            from yimt.files.translate_html import html_progress
+            progress = html_progress
+        elif file_type == ".pptx":
+            from yimt.files.translate_ppt import ppt_progress
+            progress = ppt_progress
+        else:
+            return None
+        # print("progress:" + progress)  # 测试用
+        return progress
+
+    @app.post("/get_file_type")
+    # @access_check
+    def get_file_type():
+        # cache.clear()
+        # cache.set('file_path', file_path)
+        # print("file_path: "+cache.get('file_path'))
+        # suffix = file_path.split(".")[-1]
+        print("get_file_type: " + cache.get('file_type'))  #
+        # cache.set('file_type', suffix)
+        return cache.get('file_type')
+
+    @app.post("/get_blob_file")
+    # @access_check
+    def get_blob_file():
+        json = get_json_dict(request)
+        is_target = json.get("is_target")
+        # file_path = "templates/test.xlsx"
+        if is_target == True:
+            file_path = cache.get('translated_file_path')
+            # print("is_target")
+        else:
+            file_path = cache.get('file_path')
+            # print("is_original")
+        # print("get_blob_file_path:" + file_path)  # for test
+        import base64
+        file_64_string = base64.b64encode(open(file_path, "rb").read())
+        # print(file_64_string.decode('utf-8'))  # for test
+        resp = {
+            'base64': file_64_string.decode('utf-8')
+        }
+        return jsonify(resp)
+
+    @app.post("/get_download")
+    def get_download():
+        translate_file_path = cache.get('translated_file_path')
+        # print("download trans_path:" + translate_file_path)  # for test
+        return url_for('download_file', filename=os.path.basename(translate_file_path), _external=True)
+
+    @app.get("/media_original")
+    def media_original():
+        # print("media_original")
+        return send_file("templates/media_original.html")
+
+    @app.get("/media_target")
+    def media_target():
+        # print("media_target")
+        return send_file("templates/media_target.html")
+
+    @app.get("/pptx_original")
+    def pptx_original():
+        # print("path_original:")
+        # print("path:" + cache.get('file_path'))
+        return send_file(cache.get('file_path'))
+
+    @app.get("/pptx_target")
+    def pptx_target():
+        # print("path_target:")
+        # print("path:" + cache.get('file_path'))
+        return send_file(cache.get('translated_file_path'))
+
+    @app.get("/tph_original")
+    def tph_original():
+        # print("tph_original:")
+        file_type = cache.get('file_type')
+        # print("type:"+file_type)
+        if file_type == 'docx' or file_type == 'pptx' or file_type == 'xlsx':
+            return send_file("templates/media_original.html")
+        file_path = cache.get('file_path')
+        # print("tph_original:"+ file_path)
+        return send_file(file_path)
+
+    @app.get("/tph_target")
+    def tph_target():
+        # print("tph_target:")
+        file_type = cache.get('file_type')
+        # print("type:" + file_type)
+        if file_type == 'docx' or file_type == 'pptx' or file_type == 'xlsx':
+            return send_file("templates/media_target.html")
+        file_path = cache.get('translated_file_path')
+        # print("tph_target:" + file_path)
+        return send_file(file_path)
 
     @app.get("/download_file/<string:filename>")
     def download_file(filename: str):
