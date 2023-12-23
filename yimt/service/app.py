@@ -511,7 +511,7 @@ def create_app(args):
             from yimt.files.translate_ppt import ppt_progress
             progress = ppt_progress
         else:
-            return None
+            return "#"
         # print("progress:" + progress)  # 测试用
         return progress
 
