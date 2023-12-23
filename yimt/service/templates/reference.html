@@ -20,8 +20,9 @@
                 END_POINT = server;
             }
             //console.log(END_POINT)  //for test
-            document.getElementById("document-container").setAttribute("src", END_POINT+"/tph_original");
-            document.getElementById("document-container2").setAttribute("src", END_POINT+"/tph_target");
+            var randomNumber = Math.floor(Math.random() * 1000000);
+            document.getElementById("document-container").setAttribute("src", END_POINT+"/tph_original"+ '?timestamp=' + randomNumber);
+            document.getElementById("document-container2").setAttribute("src", END_POINT+"/tph_target"+ '?timestamp=' + randomNumber);
             get_download();
             //get_file_type();
            
