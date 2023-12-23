@@ -81,11 +81,11 @@ class TransformerBig(transformer.Transformer):
 
 
 @register_model_in_catalog
-class TransformerBig2(transformer.Transformer):
+class CC50Big(transformer.Transformer):
     """Defines a big Transformer model as described in https://arxiv.org/abs/1706.03762."""
 
     def __init__(self):
-        super().__init__(num_layers=8, num_units=1024, num_heads=16, ffn_inner_dim=4096)
+        super().__init__(num_layers=9, num_units=1024, num_heads=16, ffn_inner_dim=4096)
 
 
 @register_model_in_catalog
