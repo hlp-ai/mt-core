@@ -29,20 +29,27 @@ if __name__ == "__main__":
     translator = ctranslate2.Translator(nllb_dir, device="cpu")
 
     gt_tsv = args.gt
-    srcs = []
+    x = []
     zhs = []
     with open(gt_tsv, encoding="utf-8") as f:
         for line in f:
             line = line.strip()
             parts = line.split("\t")
-            srcs.append(parts[1])
+            x.append(parts[1])
             zhs.append(parts[0])
 
-    print("# of pairs:", len(srcs))
+    print("# of pairs:", len(x))
 
     src_lang = args.sl
     tgt_lang = args.tl
     lang_pair = args.sl2 + "-" + args.tl2
+
+    if args.sl2 == "zh":
+        srcs = zhs
+        refs = x
+    else:
+        srcs = x
+        refs = zhs
 
     translations = []
 
@@ -79,8 +86,8 @@ if __name__ == "__main__":
             f.write(trans + "\n")
 
     with open(ref_file, "w", encoding="utf-8") as f:
-        for i in range(len(translations)):
-            f.write(zhs[i] + "\n")
+        for i in range(len(refs)):
+            f.write(refs[i] + "\n")
 
     cal_cmd = "sacrebleu {} -i {} -l {} -f text -m bleu"
     cf = os.popen(cal_cmd.format(ref_file, hyp_file, lang_pair))
