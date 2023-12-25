@@ -553,16 +553,6 @@ def create_app(args):
         # print("download trans_path:" + translate_file_path)  # for test
         return url_for('download_file', filename=os.path.basename(translate_file_path), _external=True)
 
-    @app.get("/media_original")
-    def media_original():
-        # print("media_original")
-        return send_file("templates/media_original.html")
-
-    @app.get("/media_target")
-    def media_target():
-        # print("media_target")
-        return send_file("templates/media_target.html")
-
     @app.get("/pptx_original")
     def pptx_original():
         # print("path_original:")
