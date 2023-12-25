@@ -89,7 +89,7 @@ if __name__ == "__main__":
         for i in range(len(refs)):
             f.write(refs[i] + "\n")
 
-    cal_cmd = "sacrebleu {} -i {} -l {} -f text -m bleu"
+    cal_cmd = "sacrebleu {} -i {} -l {} -f text -m bleu chrf"
     cf = os.popen(cal_cmd.format(ref_file, hyp_file, lang_pair))
     lines = cf.readlines()
     for line in lines:
