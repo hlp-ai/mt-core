@@ -7,7 +7,7 @@ from yimt.segmentation.sp import tokenize_file_sp, detokenize_file_sp
 
 def run_eval(config_path, src_path, ref_path, sp_src, sp_tgt, lang_pair):
     infer_cmd_str = "python -m yimt.core.bin.main --config {} --auto_config infer --features_file {} --predictions_file {}"
-    bleu_cmd_str = "sacrebleu -l {} {} -i {}"
+    bleu_cmd_str = "sacrebleu -l {} {} -i {}  -m bleu chrf"
 
     src_path_tok = src_path + ".tok"
 
