@@ -511,7 +511,7 @@ def create_app(args):
             from yimt.files.translate_ppt import ppt_progress
             progress = ppt_progress
         else:
-            return None
+            return "#"
         # print("progress:" + progress)  # 测试用
         return progress
 
@@ -552,16 +552,6 @@ def create_app(args):
         translate_file_path = cache.get('translated_file_path')
         # print("download trans_path:" + translate_file_path)  # for test
         return url_for('download_file', filename=os.path.basename(translate_file_path), _external=True)
-
-    @app.get("/media_original")
-    def media_original():
-        # print("media_original")
-        return send_file("templates/media_original.html")
-
-    @app.get("/media_target")
-    def media_target():
-        # print("media_target")
-        return send_file("templates/media_target.html")
 
     @app.get("/pptx_original")
     def pptx_original():
