@@ -14,7 +14,7 @@ if __name__ == "__main__":
     for f in tsv_files:
         i = f.index(".")
         name = f[:i]
-        src, tgt = name.split("-")
+        src, tgt = name.split("-")[:2]
         f = os.path.join(input, f)
         src_fn = f + "." + src
         tgt_fn = f + "." + tgt
