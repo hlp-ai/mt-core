@@ -1,0 +1,198 @@
+translators:
+  en-zh:
+    model_or_config_dir: D:\kidden\mt\mt-exp\en-zh\opus\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.en-sp-32000.model
+    pretok_src: false
+    pretok_tgt: true
+
+  zh-en:
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-en\opus\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
+    pretok_src: true
+    pretok_tgt: false
+
+  ja-zh:
+    model_or_config_dir: D:\kidden\mt\mt-exp\ja-zh\opus\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-jazh-sf.ja.pretok-sp-32000.model
+    pretok_src: true
+    pretok_tgt: true
+
+  zh-ja:
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-ja\opus\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
+    pretok_src: true
+    pretok_tgt: true
+
+  ko-zh:
+    model_or_config_dir: D:\kidden\mt\mt-exp\ko-zh\opus\run4\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-koen-sf.ko-sp-32000.model
+    pretok_src: false
+    pretok_tgt: true
+
+  zh-ko:
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-ko\opus\run4\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
+    pretok_src: true
+    pretok_tgt: false
+
+  de-zh:
+    model_or_config_dir: D:\kidden\mt\mt-exp\de-zh\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-dezh-sf.de-sp-32000.model
+    pretok_src: false
+    pretok_tgt: true
+
+  zh-de:
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-de\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
+    pretok_src: true
+    pretok_tgt: false
+
+  vi-zh:
+    model_or_config_dir: D:\kidden\mt\mt-exp\vi-zh\run2\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\vi-zh\tok\vi-zh-opus-sf.vi-sp-32000.model
+    pretok_src: false
+    pretok_tgt: true
+
+  zh-vi:
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-vi\run2\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
+    pretok_src: true
+    pretok_tgt: false
+
+  ru-zh:
+    model_or_config_dir: D:\kidden\mt\mt-exp\ru-zh\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-ruzh-sf.ru-sp-32000.model
+    pretok_src: false
+    pretok_tgt: true
+
+  zh-ru:
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-ru\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
+    pretok_src: true
+    pretok_tgt: false
+
+  ar-zh:
+    model_or_config_dir: D:\kidden\mt\mt-exp\ar-zh\run2\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\ar-zh\tok\opus-arzh-sf.ar-sp-32000.model
+    pretok_src: false
+    pretok_tgt: true
+
+  zh-ar:
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-ar\run2\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
+    pretok_src: true
+    pretok_tgt: false
+
+  es-zh:
+    model_or_config_dir: D:\kidden\mt\mt-exp\es-zh\run1\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-es-zh-sf.es-sp-32000.model
+    pretok_src: false
+    pretok_tgt: true
+
+  zh-es:
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-es\run1\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
+    pretok_src: true
+    pretok_tgt: false
+
+  fr-zh:
+    model_or_config_dir: D:\kidden\mt\mt-exp\fr-zh\run1\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-fr-zh.sf.fr-sp-32000.model
+    pretok_src: false
+    pretok_tgt: true
+
+  zh-fr:
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-fr\run1\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
+    pretok_src: true
+    pretok_tgt: false
+
+  pt-zh:
+    model_or_config_dir: D:\kidden\mt\mt-exp\pt-zh\run1\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-pt-zh.sf.pt-sp-32000.model
+    pretok_src: false
+    pretok_tgt: true
+
+  zh-pt:
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-pt\run1\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
+    pretok_src: true
+    pretok_tgt: false
+
+  ms-zh:
+    model_or_config_dir: D:\kidden\mt\mt-exp\ms-zh\run3\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-ms-en.sf.ms-sp-32000.model
+    pretok_src: false
+    pretok_tgt: true
+
+  zh-ms:
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-ms\run1\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
+    pretok_src: true
+    pretok_tgt: false
+
+  hi-zh:
+    model_or_config_dir: D:\kidden\mt\mt-exp\hi-zh\run2\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-en-hi.sf.hi-sp-32000.model
+    pretok_src: false
+    pretok_tgt: true
+
+  zh-hi:
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-hi\run1\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
+    pretok_src: true
+    pretok_tgt: false
+
+  it-zh:
+    model_or_config_dir: D:\kidden\mt\mt-exp\it-zh\run1\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-it-zh.sf.it-sp-32000.model
+    pretok_src: false
+    pretok_tgt: true
+
+  zh-it:
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-it\run1\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
+    pretok_src: true
+    pretok_tgt: false
+
+  th-zh:
+    model_or_config_dir: D:\kidden\mt\mt-exp\th-zh\aug\run1\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-th-en-aug-th-zh.sf.th.pretok-sp-32000.model
+    pretok_src: true
+    pretok_tgt: true
+
+  zh-th:
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-th\aug\run1\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
+    pretok_src: true
+    pretok_tgt: true
+
+  id-zh:
+    model_or_config_dir: D:\kidden\mt\mt-exp\id-zh\aug\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-id-en-aug-id-zh.sf.id-sp-32000.model
+    pretok_src: false
+    pretok_tgt: true
+
+  zh-id:
+    model_or_config_dir: D:\kidden\mt\mt-exp\zh-id\aug\ct2
+    sp_src_path: D:\kidden\mt\mt-exp\sp\opus-enzh-all-sf.zh.pretok-sp-32000.model
+    pretok_src: true
+    pretok_tgt: false
+
+languages:
+  - {code: en, name: English, cname: 英文}
+  - {code: zh, name: Chinese, cname: 中文}
+  - {code: ja, name: Japanese, cname: 日文}
+  - {code: ko, name: Korean, cname: 韩文}
+  - {code: de, name: German, cname: 德文}
+  - {code: vi, name: Vietnamese, cname: 越南文}
+  - {code: ru, name: Russian, cname: 俄文}
+  - {code: ar, name: Arabic, cname: 阿拉伯文}
+  - {code: es, name: Spanish, cname: 西班牙文}
+  - {code: fr, name: French, cname: 法文}
+  - {code: pt, name: Portuguese, cname: 葡萄牙文}
+  - {code: ms, name: Malay, cname: 马来文}
+  - {code: hi, name: Hindi, cname: 印地文}
+  - {code: it, name: Italian, cname: 意大利文}
+  - {code: th, name: Thai, cname: 泰文}
+  - {code: id, name: Indonesian, cname: 印尼文}

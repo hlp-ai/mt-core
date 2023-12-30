@@ -47,7 +47,7 @@ class Translator(object):
             lang_pair: lang pair supported by this translator
             batch_size: the size of translation batch
         """
-        self.sp_source_model = spm.SentencePieceProcessor(model_file=sp_src_path)
+        self.sp_source_model = spm.SentencePieceProcessor(model_file=sp_src_path) if sp_src_path else None
         self.lang_pair = lang_pair
         self.from_lang = None
         self.to_lang = None
@@ -230,6 +230,26 @@ def get_model_from_checkpoint(config_file):
     checkpoint.restore(checkpoint_path=checkpoint_path, weights_only=True)
 
     return model
+
+
+class TranslatorMNMT(Translator):
+    """A translator proxy"""
+
+    def __init__(self, lang_pair, model):
+        super().__init__("", lang_pair=lang_pair)
+        self._model = model
+
+    # def _tokenize(self, text):
+    #     if self.to_lang != "zh":
+    #         self._model.to_lang = "<to{}>".format(self.to_lang)
+    #
+    #     return self._model._tokenize(text)
+
+    def _translate_batch(self, texts):
+        if self.to_lang != "zh":
+            self._model.to_lang = "<to{}>".format(self.to_lang)
+
+        return self._model._translate_batch(texts)
 
 
 class TranslatorCkpt(Translator):

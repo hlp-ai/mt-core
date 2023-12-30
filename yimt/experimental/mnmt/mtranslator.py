@@ -7,7 +7,7 @@ class MTranslator(Translator):
     def __init__(self, sp_src_path, batch_size=64):
         super().__init__(sp_src_path, None, batch_size)
 
-        self.to_lang = None
+        self.to_lang = ""
 
     def _tokenize(self, text):
         """Tokenize string
@@ -54,8 +54,8 @@ class MTranslatorCkpt(MTranslator):
 
 
 if __name__ == "__main__":
-    mt = MTranslatorCkpt(r"D:\dataset\mnmt-test\addtoken\zh-enja-train.yml",
-                           r"D:\dataset\mnmt-test\addtoken\zh-enja-mnmt.tsv.zh-sp-8000.model")
+    mt = MTranslatorCkpt(r"D:\dataset\mnmt\zh-x\avg.yml",
+                           r"D:\dataset\mnmt\sp\en-zh.tsv.zh-sp-32000.model")
 
     text = "你在做什么？"
     mt.to_lang = "<toja>"

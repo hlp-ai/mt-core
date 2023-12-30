@@ -3,7 +3,9 @@ import os
 import ctranslate2
 import yaml
 
-from yimt.api.translator import Translator, DummyTranslator, TranslatorCT2, TranslatorSaved, TranslatorCkpt
+from yimt.api.translator import Translator, DummyTranslator, TranslatorCT2, TranslatorSaved, TranslatorCkpt, \
+    TranslatorMNMT
+from yimt.experimental.mnmt.mtranslator import MTranslatorCkpt
 
 
 def load_translator(model_or_config_dir, sp_src_path, lang_pair=None, pretok_src=False, pretok_tgt=False):
@@ -40,6 +42,19 @@ class Translators(object):
 
         print("Available translators:", self.translators)
         print("Available language pairs:", self.lang_pairs)
+
+        self.x2zh = None
+        self.zh2x = None
+
+        if "x" in self.from_langs:
+            self.from_langs.clear()
+            for d in self.langs_api:
+                self.from_langs.append(d["code"])
+
+        if "x" in self.to_langs:
+            self.to_langs.clear()
+            for d in self.langs_api:
+                self.to_langs.append(d["code"])
 
     def available_translators(self):
         """Get translators from config file
@@ -81,7 +96,28 @@ class Translators(object):
         lang_pair = source_lang + "-" + target_lang
         translator = self.translators.get(lang_pair)
         if translator is None:
-            return None
+            if target_lang == "zh":
+                if self.x2zh is None:
+                    print("Loading x-zh translator for {}...".format(lang_pair))
+
+                    conf = self.translators.get("x-zh")
+                    self.x2zh = MTranslatorCkpt(conf["model_or_config_dir"], conf["sp_src_path"])
+
+                print("Create instance for {}".format(lang_pair))
+                self.translators[lang_pair] = TranslatorMNMT(lang_pair, self.x2zh)
+                return self.translators[lang_pair]
+            elif source_lang == "zh":
+                if self.zh2x is None:
+                    print("Loading zh-x translator for {}...".format(lang_pair))
+
+                    conf = self.translators.get("zh-x")
+                    self.zh2x = MTranslatorCkpt(conf["model_or_config_dir"], conf["sp_src_path"])
+
+                print("Create instance for {}".format(lang_pair))
+                self.translators[lang_pair] = TranslatorMNMT(lang_pair, self.zh2x)
+                return self.translators[lang_pair]
+            else:
+                return None
         elif isinstance(translator, Translator):
             return translator
         else:
