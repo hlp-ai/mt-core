@@ -7,12 +7,14 @@ from html import unescape
 
 from flask import (Flask, abort, jsonify, render_template, request, send_file, url_for, g)
 from werkzeug.utils import secure_filename
+
+from yimt.api.text_recognizer import TextRecognizers
 from yimt.api.translators import Translators
 from yimt.api.utils import detect_lang, get_logger
 
 from yimt.files.translate_files import support, translate_doc
 from yimt.files.translate_tag import translate_html
-
+from yimt.segmentation.text_splitter import may_combine_paragraph
 
 from yimt.service import remove_translated_files
 from yimt.service.api_keys import APIKeyDB
