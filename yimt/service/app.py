@@ -93,6 +93,29 @@ def get_routes_limits(default_req_limit, daily_req_limit, api_keys_db):
     return res
 
 
+def run_ocr(image_path, source_lang, queue):
+    recognizers = TextRecognizers()
+    text = recognizers.recognize(image_path, source_lang)
+
+    queue.put(text)
+
+
+def run_translate(src, text_format, source_lang, target_lang, queue):
+    translators = Translators()
+
+    translator = translators.get_translator(source_lang, target_lang)
+    if translator is None:
+        return None
+
+    if text_format == "html":
+        translation = str(translate_html(translator, src))
+    else:
+        src = may_combine_paragraph(src)
+        translation = translator.translate_paragraph(src)
+
+    queue.put(translation)
+
+
 def create_app(args):
     app = Flask(__name__)
 
@@ -100,6 +123,7 @@ def create_app(args):
         remove_translated_files.setup(get_upload_dir())
 
     translators = Translators()
+    # recognizers = TextRecognizers()
 
     lang_pairs, from_langs, to_langs, langs_api = translators.support_languages()
 
@@ -321,6 +345,83 @@ def create_app(args):
             'translatedText': translation
         }
         return jsonify(resp)
+
+    @app.post("/translate_image")
+    @access_check
+    def translate_image():
+        """Translate image from a language to another"""
+        # if args.disable_image_translation:
+        # abort(403, description="Image translation are disabled on this server.")
+
+        source_lang = request.form.get("source")
+        target_lang = request.form.get("target")
+        api_key = request.form.get("api_key")
+        file = request.files['file']
+
+        if not file:
+            abort(400, description="Invalid request: missing file parameter")
+        if not source_lang:
+            abort(400, description="Invalid request: missing source parameter")
+        if source_lang == "auto":
+            abort(400, description="Require source language when translating image")
+        if not target_lang:
+            abort(400, description="Invalid request: missing target parameter")
+
+        if file.filename == '':
+            abort(400, description="Invalid request: empty file")
+
+        log_service.info("/translate_image: " + file.filename)
+
+        file_type = os.path.splitext(file.filename)[1]
+
+        # if not support(file_type):
+            # abort(400, description="Invalid request: file format not supported")
+
+        try:
+            filename = str(uuid.uuid4()) + '.' + secure_filename(file.filename)
+            filepath = os.path.join(get_upload_dir(), filename)
+            file.save(filepath)
+
+            # translated_file_path = translate_doc(filepath, source_lang, target_lang)
+            # translated_filename = os.path.basename(translated_file_path)
+
+            # log_service.info("->Translated: from " + filepath + " to " + translated_filename)
+
+            import multiprocessing
+
+            queue = multiprocessing.Queue()
+            p = multiprocessing.Process(target=run_ocr, args=(filepath, source_lang, queue,))
+            p.start()
+            p.join()
+            text = queue.get()
+
+            if text is None:
+                abort(400, description="NO OCR")
+
+            queue = multiprocessing.Queue()
+            p = multiprocessing.Process(target=run_translate, args=(text, "text", source_lang, target_lang, queue,))
+            p.start()
+            p.join()
+            translation = queue.get()
+
+            # src = text
+            # lang = source_lang + "-" + target_lang
+            #
+            # translator = translators.get_translator(source_lang, target_lang)
+            # if translator is None:
+            #     abort(400, description="Language pair %s is not supported" % lang)
+            #
+            # src = may_combine_paragraph(src)
+            # translation = translator.translate_paragraph(src)
+
+            return jsonify(
+                {
+                    'originalText': text,
+                    'translatedText': translation
+                }
+            )
+        except Exception as e:
+            abort(500, description=e)
 
     @app.post("/translate_file")
     @access_check

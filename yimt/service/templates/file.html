@@ -65,7 +65,7 @@
 		    var url = END_POINT + "/translate_file";
 		    xhr = new XMLHttpRequest();
             is_finished = false;//
-            
+
             xhr.upload.addEventListener("progress", function(evt){
                 if (evt.lengthComputable) {
                     var percentComplete = Math.round(evt.loaded * 100 / evt.total);
@@ -86,7 +86,7 @@
 		    xhr.onload = uploadComplete;
 		    xhr.send(form);
 
-            setInterval("translate_progress()",200);  //每0.2秒发送查看进度  
+            setInterval("translate_progress()",200);  //每0.2秒发送查看进度
 		}
 
         function translate_progress(){
@@ -105,10 +105,10 @@
                         console.log(this.responseText); //测试用
                         //console.log("is_finished?");  //测试用
                         document.getElementById("showProgress").innerHTML = '上传完成，正在翻译,翻译进度：'+ this.responseText;
-                    } 
+                    }
                 }
                 xhr.open("POST",url);
-                xhr.send(form);    
+                xhr.send(form);
             }
             else
             {
@@ -117,12 +117,12 @@
         }
 
         function get_file_type()
-        {    
+        {
             let xhr = new XMLHttpRequest();
             xhr.open('POST',END_POINT + "/get_file_type");
             xhr.send();
             xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {  
+            if (xhr.readyState === 4 && xhr.status === 200) {
                 file_type = xhr.responseText;
                 console.log("file_type: "+file_type);
                 window.localStorage.setItem("file_type", file_type);  //保存file_type，传递给media.html
@@ -130,7 +130,7 @@
                 window.location.href="{{url_for('reference')}}";
             }}
         }
-        
+
 
 		function uploadComplete(evt) {
 			//alert(evt.target.responseText);

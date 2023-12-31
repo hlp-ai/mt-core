@@ -1,0 +1,24 @@
+recognizers:
+  latin:
+    ctpn_model_path: D:\kidden\mt\open\github\mt-io\ocr\weights\weights-ctpnlstm-init.hdf5
+    densenet_model_path: D:\kidden\mt\ocr\latin\latin_dense.hdf5
+    vocab_path: D:\kidden\mt\open\github\mt-io\ocr\dictionary\latin_chars.txt
+    langs:
+      - en
+      - fr
+      - de
+      - it
+      - vi
+      - pt
+      - es
+      - id
+
+  cyrillic:
+    ctpn_model_path: D:\kidden\mt\open\github\mt-io\ocr\weights\weights-ctpnlstm-init.hdf5
+    densenet_model_path: D:\kidden\mt\ocr\cyrillic\cyrillic_dense.hdf5
+    vocab_path: D:\kidden\mt\open\github\mt-io\ocr\dictionary\cyrillic_chars.txt
+    langs:
+      - ru
+      - bg
+      - mk
+      - uk
