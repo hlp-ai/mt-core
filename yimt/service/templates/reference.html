@@ -8,65 +8,35 @@
     <!-- jquery -->
     <script type="text/javascript" src="../static/plugin/jquery-2.2.1.min.js"></script>
     <script type="text/javascript" src="../static/plugin/jquery.media.js"></script>
-
-    <!-- docx --> 
-    <script crossorigin src="https://unpkg.com/jszip/dist/jszip.min.js"></script>
-    <script src="../static/plugin/docx-preview.js"></script>
-
-    <!-- pptx --> 
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-    <script src="https://unpkg.com/element-ui/lib/index.js"></script>  
-    <link rel="stylesheet" type="text/css" href="../static/plugin/pptx/pptxjs.css">
-    <link rel="stylesheet" href="../static/plugin/pptx/nv.d3.min.js.下载"> 
-    <script type="text/javascript" src="../static/plugin/pptx/jszip.min.js.下载"></script> <!-- v2.. , NOT v.3.. -->
-    <script type="text/javascript" src="../static/plugin/pptx/filereader.js.下载"></script> <!--https://github.com/meshesha/filereader.js -->
-    <script type="text/javascript" src="../static/plugin/pptx/d3.min.js.下载"></script> <!-- for charts graphs -->
-    <script type="text/javascript" src="../static/plugin/pptx/nv.d3.min.js.下载"></script> <!-- for charts graphs -->
-    <script type="text/javascript" src="../static/plugin/pptx/pptxjs.min.js.下载"></script>
-    <script type="text/javascript" src="../static/plugin/pptx/divs2slides.js.下载"></script> <!-- for slide show -->
-
-    <!-- xlsx --> 
-    <script type="text/javascript" src="../static/plugin/xlsx/xlsx.core.min.js"></script>
         
     <script>
         var file_type = "";
-        var END_POINT = window.localStorage.getItem("server");
-        var uuid = window.localStorage.getItem("uuid")
+        var END_POINT
         window.onload = function()
         {
+            END_POINT = "http://127.0.0.1:5555";
+            var server = window.localStorage.getItem("server");
+            if(!!server){
+                END_POINT = server;
+            }
+            //console.log(END_POINT)  //for test
+            var randomNumber = Math.floor(Math.random() * 1000000);
+            document.getElementById("document-container").setAttribute("src", END_POINT+"/tph_original"+ '?timestamp=' + randomNumber);
+            document.getElementById("document-container2").setAttribute("src", END_POINT+"/tph_target"+ '?timestamp=' + randomNumber);
             get_download();
             //get_file_type();
            
         }
         async function get_download()
         {
-            END_POINT = "http://127.0.0.1:5555";           
             let xhr = new XMLHttpRequest();
             var form = new FormData();
-		    form.append("uuid", uuid);
             xhr.open('POST',END_POINT + "/get_download");
             xhr.send(form);
             xhr.onreadystatechange = function () {
                 console.log("get_download: "+ xhr.responseText);
                 document.getElementById('download_link').innerHTML = "<a href=" + xhr.responseText + ">下载翻译文件</a>";
             }
-        }
-
-        function get_file_type()
-        {
-            END_POINT = "http://127.0.0.1:5555";           
-            let xhr = new XMLHttpRequest();
-            xhr.open('POST',END_POINT + "/get_file_type");
-            var form = new FormData();
-		    form.append("uuid", uuid);
-            xhr.send(form);
-            xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {  
-                file_type = xhr.responseText;
-                console.log("file_type: "+file_type);
-                window.localStorage.setItem("file_type", file_type);  //保存file_type，传递给media.html
-            }}
         }
 	</script>
 
@@ -146,12 +116,12 @@
  
             <div class="file_view_original">
                 <!-- <iframe class="document-container" id="document-container" src="http://127.0.0.1:5555/media_original"></iframe> -->
-                <iframe class="document-container" id="document-container"  src="http://127.0.0.1:5555/tph_original"></iframe>
+                <iframe class="document-container" id="document-container" ></iframe>
             </div>
 
             <div class="file_view_target">
                 <!-- <iframe class="document-container" id="document-container2" src="http://127.0.0.1:5555/media_target"></iframe> -->
-                <iframe class="document-container" id="document-container2"  src="http://127.0.0.1:5555/tph_target"></iframe>
+                <iframe class="document-container" id="document-container2" ></iframe>
             </div>
             <script>
                 
