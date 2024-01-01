@@ -364,9 +364,6 @@ def create_app(args):
             translated_filename = os.path.basename(translated_file_path)
 
             suffix = filepath.split(".")[-1]
-            cache.set('file_path', filepath)  # 保存源文件路径到本地
-            cache.set('translated_file_path', translated_file_path)
-            cache.set('file_type', suffix)
 
             # log_service.info("->Translated: from " + filepath + " to " + translated_filename)
 
