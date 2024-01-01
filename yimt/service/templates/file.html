@@ -116,22 +116,6 @@
             }
         }
 
-        function get_file_type()
-        {    
-            let xhr = new XMLHttpRequest();
-            xhr.open('POST',END_POINT + "/get_file_type");
-            xhr.send();
-            xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {  
-                file_type = xhr.responseText;
-                console.log("file_type: "+file_type);
-                window.localStorage.setItem("file_type", file_type);  //保存file_type，传递给media.html
-                //alert(window.localStorage.getItem("file_type"));
-                window.location.href="{{url_for('reference')}}";
-            }}
-        }
-        
-
 		function uploadComplete(evt) {
 			//alert(evt.target.responseText);
 			res_json = JSON.parse(evt.target.responseText);
@@ -145,8 +129,17 @@
             //document.getElementById("showProgress").innerHTML = '翻译完成，点击链接下载';
             is_finished = true  //标记翻译结束
 			document.getElementById('download').innerHTML = "<a href=" + res_json.translatedFileUrl + ">下载翻译文件</a>";
-            get_file_type();
-            //alert(window.localStorage.getItem("file_type"));
+            var file_path = res_json.filepath;
+            var translated_file_path = res_json.translated_file_path;
+            var file_type = res_json.file_type;
+            //console.log("file_path: "+ file_path);
+            //console.log("translated_file_path: "+translated_file_path);
+            //console.log("file_type: "+file_type);
+            window.localStorage.setItem("file_path", file_path);
+            window.localStorage.setItem("translated_file_path", translated_file_path);
+            window.localStorage.setItem("file_type", file_type);
+
+            window.location.href="{{url_for('reference')}}";
 		}
 
 	</script>
