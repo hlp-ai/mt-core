@@ -20,17 +20,25 @@
                 END_POINT = server;
             }
             //console.log(END_POINT)  //for test
+            var file_type = window.localStorage.getItem("file_type");
+            var file_path = window.localStorage.getItem("file_path");
+            var translated_file_path = window.localStorage.getItem("translated_file_path");
+            //console.log(file_type);
+            //console.log(file_path);
+            //console.log(translated_file_path);
             var randomNumber = Math.floor(Math.random() * 1000000);
-            document.getElementById("document-container").setAttribute("src", END_POINT+"/tph_original"+ '?timestamp=' + randomNumber);
-            document.getElementById("document-container2").setAttribute("src", END_POINT+"/tph_target"+ '?timestamp=' + randomNumber);
-            get_download();
-            //get_file_type();
-           
+            document.getElementById("document-container").setAttribute("src", END_POINT + "/tph_original" + '?timestamp=' + randomNumber + '&file_path=' + encodeURIComponent(file_path)+ '&file_type=' + file_type);
+            document.getElementById("document-container2").setAttribute("src", END_POINT+"/tph_target"+ '?timestamp=' + randomNumber + '&translated_file_path=' + encodeURIComponent(translated_file_path)+ '&file_type=' + file_type);
+            get_download();           
         }
+
         async function get_download()
         {
             let xhr = new XMLHttpRequest();
             var form = new FormData();
+            var translated_file_path = window.localStorage.getItem("translated_file_path");
+            //alert(translated_file_path);
+            form.append("translated_file_path", translated_file_path);
             xhr.open('POST',END_POINT + "/get_download");
             xhr.send(form);
             xhr.onreadystatechange = function () {
