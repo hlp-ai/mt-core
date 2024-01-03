@@ -1,8 +1,8 @@
 recognizers:
   latin:
     ctpn_model_path: D:\kidden\mt\open\github\mt-io\ocr\weights\weights-ctpnlstm-init.hdf5
-    densenet_model_path: D:\kidden\mt\ocr\latin\latin_dense.hdf5
-    vocab_path: D:\kidden\mt\open\github\mt-io\ocr\dictionary\latin_chars.txt
+    densenet_model_path: D:\kidden\mt\ocr\latin\densenet.hdf5
+    vocab_path: D:\kidden\mt\ocr\latin\data\vocab-Latn.txt
     langs:
       - en
       - fr
@@ -15,8 +15,8 @@ recognizers:
 
   cyrillic:
     ctpn_model_path: D:\kidden\mt\open\github\mt-io\ocr\weights\weights-ctpnlstm-init.hdf5
-    densenet_model_path: D:\kidden\mt\ocr\cyrillic\cyrillic_dense.hdf5
-    vocab_path: D:\kidden\mt\open\github\mt-io\ocr\dictionary\cyrillic_chars.txt
+    densenet_model_path: D:\kidden\mt\ocr\cyrillic\densenet.hdf5
+    vocab_path: D:\kidden\mt\ocr\cyrillic\data\vocab-Cyrl.txt
     langs:
       - ru
       - bg

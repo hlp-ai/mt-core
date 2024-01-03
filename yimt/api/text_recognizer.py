@@ -58,7 +58,10 @@ class TextRecognizers:
 
 
 if __name__ == "__main__":
-    recognizers = TextRecognizers()
-    image_path = "./examples/en1.png"
+    import sys
 
-    print(recognizers.recognize(image_path, "en"))
+    lang = sys.argv[1]
+    image_path = sys.argv[2]
+    recognizers = TextRecognizers()
+
+    print(recognizers.recognize(image_path, lang))
