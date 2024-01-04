@@ -489,7 +489,6 @@ def create_app(args):
         token = json.get("token")
         source_lang = json.get("source")
         target_lang = json.get("target")
-        q = "ocr_text"  # for test
 
         if not source_lang:
             abort(400, description="Invalid request: missing source parameter")
@@ -497,19 +496,43 @@ def create_app(args):
             abort(400, description="Invalid request: missing target parameter")
         if not image_64_string:
             abort(400, description="Invalid request: missing base64 parameter")
-        if source_lang == "auto":
-            source_lang = detect_lang(q)
+
         if source_lang not in from_langs:
             abort(400, description="Source language %s is not supported" % source_lang)
         if target_lang not in to_langs:
             abort(400, description="Target language %s is not supported" % target_lang)
 
+        log_service.info("/translate_image2text: " + "&source=" + source_lang + "&target=" + target_lang
+                         + "&api_key=" + token)
+
         import base64
         image_data = base64.b64decode(image_64_string)
-        with open("decoded_image.png", "wb") as image_file:
+
+        filepath = os.path.join(get_upload_dir(), "decoded_image.png")
+
+        with open(filepath, "wb") as image_file:
             image_file.write(image_data)
+
+        import multiprocessing
+
+        queue = multiprocessing.Queue()
+        p = multiprocessing.Process(target=run_ocr, args=(filepath, source_lang, queue,))
+        p.start()
+        p.join()
+        text = queue.get()
+
+        if text is None:
+            abort(400, description="NO OCR")
+
+        queue = multiprocessing.Queue()
+        p = multiprocessing.Process(target=run_translate, args=(text, "text", source_lang, target_lang, queue,))
+        p.start()
+        p.join()
+        translation = queue.get()
+
         resp = {
-            'translatedText': "test text for 'image to text'"
+            'text': text,
+            'translatedText': translation
         }
         return jsonify(resp)
 

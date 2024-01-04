@@ -23,6 +23,9 @@ json1 = {"base64": encoded_image.decode('utf-8'),
          "target": target_lang}
 try:
     response1 = requests.post(url=END_POINT+"/translate_image2text", headers=headers1, json=json1)
-    print(response1.text)  # 客户端输出固定返回文本（服务器端保存解码图片decoded_image.png到本地）
+    print(response1.text)
+    jstr = json.loads(response1.text)
+    print(jstr["text"])
+    print(jstr["translatedText"])
 except requests.exceptions.RequestException as e:
     print(f"test1请求失败,错误信息：{e}")
