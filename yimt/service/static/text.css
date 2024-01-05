@@ -392,15 +392,16 @@ body {
 .fanyi__operations--image--font{
     display: inline-block;
     vertical-align: middle;
-    margin-left: 16px;
+    margin-left: 5px;
+    margin-bottom: 33px;
     line-height: 34px;
     text-align: center;
     width: 128px;
     height: 34px;
 
     position: absolute;
-    bottom: 78px;
-    left: 30px;
+    bottom: 0px;
+    left: 0px;
     z-index: 2;
     cursor:pointer;
 
@@ -415,7 +416,7 @@ body {
     display: inline-block;
     opacity: 0;
     vertical-align: middle;
-    margin-left: 16px;
+    margin-left: 0px;
     text-align: center;
     width: 128px;
     height: 34px;
@@ -430,8 +431,8 @@ body {
 
 .fanyi__operations--image{
     position: absolute;
-    bottom: 78px;
-    left: 30px;
+    bottom: 33px;
+    left: 6px;
     z-index: 3;
     cursor:pointer;
 }
