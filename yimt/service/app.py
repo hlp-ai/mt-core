@@ -18,6 +18,7 @@ from yimt.segmentation.text_splitter import may_combine_paragraph
 
 from yimt.service import remove_translated_files
 from yimt.service.api_keys import APIKeyDB
+from yimt.service.translate_fn import translate_image_fn
 from yimt.service.utils import path_traversal_check, SuspiciousFileOperation
 from cachelib import SimpleCache
 
@@ -384,42 +385,14 @@ def create_app(args):
             filepath = os.path.join(get_upload_dir(), filename)
             file.save(filepath)
 
-            # translated_file_path = translate_doc(filepath, source_lang, target_lang)
-            # translated_filename = os.path.basename(translated_file_path)
-
-            # log_service.info("->Translated: from " + filepath + " to " + translated_filename)
-
-            import multiprocessing
-
-            queue = multiprocessing.Queue()
-            p = multiprocessing.Process(target=run_ocr, args=(filepath, source_lang, queue,))
-            p.start()
-            p.join()
-            text = queue.get()
-
-            if text is None:
-                abort(400, description="NO OCR")
-
-            queue = multiprocessing.Queue()
-            p = multiprocessing.Process(target=run_translate, args=(text, "text", source_lang, target_lang, queue,))
-            p.start()
-            p.join()
-            translation = queue.get()
-
-            # src = text
-            # lang = source_lang + "-" + target_lang
-            #
-            # translator = translators.get_translator(source_lang, target_lang)
-            # if translator is None:
-            #     abort(400, description="Language pair %s is not supported" % lang)
-            #
-            # src = may_combine_paragraph(src)
-            # translation = translator.translate_paragraph(src)
+            result = translate_image_fn(filepath, source_lang, target_lang)
+            if result is None:
+                abort(400, description="NO OCR or NO translator")
 
             return jsonify(
                 {
-                    'originalText': text,
-                    'translatedText': translation
+                    'originalText': result[0],
+                    'translatedText': result[1]
                 }
             )
         except Exception as e:
@@ -513,26 +486,13 @@ def create_app(args):
         with open(filepath, "wb") as image_file:
             image_file.write(image_data)
 
-        import multiprocessing
-
-        queue = multiprocessing.Queue()
-        p = multiprocessing.Process(target=run_ocr, args=(filepath, source_lang, queue,))
-        p.start()
-        p.join()
-        text = queue.get()
-
-        if text is None:
-            abort(400, description="NO OCR")
-
-        queue = multiprocessing.Queue()
-        p = multiprocessing.Process(target=run_translate, args=(text, "text", source_lang, target_lang, queue,))
-        p.start()
-        p.join()
-        translation = queue.get()
+        result = translate_image_fn(filepath, source_lang, target_lang)
+        if result is None:
+            abort(400, description="NO OCR or NO translator")
 
         resp = {
-            'text': text,
-            'translatedText': translation
+            'originalText': result[0],
+            'translatedText': result[1]
         }
         return jsonify(resp)
 

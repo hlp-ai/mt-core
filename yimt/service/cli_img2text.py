@@ -2,7 +2,6 @@ import sys
 
 import requests, json
 import base64
-import os
 
 END_POINT = "http://127.0.0.1:5555"  # for edit
 token = "api_key"  # api_key
@@ -25,7 +24,7 @@ try:
     response1 = requests.post(url=END_POINT+"/translate_image2text", headers=headers1, json=json1)
     print(response1.text)
     jstr = json.loads(response1.text)
-    print(jstr["text"])
+    print(jstr["originalText"])
     print(jstr["translatedText"])
 except requests.exceptions.RequestException as e:
     print(f"test1请求失败,错误信息：{e}")
