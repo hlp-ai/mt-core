@@ -29,3 +29,12 @@ recognizers:
     vocab_path: D:\kidden\mt\ocr\deva\data\vocab-Deva.txt
     langs:
       - hi
+
+  cjk:
+    ctpn_model_path: D:\kidden\mt\open\github\mt-io\ocr\weights\weights-ctpnlstm-init.hdf5
+    densenet_model_path: D:\kidden\mt\ocr\cjk\densenet.hdf5
+    vocab_path: D:\kidden\mt\ocr\cjk\data\vocab-cjk.txt
+    langs:
+      - zh
+      - ja
+      - ko
