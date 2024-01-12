@@ -572,42 +572,6 @@ def create_app(args):
         # print("tph_target:" + file_path)
         return send_file(file_path)
 
-    @app.post("/request_ad")
-    # @access_check
-    def request_ad():
-        json = get_json_dict(request)
-        platform = json.get("platform")
-        support_platforms = ["android", "web", "plugin"]
-
-        if not platform:
-            abort(400, description="Invalid request: missing parameter: platform")
-        if platform not in support_platforms:
-            abort(400, description="platform %s is not supported" % platform)
-
-        ad_id = "test ad_id"
-        type = "text"
-        # type = "image"
-        ad_text = "Just buy it!\n The best product ever\n Click now"
-        if type == "text":
-            content = ad_text
-        else:
-            import base64
-            with open("./static/img/ad11.png", "rb") as image_file:  # 设置本地图片路径
-                encoded_image = base64.b64encode(image_file.read())
-            image_file.close()
-            content = encoded_image.decode('utf-8')
-
-        ad_url = "https://www.baidu.com/"  # for test
-        # ad_url = ""
-
-        resp = {
-            'ad_id': ad_id,
-            'type': type,
-            'content': content,
-            'url': ad_url
-        }
-        return jsonify(resp)
-
     @app.get("/download_file/<string:filename>")
     def download_file(filename: str):
         """Download a translated file"""
@@ -634,5 +598,43 @@ def create_app(args):
         download_filename = '.'.join(download_filename)
 
         return send_file(return_data, as_attachment=True, download_name=download_filename)
+
+    @app.post("/request_ad")
+    # @access_check
+    def request_ad():
+        json = get_json_dict(request)
+        platform = json.get("platform")
+        support_platforms = ["app", "web", "plugin"]
+
+        if not platform:
+            abort(400, description="Invalid request: missing parameter: platform")
+        if platform not in support_platforms:
+            abort(400, description="platform %s is not supported" % platform)
+
+        ad_id = "AD-20221020"
+        if platform == "web" or platform == "app":
+            type = "image"
+        else:
+            type = "text"
+
+        ad_text = "Welcome!\n This is a just test."
+        if type == "text":
+            content = ad_text
+        else:
+            import base64
+            with open("./static/img/ad11.png", "rb") as image_file:  # 设置本地图片路径
+                encoded_image = base64.b64encode(image_file.read())
+            image_file.close()
+            content = encoded_image.decode('utf-8')
+
+        ad_url = "http://www.hust.edu.cn/"  # for test
+
+        resp = {
+            'ad_id': ad_id,
+            'type': type,
+            'content': content,
+            'url': ad_url
+        }
+        return jsonify(resp)
 
     return app
