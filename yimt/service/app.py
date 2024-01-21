@@ -440,15 +440,15 @@ def create_app(args):
             translated_filename = os.path.basename(translated_file_path)
 
             suffix = filepath.split(".")[-1]
-            cache.set('file_path', filepath)  # 保存源文件路径到本地
-            cache.set('translated_file_path', translated_file_path)
-            cache.set('file_type', suffix)
 
             # log_service.info("->Translated: from " + filepath + " to " + translated_filename)
 
             return jsonify(
                 {
-                    "translatedFileUrl": url_for('download_file', filename=translated_filename, _external=True)
+                    "translatedFileUrl": url_for('download_file', filename=translated_filename, _external=True),
+                    "filepath": filepath,
+                    "translated_file_path": translated_file_path,
+                    "file_type": suffix
                 }
             )
         except Exception as e:
@@ -601,29 +601,12 @@ def create_app(args):
         # print("progress:" + progress)  # 测试用
         return progress
 
-    @app.post("/get_file_type")
-    # @access_check
-    def get_file_type():
-        # cache.clear()
-        # cache.set('file_path', file_path)
-        # print("file_path: "+cache.get('file_path'))
-        # suffix = file_path.split(".")[-1]
-        print("get_file_type: " + cache.get('file_type'))  #
-        # cache.set('file_type', suffix)
-        return cache.get('file_type')
-
     @app.post("/get_blob_file")
     # @access_check
     def get_blob_file():
         json = get_json_dict(request)
-        is_target = json.get("is_target")
-        # file_path = "templates/test.xlsx"
-        if is_target == True:
-            file_path = cache.get('translated_file_path')
-            # print("is_target")
-        else:
-            file_path = cache.get('file_path')
-            # print("is_original")
+        file_path = json.get("file_path")
+        # print("get_blob_file()"+file_path)
         # print("get_blob_file_path:" + file_path)  # for test
         import base64
         file_64_string = base64.b64encode(open(file_path, "rb").read())
@@ -635,41 +618,43 @@ def create_app(args):
 
     @app.post("/get_download")
     def get_download():
-        translate_file_path = cache.get('translated_file_path')
+        translate_file_path = request.form.get("translated_file_path")
         # print("download trans_path:" + translate_file_path)  # for test
         return url_for('download_file', filename=os.path.basename(translate_file_path), _external=True)
 
     @app.get("/pptx_original")
     def pptx_original():
         # print("path_original:")
-        # print("path:" + cache.get('file_path'))
-        return send_file(cache.get('file_path'))
+        file_path = request.args.get('file_path')
+        print("pptx_original: " + file_path)
+        return send_file(file_path)
 
     @app.get("/pptx_target")
     def pptx_target():
         # print("path_target:")
-        # print("path:" + cache.get('file_path'))
-        return send_file(cache.get('translated_file_path'))
+        translate_file_path = request.args.get('translated_file_path')
+        print("pptx_target: "+translate_file_path)
+        return send_file(translate_file_path)
 
     @app.get("/tph_original")
     def tph_original():
         # print("tph_original:")
-        file_type = cache.get('file_type')
+        file_type = request.args.get('file_type')
         # print("type:"+file_type)
         if file_type == 'docx' or file_type == 'pptx' or file_type == 'xlsx':
             return send_file("templates/media_original.html")
-        file_path = cache.get('file_path')
+        file_path = request.args.get('file_path')
         # print("tph_original:"+ file_path)
         return send_file(file_path)
 
     @app.get("/tph_target")
     def tph_target():
         # print("tph_target:")
-        file_type = cache.get('file_type')
+        file_type = request.args.get('file_type')
         # print("type:" + file_type)
         if file_type == 'docx' or file_type == 'pptx' or file_type == 'xlsx':
             return send_file("templates/media_target.html")
-        file_path = cache.get('translated_file_path')
+        file_path = request.args.get('translated_file_path')
         # print("tph_target:" + file_path)
         return send_file(file_path)
 
@@ -699,5 +684,43 @@ def create_app(args):
         download_filename = '.'.join(download_filename)
 
         return send_file(return_data, as_attachment=True, download_name=download_filename)
+
+    @app.post("/request_ad")
+    # @access_check
+    def request_ad():
+        json = get_json_dict(request)
+        platform = json.get("platform")
+        support_platforms = ["app", "web", "plugin"]
+
+        if not platform:
+            abort(400, description="Invalid request: missing parameter: platform")
+        if platform not in support_platforms:
+            abort(400, description="platform %s is not supported" % platform)
+
+        ad_id = "AD-20221020"
+        if platform == "web" or platform == "app":
+            type = "image"
+        else:
+            type = "text"
+
+        ad_text = "Welcome!\n This is a just test."
+        if type == "text":
+            content = ad_text
+        else:
+            import base64
+            with open("./static/img/ad11.png", "rb") as image_file:  # 设置本地图片路径
+                encoded_image = base64.b64encode(image_file.read())
+            image_file.close()
+            content = encoded_image.decode('utf-8')
+
+        ad_url = "http://www.hust.edu.cn/"  # for test
+
+        resp = {
+            'ad_id': ad_id,
+            'type': type,
+            'content': content,
+            'url': ad_url
+        }
+        return jsonify(resp)
 
     return app
