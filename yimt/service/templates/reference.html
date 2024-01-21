@@ -8,12 +8,18 @@
     <!-- jquery -->
     <script type="text/javascript" src="../static/plugin/jquery-2.2.1.min.js"></script>
     <script type="text/javascript" src="../static/plugin/jquery.media.js"></script>
+
+    <script src="../static/common_block.js" type="text/javascript"></script>
         
     <script>
         var file_type = "";
         var END_POINT
         window.onload = function()
         {
+            set_setting();
+            set_footer();
+            set_products();
+
             END_POINT = "http://127.0.0.1:5555";
             var server = window.localStorage.getItem("server");
             if(!!server){
@@ -96,19 +102,7 @@
 
 <body>
     <div class="mask" id="mask"></div>
-    <div class="url_setting_block" id="url_setting_block">
-        <label id="translation_setting_label">翻译设置</label>
-        <div id="translation_setting_block1">
-            <label id="server_label">服务器：</label>
-            <input type="text" class="url" id="url">
-        </div>
-        <div id="translation_setting_block2">
-            <label id="api_key_label">API KEY：</label>
-            <input type="text" class="api_key" id="api_key" placeholder="api_key">
-        </div>
-        <input type="button" class="url_setting_hide" value="关闭" onclick="url_setting_hide_func()">
-        <input type="button" class="url_button" id="url_button" value="设置" onclick="url_resetting_func()">
-    </div>
+    <div class="url_setting_block" id="url_setting_block"></div>
    
     <div class="ref_fanyi__nav">
         <div class="fanyi__nav__container">
@@ -191,39 +185,12 @@
                 <div class="product1_content" id="product1_content"></div>
                 <a class="product1_url" id="product1_url"></a>
             </div>
-            <div class="product2_area">
-                <div class="product21_area">
-                    <div class="product21_image">
-                    </div>
-                    <div class="product2_head">
-                        翻译插件
-                    </div>
-                    <div class="product2_text">
-                        简单好用的插件，支持Edge、Chrome等各类浏览器使用。
-                    </div>
-                </div>
-
-                <div class="product22_area">
-                    <div class="product22_image">
-    
-                    </div>
-                    <div class="product2_head">
-                        翻译APP
-                    </div>
-                    <div class="product2_text">
-                        高效便携的手机翻译APP，支持各类安卓手机，功能强大。
-                    </div>
-                </div>
-            </div>
+            <div class="product2_area" id="product2_area"></div>
         </div>
     
         
     </div>
-    <div class="fanyi__footer">
-        <div class="bottom__nav" style="display: block;">
-            <a target="_blank" class="nav2" href="/">成长计划</a><span class="c_fnl">|</span><a target="_blank" class="nav2" href="/">关于YIMT</a><span class="c_fnl">|</span><a target="_blank" class="nav2" href="/">官方博客</a>
-            <p>Copyright 2021-2022 by Liu Xiaofeng</p>
-        </div>   
-    </div>
+
+    <div class="fanyi__footer" id="fanyi__footer"></div>
 </body>
 </html>
