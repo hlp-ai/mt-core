@@ -20,10 +20,8 @@ from yimt.service import remove_translated_files
 from yimt.service.api_keys import APIKeyDB
 from yimt.service.translate_fn import translate_image_fn
 from yimt.service.utils import path_traversal_check, SuspiciousFileOperation
-from cachelib import SimpleCache
 
 log_service = get_logger(log_filename="service.log", name="service")
-cache = SimpleCache()
 
 
 def get_upload_dir():
