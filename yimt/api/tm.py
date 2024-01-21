@@ -31,7 +31,9 @@ class BasicTMSaver(TMSaver):
 
     def __init__(self, tm_dir=None):
         if tm_dir is None:
-            tm_dir = "./"
+            tm_dir = "./tm"
+        if not os.path.exists(tm_dir):
+            os.makedirs(tm_dir, exist_ok=True)
         self.fn_prefix = os.path.join(tm_dir, strftime("%Y%m%d.tm", time.localtime()))
         self.tm_f = open(self.fn_prefix, "a", encoding="utf-8")
 
