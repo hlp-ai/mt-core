@@ -71,42 +71,6 @@
             </div>
         </div>
 
-        <script>
-            function url_setting_func()
-            {
-                END_POINT = window.localStorage.getItem("server");
-                API_KEY = window.localStorage.getItem("key");
-                if(END_POINT=="")
-                {
-                    END_POINT = "http://127.0.0.1:5555";
-                }
-
-                document.getElementById("url_setting_block").style.visibility='visible';
-                document.getElementById("mask").style.display='block';
-                document.getElementById("url").value=END_POINT;
-                document.getElementById("api_key").value=API_KEY;
-            }
-
-            function url_resetting_func()
-            {
-                END_POINT = document.getElementById("url").value;
-                window.localStorage.setItem("server", END_POINT);
-
-                API_KEY = document.getElementById("api_key").value;
-                window.localStorage.setItem("key", API_KEY);
-
-                document.getElementById("url_setting_block").style.visibility='hidden';
-                document.getElementById("mask").style.display='none';
-            }
-         
-            function url_setting_hide_func()
-            {
-                document.getElementById("url_setting_block").style.visibility='hidden';
-                document.getElementById("mask").style.display='none'
-            }
-
-            document.getElementById("url_setting_label").addEventListener("click", url_setting_func);
-        </script>
     </div>
 
     <div class="restriction">
