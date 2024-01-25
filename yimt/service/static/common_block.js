@@ -2,8 +2,8 @@
 function set_footer() {
     document.getElementById("fanyi__footer").innerHTML = `
         <div class="bottom__nav" style="display: block;">
-            <a target="_blank" class="nav2" href="/">成长计划</a><span class="c_fnl">|</span><a target="_blank" class="nav2" href="/">关于YIMT</a><span class="c_fnl">|</span><a target="_blank" class="nav2" href="/">官方博客</a>
-            <p>Copyright 2021-2022 by Liu Xiaofeng</p>
+            <a target="_blank" class="nav2" href="/">服务条款</a><span class="c_fnl">|</span><a target="_blank" class="nav2" href="/">关于YIMT</a><span class="c_fnl">|</span><a target="_blank" class="nav2" href="/">联系我们</a>
+            <p>Copyright 2021-2024 by Liu Xiaofeng（刘小峰）</p>
         </div>
     `
 }
