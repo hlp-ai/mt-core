@@ -23,30 +23,13 @@
             {
                 END_POINT = server;
             }
-            var userAgentInfo = navigator.userAgent;
-            var Agents = ["Android","iPhone","SymbianOS","Windows Phone","iPad","iPod"];
-            var flag = true;
 
-            var is_finished = true;//
-            for(var v=0;v<Agents.length;v++)
-            {
-                if(userAgentInfo.indexOf(Agents[v])>0)
-                {
-                    flag=false;
-                    break;
-                }
-            }
-            var tag=window.localStorage.getItem("tag");
-            //alert(tag);
-            if(!flag&&tag!="jump")
-            {
-                window.location.href="{{url_for('mobile')}}"
-            }
+            var is_finished = true;
+
             request_ad();
         }
 
-        var is_finished = true;//
-
+        var is_finished = true;
         var xhr;
        
 		function uploadFile() {
