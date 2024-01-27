@@ -17,11 +17,11 @@ def get_type(fn):
     return os.path.splitext(fn)[1]
 
 
-def translate_doc(src_fn, source_lang="auto", target_lang="zh", translation_file=None):
+def translate_doc(src_fn, source_lang="auto", target_lang="zh", translation_file=None, callbacker=None):
     file_type = get_type(src_fn)
 
     if file_type == ".txt":
-        return translate_txt_auto(src_fn, source_lang, target_lang, translation_file)
+        return translate_txt_auto(src_fn, source_lang, target_lang, translation_file, callbacker=callbacker)
     elif file_type == ".pdf":
         return translate_pdf_auto(src_fn, source_lang, target_lang, translation_file)
     elif file_type == ".docx" or file_type == ".doc":

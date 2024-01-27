@@ -36,6 +36,19 @@ def detok_pretok_str(s):
 mutex = threading.Lock()
 
 
+class Progress:
+
+    def __init__(self):
+        self._tag = ""
+
+    def report(self, total, done):
+        print(self._tag, total, done)
+
+    def set_tag(self, tag):
+        self._tag = tag
+
+
+
 class Translator(object):
     """Translator base class"""
 
@@ -70,7 +83,7 @@ class Translator(object):
         """
         raise NotImplementedError()
 
-    def translate_list(self, texts):
+    def translate_list(self, texts, callbacker=None):
         """Translate a list of text batch by batch
 
         maybe call translate_batch several times
@@ -97,6 +110,9 @@ class Translator(object):
             results.extend(translations)
             done += len(to_translate)
 
+            if callbacker:
+                callbacker.report(total, done)
+
         self.tm_saver.flush()
 
         return results
@@ -120,7 +136,7 @@ class Translator(object):
         else:
             return translations
 
-    def translate_paragraph(self, src):
+    def translate_paragraph(self, src, callbacker=None):
         """Translate text paragraphs
 
         the text will be segmented into paragraphs, and then paragraph segmented into sentences.
@@ -134,7 +150,7 @@ class Translator(object):
         """
         source_sents, breaks = paragraph_tokenizer(src, self.from_lang)
 
-        translations = self.translate_list(source_sents)
+        translations = self.translate_list(source_sents, callbacker)
 
         translation = paragraph_detokenizer(translations, breaks)
 
