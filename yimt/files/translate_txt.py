@@ -13,7 +13,7 @@ def translate_txt_auto(txt_fn, source_lang="auto", target_lang="zh", translation
     else:
         translated_txt_fn = translation_file
 
-    txt = open(txt_fn, encoding="utf-8").read()
+    txt = open(txt_fn, encoding="utf-8").read()  # TODO: 大文本文件一次读入有问题
 
     if source_lang == "auto":
         source_lang = detect_lang(txt)

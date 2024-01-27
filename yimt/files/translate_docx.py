@@ -144,7 +144,7 @@ def scan_doc(doc, new_doc):
     return runs
 
 
-def translate_docx_auto(in_fn, source_lang="auto", target_lang="zh", translation_file=None):
+def translate_docx_auto(in_fn, source_lang="auto", target_lang="zh", translation_file=None, callbacker=None):
     paths = os.path.splitext(in_fn)
     doc_type = paths[1]
     docx_fn = in_fn
@@ -158,15 +158,18 @@ def translate_docx_auto(in_fn, source_lang="auto", target_lang="zh", translation
     else:
         translated_fn = translation_file
 
-    doc = docx.Document(docx_fn)
+    doc = docx.Document(docx_fn)  # TODO: 大文档能一次读入？
     translated_doc = docx.Document()
     runs = scan_doc(doc, translated_doc)
 
     if source_lang == "auto":
-        source_lang = detect_lang(runs[0].text)
+        source_lang = detect_lang(runs[0].text)  # TODO: 语言检测更安全些
 
     from yimt.api.translators import Translators
     translator = Translators().get_translator(source_lang, target_lang)
+
+    if callbacker:
+        callbacker.set_tag(docx_fn)
 
     txt_list = [r.text for r in runs]
     global docx_progress
