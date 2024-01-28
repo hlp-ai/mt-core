@@ -6,11 +6,17 @@ import fitz
 
 from pdfminer.high_level import extract_pages
 from pdfminer.layout import LTTextBoxHorizontal, LTTextLine, LTChar
+from pdfminer.pdfdocument import PDFDocument
+from pdfminer.pdfpage import PDFPage
+from pdfminer.pdfparser import PDFParser
+from pdfminer.pdftypes import resolve1
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Paragraph, Frame, KeepInFrame
+
+from yimt.api.translator import Progress
 from yimt.api.utils import detect_lang
 
 pdfmetrics.registerFont(TTFont('SimSun', os.path.join(os.path.dirname(__file__), 'SimSun.ttf')))
@@ -90,13 +96,10 @@ def extract_draw_save(translate_file, translated_file=None):
         outpage = outpdf[i]
         shape = outpage.new_shape()  # make a drawing canvas for the output page
         # define some output page with the same dimensions
-        # --------------------------------------
+
         # loop through the paths and draw them
-        # --------------------------------------
         for path in paths:
-            # ------------------------------------
             # draw each entry of the 'items' list
-            # ------------------------------------
             for item in path["items"]:  # these are the draw commands
                 if item[0] == "l":  # line
                     shape.draw_line(item[1], item[2])
@@ -108,10 +111,8 @@ def extract_draw_save(translate_file, translated_file=None):
                     shape.draw_bezier(item[1], item[2], item[3], item[4])
                 else:
                     raise ValueError("unhandled drawing", item)
-            # ------------------------------------------------------
-            # all items are drawn, now apply the common properties
-            # to finish the path
-            # ------------------------------------------------------
+
+            # all items are drawn, now apply the common properties to finish the path
             shape.finish(
                 fill=path["fill"],  # fill color
                 color=path["color"],  # line color
@@ -134,6 +135,7 @@ def extract_img_save(translate_file, translated_file):
         translated_fn = paths[0] + "-translated" + paths[1]
     else:
         translated_fn = translated_file
+
     doc = fitz.open(translate_file)
     page_count = doc.page_count  # number of pages
     doc_new = fitz.open(translated_fn)
@@ -209,10 +211,6 @@ def should_translate_en(txt):
         if len(token) <= 1:
             return False
 
-        # en_zh_word_translator = WordTranslator("en", "zh_cn")
-        # if not en_zh_word_translator.has(token):
-        #     return False
-
         return True
 
     return any(list(map(is_translatable, tokens)))
@@ -237,6 +235,13 @@ def print_to_canvas(t, x, y, w, h, c, ft):
     frame.addFromList([story_inframe], c)
 
 
+def get_pdf_page_count(filename):
+    with open(filename, 'rb') as file:
+        parser = PDFParser(file)
+        document = PDFDocument(parser)
+        return resolve1(document.catalog['Pages'])['Count']
+
+
 def translate_pdf_auto(pdf_fn, source_lang="auto", target_lang="zh", translation_file=None, callbacker=None):
     if translation_file is None:
         paths = os.path.splitext(pdf_fn)
@@ -245,6 +250,11 @@ def translate_pdf_auto(pdf_fn, source_lang="auto", target_lang="zh", translation
         translated_fn = translation_file
 
     translator = None
+
+    MIN_WIDTH = 7
+    MIN_HEIGHT = 7
+
+    total_pages = get_pdf_page_count(pdf_fn)
 
     pdf = canvas.Canvas(translated_fn)
     p = 1
@@ -256,17 +266,13 @@ def translate_pdf_auto(pdf_fn, source_lang="auto", target_lang="zh", translation
                 x, y, w, h = int(element.x0), int(element.y0), int(element.width), int(element.height)
                 t = element.get_text()
                 ft = get_fontsize(element)
-                print(t)
                 t = preprocess_txt(t)
                 block = (x, y, w, h, t)
 
-                if w < 9 or h < 9:
+                if w < MIN_WIDTH or h < MIN_HEIGHT:
                     print("***TooSmall", block)
-                    # print_to_canvas(t, x, y, 11, 11, pdf, ft)
                     print_to_canvas(t, x, y, w, h, pdf, ft)
                     continue
-
-                print("***Translate", block)
 
                 # translate and print
                 if translator is None:
@@ -286,22 +292,21 @@ def translate_pdf_auto(pdf_fn, source_lang="auto", target_lang="zh", translation
 
                 translation = translator.translate_paragraph(t)
                 print_to_canvas(translation, x, y, w, h, pdf, ft)
-                # print_to_canvas(t, x, y, w, h, pdf, ft)
 
         if callbacker:
-            callbacker.report(0, p)
+            callbacker.report(total_pages, p)
 
         pdf.showPage()
         p += 1
 
     pdf.save()
 
+    # 保存绘制内容到翻译文档
     tf_draw = extract_draw_save(pdf_fn, translated_fn)
-    print(type(tf_draw))
-
     tf_draw.saveIncr()
-    translated_file = extract_img_save(pdf_fn, tf_draw)
 
+    # 保存图片到翻译文档
+    translated_file = extract_img_save(pdf_fn, tf_draw)
     translated_file.saveIncr()
 
     return translated_file.name
@@ -318,7 +323,9 @@ if __name__ == "__main__":
     in_file = args.input_file
     out_file = args.output_file
 
-    translated_fn = translate_pdf_auto(in_file, target_lang=to_lang, translation_file=out_file)
+    callback = Progress()
+
+    translated_fn = translate_pdf_auto(in_file, target_lang=to_lang, translation_file=out_file, callbacker=callback)
 
     import webbrowser
 
