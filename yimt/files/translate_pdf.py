@@ -290,6 +290,7 @@ def translate_pdf_auto(pdf_fn, source_lang="auto", target_lang="zh", translation
                     if callbacker:
                         callbacker.set_tag(pdf_fn)
 
+                print("***Translating", block)
                 translation = translator.translate_paragraph(t)
                 print_to_canvas(translation, x, y, w, h, pdf, ft)
 
