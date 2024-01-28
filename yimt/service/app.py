@@ -645,21 +645,13 @@ def create_app(args):
         if args.disable_web_ui:
             abort(404)
 
-        return render_template('reference.html')
-
-    @app.route("/show_contrast")
-    @limiter.exempt
-    def show_contrast():
-        if args.disable_web_ui:
-            abort(404)
-
         type = request.values.get("type")
         src = request.values.get("src")
         src = src.replace("\\", "/")
         tgt = request.values.get("tgt")
         tgt = tgt.replace("\\", "/")
 
-        return render_template('show_contrast.html', type=type, src=src, tgt=tgt)
+        return render_template('reference.html', type=type, src=src, tgt=tgt)
 
     @app.route("/translate_file_progress", methods=['GET', 'POST'])
     def get_translate_progress():
