@@ -227,28 +227,6 @@ def create_app(args):
 
         return render_template('mobile_text.html')
 
-    @app.route("/reference")
-    @limiter.exempt
-    def reference():
-        if args.disable_web_ui:
-            abort(404)
-
-        return render_template('reference.html')
-
-    @app.route("/show_contrast")
-    @limiter.exempt
-    def show_contrast():
-        if args.disable_web_ui:
-            abort(404)
-
-        type = request.values.get("type")
-        src = request.values.get("src")
-        src = src.replace("\\", "/")
-        tgt = request.values.get("tgt")
-        tgt = tgt.replace("\\", "/")
-
-        return render_template('show_contrast.html', type=type, src=src, tgt=tgt)
-
     @app.route('/usage')
     @limiter.exempt
     def usage():
@@ -267,7 +245,7 @@ def create_app(args):
 
     ##############################################################################################
     #
-    # Interface for translation service
+    # 对外接口
     #
     ##############################################################################################
 
@@ -590,86 +568,6 @@ def create_app(args):
         }
         return jsonify(resp)
 
-    @app.route("/translate_file_progress", methods=['GET', 'POST'])
-    def get_translate_progress():
-        progress = ""
-        # print("checking progress")  # 测试用
-        file = request.files['file']
-        file_type = os.path.splitext(file.filename)[1]
-        if file_type == ".pdf":
-            from yimt.files.translate_pdf import pdf_progress
-            progress = pdf_progress
-        elif file_type == ".docx" or file_type == ".doc":
-            from yimt.files.translate_docx import docx_progress
-            progress = docx_progress
-        elif file_type in [".html", ".htm", ".xhtml", ".xml"]:
-            from yimt.files.translate_html import html_progress
-            progress = html_progress
-        elif file_type == ".pptx":
-            from yimt.files.translate_ppt import ppt_progress
-            progress = ppt_progress
-        else:
-            return "#"
-        # print("progress:" + progress)  # 测试用
-        return progress
-
-    @app.post("/get_blob_file")
-    # @access_check
-    def get_blob_file():
-        json = get_json_dict(request)
-        file_path = json.get("file_path")
-        # print("get_blob_file()"+file_path)
-        # print("get_blob_file_path:" + file_path)  # for test
-        import base64
-        file_64_string = base64.b64encode(open(file_path, "rb").read())
-        # print(file_64_string.decode('utf-8'))  # for test
-        resp = {
-            'base64': file_64_string.decode('utf-8')
-        }
-        return jsonify(resp)
-
-    @app.post("/get_download")
-    def get_download():
-        translate_file_path = request.form.get("translated_file_path")
-        # print("download trans_path:" + translate_file_path)  # for test
-        return url_for('download_file', filename=os.path.basename(translate_file_path), _external=True)
-
-    @app.get("/pptx_original")
-    def pptx_original():
-        # print("path_original:")
-        file_path = request.args.get('file_path')
-        print("pptx_original: " + file_path)
-        return send_file(file_path)
-
-    @app.get("/pptx_target")
-    def pptx_target():
-        # print("path_target:")
-        translate_file_path = request.args.get('translated_file_path')
-        print("pptx_target: "+translate_file_path)
-        return send_file(translate_file_path)
-
-    @app.get("/request_original")
-    def request_original():
-        # print("tph_original:")
-        file_type = request.args.get('file_type')
-        # print("type:"+file_type)
-        if file_type == 'docx' or file_type == 'pptx' or file_type == 'xlsx':
-            return send_file("templates/media_original.html")
-        file_path = request.args.get('file_path')
-        # print("tph_original:"+ file_path)
-        return send_file(file_path)
-
-    @app.get("/request_target")
-    def request_target():
-        # print("tph_target:")
-        file_type = request.args.get('file_type')
-        # print("type:" + file_type)
-        if file_type == 'docx' or file_type == 'pptx' or file_type == 'xlsx':
-            return send_file("templates/media_target.html")
-        file_path = request.args.get('translated_file_path')
-        # print("tph_target:" + file_path)
-        return send_file(file_path)
-
     @app.get("/download_file/<string:filename>")
     def download_file(filename: str):
         """Download a translated file"""
@@ -734,5 +632,113 @@ def create_app(args):
             'url': ad_url
         }
         return jsonify(resp)
+
+    #####################################################################
+    #
+    # 内部路径
+    #
+    #####################################################################
+
+    @app.route("/reference")
+    @limiter.exempt
+    def reference():
+        if args.disable_web_ui:
+            abort(404)
+
+        return render_template('reference.html')
+
+    @app.route("/show_contrast")
+    @limiter.exempt
+    def show_contrast():
+        if args.disable_web_ui:
+            abort(404)
+
+        type = request.values.get("type")
+        src = request.values.get("src")
+        src = src.replace("\\", "/")
+        tgt = request.values.get("tgt")
+        tgt = tgt.replace("\\", "/")
+
+        return render_template('show_contrast.html', type=type, src=src, tgt=tgt)
+
+    @app.route("/translate_file_progress", methods=['GET', 'POST'])
+    def get_translate_progress():
+        progress = ""
+        # print("checking progress")  # 测试用
+        file = request.files['file']
+        file_type = os.path.splitext(file.filename)[1]
+        if file_type == ".pdf":
+            from yimt.files.translate_pdf import pdf_progress
+            progress = pdf_progress
+        elif file_type == ".docx" or file_type == ".doc":
+            from yimt.files.translate_docx import docx_progress
+            progress = docx_progress
+        elif file_type in [".html", ".htm", ".xhtml", ".xml"]:
+            from yimt.files.translate_html import html_progress
+            progress = html_progress
+        elif file_type == ".pptx":
+            from yimt.files.translate_ppt import ppt_progress
+            progress = ppt_progress
+        else:
+            return "#"
+        # print("progress:" + progress)  # 测试用
+        return progress
+
+    @app.post("/get_blob_file")
+    # @access_check
+    def get_blob_file():
+        json = get_json_dict(request)
+        file_path = json.get("file_path")
+        # print("get_blob_file()"+file_path)
+        # print("get_blob_file_path:" + file_path)  # for test
+        import base64
+        file_64_string = base64.b64encode(open(file_path, "rb").read())
+        # print(file_64_string.decode('utf-8'))  # for test
+        resp = {
+            'base64': file_64_string.decode('utf-8')
+        }
+        return jsonify(resp)
+
+    @app.post("/get_download")
+    def get_download():
+        translate_file_path = request.form.get("translated_file_path")
+        # print("download trans_path:" + translate_file_path)  # for test
+        return url_for('download_file', filename=os.path.basename(translate_file_path), _external=True)
+
+    @app.get("/pptx_original")
+    def pptx_original():
+        # print("path_original:")
+        file_path = request.args.get('file_path')
+        print("pptx_original: " + file_path)
+        return send_file(file_path)
+
+    @app.get("/pptx_target")
+    def pptx_target():
+        # print("path_target:")
+        translate_file_path = request.args.get('translated_file_path')
+        print("pptx_target: " + translate_file_path)
+        return send_file(translate_file_path)
+
+    @app.get("/request_original")
+    def request_original():
+        # print("tph_original:")
+        file_type = request.args.get('file_type')
+        # print("type:"+file_type)
+        if file_type == 'docx' or file_type == 'pptx' or file_type == 'xlsx':
+            return send_file("templates/media_original.html")
+        file_path = request.args.get('file_path')
+        # print("tph_original:"+ file_path)
+        return send_file(file_path)
+
+    @app.get("/request_target")
+    def request_target():
+        # print("tph_target:")
+        file_type = request.args.get('file_type')
+        # print("type:" + file_type)
+        if file_type == 'docx' or file_type == 'pptx' or file_type == 'xlsx':
+            return send_file("templates/media_target.html")
+        file_path = request.args.get('translated_file_path')
+        # print("tph_target:" + file_path)
+        return send_file(file_path)
 
     return app
