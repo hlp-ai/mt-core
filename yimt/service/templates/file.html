@@ -20,9 +20,7 @@
             var key = window.localStorage.getItem("key");
             API_KEY=key;
             if(!!server)
-            {
                 END_POINT = server;
-            }
 
             var is_finished = true;
 
@@ -36,25 +34,15 @@
 		    var fileObj = document.getElementById("select_file").files[0];
             var files = document.getElementById("select_file").files;
             if(files.length==0)
-            {
                 return;
-            }
-            document.getElementById("showProgress").innerHTML = "正在上传";//
+
+            document.getElementById("showProgress").innerHTML = "正在上传";
             document.getElementById("showProgress").style.display ="block";
             document.getElementById("progress_line").style.display ="block";
             document.getElementById("download").style.display = "none";
 
             source_lang = document.getElementById('source').value;
             target_lang = document.getElementById('target').value;
-
-            END_POINT = window.localStorage.getItem("server");
-            API_KEY = window.localStorage.getItem("key");
-            if(END_POINT=="")
-            {
-                END_POINT = "http://127.0.0.1:5555";
-            }
-
-		    console.log(fileObj);
 
 		    var form = new FormData();
 		    form.append("file", fileObj);
@@ -64,7 +52,7 @@
 
 		    var url = END_POINT + "/translate_file";
 		    xhr = new XMLHttpRequest();
-            is_finished = false;//
+            is_finished = false;
 
             xhr.upload.addEventListener("progress", function(evt){
                 if (evt.lengthComputable) {
@@ -82,6 +70,7 @@
                     document.getElementById("showProgress").innerHTML = '无法计算';
                 }
                 }, false);
+
 		    xhr.open("post", url, true);
 		    xhr.onload = uploadComplete;
 		    xhr.send(form);
@@ -94,7 +83,6 @@
             if(is_finished == false)
             {
                 var url = END_POINT + "/translate_file_progress";
-                //alert(url); //测试用
                 var fileObj = document.getElementById("select_file").files[0];
                 var form = new FormData();
 		        form.append("file", fileObj);
@@ -102,8 +90,8 @@
                 xhr.onload = function(){
                     if(is_finished == false)  //得添加这句判断，否则会在上传结束后仍短暂执行下面的语句
                     {
-                        console.log(this.responseText); //测试用
-                        //console.log("is_finished?");  //测试用
+                        console.log(this.responseText);
+                        //console.log("is_finished?");
                         document.getElementById("showProgress").innerHTML = '上传完成，正在翻译,翻译进度：'+ this.responseText;
                     }
                 }
@@ -117,29 +105,23 @@
         }
 
 		function uploadComplete(evt) {
-			//alert(evt.target.responseText);
 			res_json = JSON.parse(evt.target.responseText);
 			if(res_json.error){
-			    //alert(res_json.error);//
+			    alert(res_json.error);
 			    return;
 			}
-			//alert(res_json)//
-			//alert(res_json.translatedFileUrl);
+
 			document.getElementById("download").style.display = "inline";
-            //document.getElementById("showProgress").innerHTML = '翻译完成，点击链接下载';
             is_finished = true  //标记翻译结束
 			document.getElementById('download').innerHTML = "<a href=" + res_json.translatedFileUrl + ">下载翻译文件</a>";
             var file_path = res_json.filepath;
             var translated_file_path = res_json.translated_file_path;
             var file_type = res_json.file_type;
-            //console.log("file_path: "+ file_path);
-            //console.log("translated_file_path: "+translated_file_path);
-            //console.log("file_type: "+file_type);
+
             window.localStorage.setItem("file_path", file_path);
             window.localStorage.setItem("translated_file_path", translated_file_path);
             window.localStorage.setItem("file_type", file_type);
 
-            // window.location.href="{{url_for('reference')}}";
             window.location.href="/show_contrast?type=" + file_type + "&src=" + file_path + "&tgt=" + translated_file_path;
 		}
 
