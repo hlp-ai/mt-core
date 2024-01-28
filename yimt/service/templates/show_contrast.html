@@ -23,19 +23,13 @@
 
             END_POINT = "http://127.0.0.1:5555";
             var server = window.localStorage.getItem("server");
-            if(!!server){
+            if(!!server)
                 END_POINT = server;
-            }
-            //console.log(END_POINT)  //for test
-            // var file_type = window.localStorage.getItem("file_type");
-            // var file_path = window.localStorage.getItem("file_path");
-            // var translated_file_path = window.localStorage.getItem("translated_file_path");
+
             var file_type = '{{type}}';
             var file_path = '{{src}}';
             var translated_file_path = '{{tgt}}';
-            //console.log(file_type);
-            //console.log(file_path);
-            //console.log(translated_file_path);
+
             var randomNumber = Math.floor(Math.random() * 1000000);
             document.getElementById("document-container").setAttribute("src", END_POINT + "/request_original" + '?timestamp=' + randomNumber + '&file_path=' + encodeURIComponent(file_path)+ '&file_type=' + file_type);
             document.getElementById("document-container2").setAttribute("src", END_POINT+"/request_target"+ '?timestamp=' + randomNumber + '&translated_file_path=' + encodeURIComponent(translated_file_path)+ '&file_type=' + file_type);
@@ -47,9 +41,7 @@
         {
             let xhr = new XMLHttpRequest();
             var form = new FormData();
-            // var translated_file_path = window.localStorage.getItem("translated_file_path");
             var translated_file_path = '{{tgt}}';
-            //alert(translated_file_path);
             form.append("translated_file_path", translated_file_path);
             xhr.open('POST',END_POINT + "/get_download");
             xhr.send(form);
