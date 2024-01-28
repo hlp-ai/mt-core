@@ -27,10 +27,10 @@ def translate_ml_auto(in_fn, source_lang="auto", target_lang="zh", translation_f
         translated_fn = translation_file
 
     in_fn = in_fn.lower()
-    html_txt = open(in_file, encoding="utf-8").read()
+    html_txt = open(in_fn, encoding="utf-8").read()
     if in_fn.endswith(".html") or in_fn.endswith(".xhtml") or in_fn.endswith(".htm"):
         soup = BeautifulSoup(html_txt, "html.parser")
-    elif in_file.endswith(".xml") or in_fn.endswith(".sgml"):
+    elif in_fn.endswith(".xml") or in_fn.endswith(".sgml"):
         soup = BeautifulSoup(html_txt, "xml")
 
     body = soup
