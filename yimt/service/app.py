@@ -235,6 +235,20 @@ def create_app(args):
 
         return render_template('reference.html')
 
+    @app.route("/show_contrast")
+    @limiter.exempt
+    def show_contrast():
+        if args.disable_web_ui:
+            abort(404)
+
+        type = request.values.get("type")
+        src = request.values.get("src")
+        src = src.replace("\\", "/")
+        tgt = request.values.get("tgt")
+        tgt = tgt.replace("\\", "/")
+
+        return render_template('show_contrast.html', type=type, src=src, tgt=tgt)
+
     @app.route('/usage')
     @limiter.exempt
     def usage():
@@ -634,8 +648,8 @@ def create_app(args):
         print("pptx_target: "+translate_file_path)
         return send_file(translate_file_path)
 
-    @app.get("/tph_original")
-    def tph_original():
+    @app.get("/request_original")
+    def request_original():
         # print("tph_original:")
         file_type = request.args.get('file_type')
         # print("type:"+file_type)
@@ -645,8 +659,8 @@ def create_app(args):
         # print("tph_original:"+ file_path)
         return send_file(file_path)
 
-    @app.get("/tph_target")
-    def tph_target():
+    @app.get("/request_target")
+    def request_target():
         # print("tph_target:")
         file_type = request.args.get('file_type')
         # print("type:" + file_type)
