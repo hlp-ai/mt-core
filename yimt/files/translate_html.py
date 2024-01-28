@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup, Comment
 from yimt.api.utils import detect_lang
 
 
-def too_shor(txt, lang):
+def too_short(txt, lang):
     if len(txt.strip()) == 0:
         return True
 
@@ -43,7 +43,7 @@ def translate_ml_auto(in_fn, source_lang="auto", target_lang="zh", translation_f
                 continue
 
             t = element.string
-            # if too_shor(t, translator.from_lang):
+            # if too_short(t, translator.from_lang):
             #     continue
 
             to_translated_elements.append(element)
