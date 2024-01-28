@@ -2,7 +2,7 @@ import argparse
 import os
 
 import jieba
-from bs4 import BeautifulSoup, Comment
+from bs4 import BeautifulSoup, Comment, Doctype
 from yimt.api.utils import detect_lang
 
 
@@ -42,9 +42,12 @@ def translate_ml_auto(in_fn, source_lang="auto", target_lang="zh", translation_f
             if type(element.string) == Comment:
                 continue
 
+            if type(element.string) == Doctype:
+                continue
+
             t = element.string
-            # if too_short(t, translator.from_lang):
-            #     continue
+            if len(t.strip()) == 0:
+                continue
 
             to_translated_elements.append(element)
             to_translated_txt.append(element.string)
