@@ -9,6 +9,7 @@ from flask import (Flask, abort, jsonify, render_template, request, send_file, u
 from werkzeug.utils import secure_filename
 
 from yimt.api.text_recognizer import TextRecognizers
+from yimt.api.translator import Progress
 from yimt.api.translators import Translators
 from yimt.api.utils import detect_lang, get_logger
 
@@ -22,6 +23,19 @@ from yimt.service.translate_fn import translate_image_fn
 from yimt.service.utils import path_traversal_check, SuspiciousFileOperation
 
 log_service = get_logger(log_filename="service.log", name="service")
+
+
+class TranslationProgress(Progress):
+    def __init__(self):
+        self._progress_info = ""
+
+    def report(self, total, done):
+        self._progress_info = "{}/{}".format(done, total)
+        print(self._progress_info)
+
+    def get_info(self):
+        return self._progress_info
+
 
 
 def get_upload_dir():
@@ -125,6 +139,8 @@ def create_app(args):
 
     translators = Translators()
     # recognizers = TextRecognizers()
+
+    translate_progress = TranslationProgress()
 
     lang_pairs, from_langs, to_langs, langs_api = translators.support_languages()
 
@@ -426,7 +442,7 @@ def create_app(args):
             filepath = os.path.join(get_upload_dir(), filename)
             file.save(filepath)
 
-            translated_file_path = translate_doc(filepath, source_lang, target_lang)
+            translated_file_path = translate_doc(filepath, source_lang, target_lang, callbacker=translate_progress)
             translated_filename = os.path.basename(translated_file_path)
 
             suffix = filepath.split(".")[-1]
@@ -655,25 +671,10 @@ def create_app(args):
 
     @app.route("/translate_file_progress", methods=['GET', 'POST'])
     def get_translate_progress():
-        progress = ""
-        # print("checking progress")  # 测试用
         file = request.files['file']
         file_type = os.path.splitext(file.filename)[1]
-        if file_type == ".pdf":
-            from yimt.files.translate_pdf import pdf_progress
-            progress = pdf_progress
-        elif file_type == ".docx" or file_type == ".doc":
-            from yimt.files.translate_docx import docx_progress
-            progress = docx_progress
-        elif file_type in [".html", ".htm", ".xhtml", ".xml"]:
-            from yimt.files.translate_html import html_progress
-            progress = html_progress
-        elif file_type == ".pptx":
-            from yimt.files.translate_ppt import ppt_progress
-            progress = ppt_progress
-        else:
-            return "#"
-        # print("progress:" + progress)  # 测试用
+        progress = translate_progress.get_info()
+
         return progress
 
     @app.post("/get_blob_file")

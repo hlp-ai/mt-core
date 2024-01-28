@@ -16,7 +16,7 @@ from docx.text.paragraph import Paragraph
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from yimt.api.utils import detect_lang
 
-docx_progress = ""
+
 def doc_to_docx(doc_fn, docx_fn):
     from win32com import client as wc
     word = wc.Dispatch('Word.Application')
@@ -172,23 +172,12 @@ def translate_docx_auto(in_fn, source_lang="auto", target_lang="zh", translation
         callbacker.set_tag(docx_fn)
 
     txt_list = [r.text for r in runs]
-    global docx_progress
-    docx_progress = ""
-    batch_size = 10  # 每多少个文本更新一个进度单位
-    result_list = []
-    for i in range(0, len(txt_list) // batch_size + 1):
-        batch = txt_list[i * batch_size: i * batch_size + batch_size]
-        # print(batch) # 测试用
-        result = translator.translate_list(batch)
-        result_list += result
-        docx_progress += "#"
-        print("docx_progress:" + docx_progress)  # 测试用
-    # result_list = translator.translate_list(txt_list)
+    result_list = translator.translate_list(txt_list, callbacker=callbacker)
     for i in range(len(runs)):
         runs[i].text = result_list[i]
 
     translated_doc.save(translated_fn)
-    docx_progress = ""
+
     return translated_fn
 
 

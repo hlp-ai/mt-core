@@ -6,7 +6,7 @@ import os
 from pptx import Presentation
 from yimt.api.utils import detect_lang
 
-ppt_progress = ""
+
 def scan_doc(ppt, new_ppt):
     """Get text to be translated"""
     runs = []
@@ -23,7 +23,7 @@ def scan_doc(ppt, new_ppt):
     return runs
 
 
-def translate_ppt_auto(in_fn, source_lang="auto", target_lang="zh", translation_file=None):
+def translate_ppt_auto(in_fn, source_lang="auto", target_lang="zh", translation_file=None, callbacker=None):
     paths = os.path.splitext(in_fn)
     docx_fn = in_fn
 
@@ -42,25 +42,16 @@ def translate_ppt_auto(in_fn, source_lang="auto", target_lang="zh", translation_
     from yimt.api.translators import Translators
     translator = Translators().get_translator(source_lang, target_lang)
 
-    txt_list = [r.text for r in runs]
-    global ppt_progress
-    ppt_progress = ""
-    batch_size = 10  # 每多少个文本更新一个进度单位
-    result_list = []
-    for i in range(0, len(txt_list) // batch_size + 1):
-        batch = txt_list[i * batch_size: i * batch_size + batch_size]
-        result = translator.translate_list(batch)
-        result_list += result
-        # print(batch) # 测试用
-        ppt_progress += "#"
-        print("ppt_progress:" + ppt_progress)  # 测试用
+    if callbacker:
+        callbacker.set_tag(docx_fn)
 
-    # result_list = translator.translate_list(txt_list)  # translate
+    txt_list = [r.text for r in runs]
+    result_list = translator.translate_list(txt_list, callbacker=callbacker)  # translate
     for i in range(len(runs)):
         runs[i].text = result_list[i]
 
     translated_doc.save(translated_fn)
-    ppt_progress = ""  # 每完成一次文件翻译，归零进度
+
     return translated_fn
 
 

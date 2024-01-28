@@ -23,13 +23,13 @@ def translate_doc(src_fn, source_lang="auto", target_lang="zh", translation_file
     if file_type == ".txt":
         return translate_txt_auto(src_fn, source_lang, target_lang, translation_file, callbacker=callbacker)
     elif file_type == ".pdf":
-        return translate_pdf_auto(src_fn, source_lang, target_lang, translation_file)
+        return translate_pdf_auto(src_fn, source_lang, target_lang, translation_file, callbacker=callbacker)
     elif file_type == ".docx" or file_type == ".doc":
-        return translate_docx_auto(src_fn, source_lang, target_lang, translation_file)
+        return translate_docx_auto(src_fn, source_lang, target_lang, translation_file, callbacker=callbacker)
     elif file_type in [".html", ".htm", ".xhtml", ".xml"]:
-        return translate_ml_auto(src_fn, source_lang, target_lang, translation_file)
+        return translate_ml_auto(src_fn, source_lang, target_lang, translation_file, callbacker=callbacker)
     elif file_type == ".pptx":
-        return translate_ppt_auto(src_fn, source_lang, target_lang, translation_file)
+        return translate_ppt_auto(src_fn, source_lang, target_lang, translation_file, callbacker=callbacker)
     else:
         return None
 

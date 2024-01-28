@@ -21,7 +21,6 @@ styles.add(ParagraphStyle(fontName='SimSun', name='Song', fontSize=9, wordWrap='
 p_chars_lang_independent = re.compile(r"[0123456789+\-*/=~!@$%^()\[\]{}<>\|,\.\?\"]")
 
 p_en_chars = re.compile(r"[a-zA-Z]+")
-pdf_progress = ""
 
 
 font_size_list = []
@@ -238,7 +237,7 @@ def print_to_canvas(t, x, y, w, h, c, ft):
     frame.addFromList([story_inframe], c)
 
 
-def translate_pdf_auto(pdf_fn, source_lang="auto", target_lang="zh", translation_file=None):
+def translate_pdf_auto(pdf_fn, source_lang="auto", target_lang="zh", translation_file=None, callbacker=None):
     if translation_file is None:
         paths = os.path.splitext(pdf_fn)
         translated_fn = paths[0] + "-translated" + paths[1]
@@ -249,11 +248,9 @@ def translate_pdf_auto(pdf_fn, source_lang="auto", target_lang="zh", translation
 
     pdf = canvas.Canvas(translated_fn)
     p = 1
-    global pdf_progress  #######
-    pdf_progress = ""
+
     for page_layout in extract_pages(pdf_fn):  # for each page in pdf file
         print("*"*20, "Page", p, "*"*20, "\n")
-        pdf_progress = "#" * p
         for element in page_layout:
             if isinstance(element, LTTextBoxHorizontal):
                 x, y, w, h = int(element.x0), int(element.y0), int(element.width), int(element.height)
@@ -284,16 +281,20 @@ def translate_pdf_auto(pdf_fn, source_lang="auto", target_lang="zh", translation
                     from yimt.api.translators import Translators
                     translator = Translators().get_translator(source_lang, target_lang)
 
+                    if callbacker:
+                        callbacker.set_tag(pdf_fn)
+
                 translation = translator.translate_paragraph(t)
                 print_to_canvas(translation, x, y, w, h, pdf, ft)
                 # print_to_canvas(t, x, y, w, h, pdf, ft)
+
+        if callbacker:
+            callbacker.report(0, p)
 
         pdf.showPage()
         p += 1
 
     pdf.save()
-
-    pdf_progress = ""
 
     tf_draw = extract_draw_save(pdf_fn, translated_fn)
     print(type(tf_draw))

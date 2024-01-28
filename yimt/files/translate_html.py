@@ -5,7 +5,7 @@ import jieba
 from bs4 import BeautifulSoup, Comment
 from yimt.api.utils import detect_lang
 
-html_progress = ""
+
 def too_shor(txt, lang):
     if len(txt.strip()) == 0:
         return True
@@ -19,7 +19,7 @@ def too_shor(txt, lang):
     return False
 
 
-def translate_ml_auto(in_fn, source_lang="auto", target_lang="zh", translation_file=None):
+def translate_ml_auto(in_fn, source_lang="auto", target_lang="zh", translation_file=None, callbacker=None):
     if translation_file is None:
         paths = os.path.splitext(in_fn)
         translated_fn = paths[0] + "-translated" + paths[1]
@@ -54,18 +54,11 @@ def translate_ml_auto(in_fn, source_lang="auto", target_lang="zh", translation_f
 
     from yimt.api.translators import Translators
     translator = Translators().get_translator(source_lang, target_lang)
-    global html_progress
-    html_progress = ""
-    translations = []
-    batch_size = 100
-    for i in range(0, len(to_translated_txt) // batch_size + 1):
-        batch = to_translated_txt[i * batch_size: i * batch_size + batch_size]
-        # print(batch) # 测试用
-        translation = translator.translate_list(batch)
-        translations += translation
-        html_progress += "#"
-        print("html_progress:" + html_progress)  # 测试用
-    # translations = translator.translate_list(to_translated_txt)
+
+    if callbacker:
+        callbacker.set_tag(in_fn)
+
+    translations = translator.translate_list(to_translated_txt, callbacker=callbacker)
 
     for e, t in zip(to_translated_elements, translations):
         e.replaceWith(t)
@@ -73,7 +66,7 @@ def translate_ml_auto(in_fn, source_lang="auto", target_lang="zh", translation_f
     out_f = open(translated_fn, "w", encoding="utf-8")
     out_f.write(soup.prettify())
     out_f.close()
-    html_progress = ""
+
     return translated_fn
 
 
