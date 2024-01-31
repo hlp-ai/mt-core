@@ -23,7 +23,7 @@ class TextRecognizer:
 
     def recognize(self, img):
         if self._ocr is None:
-            print("Loadig OCR for", self._name)
+            print("Loading OCR for", self._name)
             self._ocr = OCRImpl(ctpn_weight_path=self._ctpn_model_path,
                           densenet_weight_path=self._densenet_model_path,
                           dict_path=self._vocab_path)

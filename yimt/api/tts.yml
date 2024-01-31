@@ -1,0 +1,18 @@
+synthesizers:
+  en:
+    txt2mel_conf_fn: D:\kidden\mt\tts\lj-fs2\config.yml
+    txt2mel_model_fn: D:\kidden\mt\tts\lj-fs2\checkpoints\model-140000.h5
+    mel2wav_conf_fn: D:\kidden\mt\tts\lj-mb\config.yml
+    mel2wav_model_fn: D:\kidden\mt\tts\lj-mb\checkpoints\generator-445000.h5
+    mapper_fn: D:\kidden\mt\tts\lj-fs2\ljspeech_mapper.json
+    language: en
+    rate: 22050
+
+  zh:
+    txt2mel_conf_fn: D:\kidden\mt\open\github\mt-io\tts\bin\fastspeech2\conf\fastspeech2.baker.v2.yaml
+    txt2mel_model_fn: D:\dataset\baker\baker\fastspeech2\checkpoints\model-160000.h5
+    mel2wav_conf_fn: D:\kidden\mt\open\github\mt-io\tts\bin\mbmelgan\conf\multiband_melgan.baker.v1.yaml
+    mel2wav_model_fn: D:\dataset\baker\baker\mbmelgan\checkpoints\generator-80000.h5
+    mapper_fn: D:\kidden\mt\open\github\mt-io\tts\processor\pretrained\baker_mapper.json
+    language: zh
+    rate: 24000
