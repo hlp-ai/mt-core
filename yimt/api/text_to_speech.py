@@ -44,9 +44,11 @@ class Text2Speeches:
             config = yaml.safe_load(config_f.read())
 
         self._synthesizers = {}
+        self._languages = []
 
-        for name, params in config.get("synthesizers").items():
-            self._synthesizers[name] = Text2Speech(**params)
+        for lang, params in config.get("synthesizers").items():
+            self._synthesizers[lang] = Text2Speech(**params)
+            self._languages.append(lang)
 
     def synthesize(self, txt, lang):
         for name, tts in self._synthesizers.items():
@@ -54,6 +56,9 @@ class Text2Speeches:
                 return tts.synthesize(txt)
 
         return None
+
+    def languages(self):
+        return self._languages
 
 
 if __name__ == "__main__":
