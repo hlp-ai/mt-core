@@ -19,7 +19,7 @@ from yimt.segmentation.text_splitter import may_combine_paragraph
 
 from yimt.service import remove_translated_files
 from yimt.service.api_keys import APIKeyDB
-from yimt.service.translate_fn import translate_image_fn
+from yimt.service.translate_fn import translate_image_fn, tts_fn
 from yimt.service.utils import path_traversal_check, SuspiciousFileOperation
 
 log_service = get_logger(log_filename="service.log", name="service")
@@ -581,6 +581,35 @@ def create_app(args):
         resp = {
             'base64': audio_64_string.decode('utf-8'),
             'type': type
+        }
+        return jsonify(resp)
+
+    @app.post("/text2speech")
+    # @access_check
+    def text2speech():
+        json = get_json_dict(request)
+        token = json.get("token")
+        text = json.get("text")
+        source_lang = json.get("lang")
+
+        if not text:
+            abort(400, description="Invalid request: missing text parameter")
+        if not source_lang:
+            abort(400, description="Invalid request: missing source language parameter")
+        if source_lang == "auto":
+            source_lang = detect_lang(text)
+        # if source_lang not in from_langs:
+        #     abort(400, description="Source language %s is not supported" % source_lang)
+
+        result = tts_fn(text, source_lang)
+        if result is None:
+            abort(400, description="NO TTS")
+
+        import base64
+        audio_64_string = base64.b64encode(result[0].numpy().tobytes())
+        resp = {
+            'base64': audio_64_string.decode('utf-8'),
+            'rate': result[1]
         }
         return jsonify(resp)
 

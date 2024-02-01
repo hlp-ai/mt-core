@@ -27,4 +27,4 @@ try:
     print(jstr["originalText"])
     print(jstr["translatedText"])
 except requests.exceptions.RequestException as e:
-    print(f"test1请求失败,错误信息：{e}")
+    print(f"请求失败, 错误信息：{e}")

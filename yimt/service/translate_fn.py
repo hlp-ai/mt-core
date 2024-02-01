@@ -1,16 +1,36 @@
 import multiprocessing
 from yimt.api.text_recognizer import TextRecognizers
+from yimt.api.text_to_speech import Text2Speeches
 from yimt.api.translators import Translators
 from yimt.segmentation.text_splitter import may_combine_paragraph
 
 
 recognizers = TextRecognizers()
+synthesizers = Text2Speeches()
 translators = Translators()
 
 
 def run_ocr(img, source_lang, queue):
     text = recognizers.recognize(img, source_lang)
     queue.put(text)
+
+
+def run_tts(txt, lang, queue):
+    audio, rate = synthesizers.synthesize(txt, lang)
+    queue.put((audio, rate))
+
+
+def tts_fn(txt, lang, process=False):
+    if process:
+        queue = multiprocessing.Queue()
+        p = multiprocessing.Process(target=run_tts, args=(txt, lang, queue,))
+        p.start()
+        p.join()
+        result = queue.get()
+    else:
+        result = synthesizers.synthesize(txt, lang)
+
+    return result
 
 
 def run_translate(src, source_lang, target_lang, queue):
