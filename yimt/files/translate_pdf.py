@@ -261,6 +261,8 @@ def translate_pdf_auto(pdf_fn, source_lang="auto", target_lang="zh", translation
 
     for page_layout in extract_pages(pdf_fn):  # for each page in pdf file
         print("*"*20, "Page", p, "*"*20, "\n")
+        to_translate_blocks = []
+        to_translate_texts = []
         for element in page_layout:
             if isinstance(element, LTTextBoxHorizontal):
                 x, y, w, h = int(element.x0), int(element.y0), int(element.width), int(element.height)
@@ -274,25 +276,29 @@ def translate_pdf_auto(pdf_fn, source_lang="auto", target_lang="zh", translation
                     print_to_canvas(t, x, y, w, h, pdf, ft)
                     continue
 
-                # translate and print
-                if translator is None:
-                    if source_lang == "auto":
-                        source_lang = detect_lang(t)
-
-                    if source_lang == "en" and not should_translate_en(t):
-                        print("***Skipping", block)
-                        print_to_canvas(t, x, y, w, h, pdf, ft)
-                        continue
-
-                    from yimt.api.translators import Translators
-                    translator = Translators().get_translator(source_lang, target_lang)
-
-                    if callbacker:
-                        callbacker.set_tag(pdf_fn)
-
                 print("***Translating", block)
-                translation = translator.translate_paragraph(t)
-                print_to_canvas(translation, x, y, w, h, pdf, ft)
+                to_translate_blocks.append(block)
+                to_translate_texts.append(t)
+
+        if translator is None:
+            if source_lang == "auto":
+                source_lang = detect_lang(t)
+
+            if source_lang == "en" and not should_translate_en(t):
+                print("***Skipping", block)
+                print_to_canvas(t, x, y, w, h, pdf, ft)
+                continue
+
+            from yimt.api.translators import Translators
+            translator = Translators().get_translator(source_lang, target_lang)
+
+            if callbacker:
+                callbacker.set_tag(pdf_fn)
+
+        translations = translator.translate_list(to_translate_texts)
+        for i in range(len(to_translate_blocks)):
+            x, y, w, h, t = to_translate_blocks[i]
+            print_to_canvas(translations[i], x, y, w, h, pdf, ft)
 
         if callbacker:
             callbacker.report(total_pages, p)
