@@ -14,6 +14,7 @@ from yimt.api.translators import Translators
 from yimt.api.utils import detect_lang, get_logger
 
 from yimt.files.translate_files import support, translate_doc
+from yimt.files.translate_html import translate_tag_list
 from yimt.files.translate_tag import translate_html
 from yimt.segmentation.text_splitter import may_combine_paragraph
 
@@ -309,6 +310,13 @@ def create_app(args):
 
         if not api_key:
             api_key = ""
+
+        if isinstance(q, list):  # 浏览器插件元素列表翻译
+            translations = translate_tag_list(q, source_lang, target_lang)
+            resp = {
+                'translatedText': translations
+            }
+            return jsonify(resp)
 
         q = unescape(q)
         q = q.strip()
