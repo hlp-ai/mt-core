@@ -678,6 +678,8 @@ def create_app(args):
 
         ad_url = "http://www.hust.edu.cn/"  # for test
 
+        log_service.info("/request_ad: " + "platform=" + platform + "&ad_id=" + ad_id)
+
         resp = {
             'ad_id': ad_id,
             'type': type,
