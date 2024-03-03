@@ -19,6 +19,11 @@ from reportlab.platypus import Paragraph, Frame, KeepInFrame
 from yimt.api.translator import Progress
 from yimt.api.utils import detect_lang
 
+fonts = {
+    'zh': 'SimSun',
+    'en': 'Arial',
+    # Add more languages and their corresponding fonts here
+}
 pdfmetrics.registerFont(TTFont('SimSun', os.path.join(os.path.dirname(__file__), 'SimSun.ttf')))
 styles = getSampleStyleSheet()
 styles.add(ParagraphStyle(fontName='SimSun', name='Song', fontSize=9, wordWrap='CJK'))
@@ -93,6 +98,9 @@ def extract_draw_save(translate_file, translated_file=None):
         page = doc[i]
         paths = page.get_drawings()  # extract existing drawings
 
+        if i >= len(outpdf):  # 如果 outpdf 中没有第 i 页，那么添加一个新的页面
+            outpdf.new_page(width=page.rect.width, height=page.rect.height)
+
         outpage = outpdf[i]
         shape = outpage.new_shape()  # make a drawing canvas for the output page
         # define some output page with the same dimensions
@@ -112,21 +120,32 @@ def extract_draw_save(translate_file, translated_file=None):
                 else:
                     raise ValueError("unhandled drawing", item)
 
-            # all items are drawn, now apply the common properties to finish the path
+            keys = ["fill", "color", "dashes", "even_odd", "closePath", "lineJoin", "lineCap", "width",
+                    "stroke_opacity", "fill_opacity"]
+            ensure_values(path, keys)
+            lineCap = path.get("lineCap", [0])
+            if isinstance(lineCap, int):
+                lineCap = [lineCap]
             shape.finish(
                 fill=path["fill"],  # fill color
                 color=path["color"],  # line color
                 dashes=path["dashes"],  # line dashing
-                even_odd=path.get("even_odd", True),  # control color of overlaps
+                even_odd=path["even_odd"],  # control color of overlaps
                 closePath=path["closePath"],  # whether to connect last and first point
                 lineJoin=path["lineJoin"],  # how line joins should look like
-                lineCap=max(path["lineCap"]),  # how line ends should look like
+                lineCap=max(lineCap),  # how line ends should look like
                 width=path["width"],  # line width
-                stroke_opacity=path.get("stroke_opacity", 1),  # same value for both
-                fill_opacity=path.get("fill_opacity", 1),  # opacity parameters
+                stroke_opacity=path["stroke_opacity"],
+                fill_opacity=path["fill_opacity"],
             )
         shape.commit()
     return outpdf
+
+
+def ensure_values(dictionary, keys, default_value=1):
+    for key in keys:
+        if key not in dictionary or dictionary[key] is None:
+            dictionary[key] = default_value
 
 
 def extract_img_save(translate_file, translated_file):
@@ -220,17 +239,19 @@ def preprocess_txt(t):
     return t.replace("-\n", "").replace("\n", " ").replace("<", "&lt;").strip()
 
 
-def print_to_canvas(t, x, y, w, h, c, ft):
+def print_to_canvas(t, x, y, w, h, c, ft, tgt_lang="zh"):
     if h < 24:
         h = 24
     if w < 24:
         w = 24
     frame = Frame(x, y, w, h, showBoundary=0)
 
-    if ft not in font_size_list:
-        font_size_list.append(ft)
-        styles.add(ParagraphStyle(fontName='SimSun', name='Song' + str(ft), fontSize=ft, wordWrap='CJK'))
-    story = [Paragraph(t, styles['Song' + str(ft)])]
+    font = fonts.get(tgt_lang, 'SimSun')  # 根据目标语言获取字体，如果没有对应的字体，则使用 'SimSun' 作为默认字体
+    ft = round(ft)  # 将字体大小四舍五入到最接近的整数
+    style_name = font + str(ft)
+    if style_name not in styles:  # 如果样式不存在，则添加新样式
+        styles.add(ParagraphStyle(fontName=font, name=style_name, fontSize=ft, wordWrap='CJK'))  # 使用获取到的字体
+    story = [Paragraph(t, styles[style_name])]
     story_inframe = KeepInFrame(w, h, story)
     frame.addFromList([story_inframe], c)
 
@@ -273,7 +294,7 @@ def translate_pdf_auto(pdf_fn, source_lang="auto", target_lang="zh", translation
 
                 if w < MIN_WIDTH or h < MIN_HEIGHT:
                     print("***TooSmall", block)
-                    print_to_canvas(t, x, y, w, h, pdf, ft)
+                    print_to_canvas(t, x, y, w, h, pdf, ft, target_lang)
                     continue
 
                 print("***Translating", block)
@@ -286,7 +307,7 @@ def translate_pdf_auto(pdf_fn, source_lang="auto", target_lang="zh", translation
 
             if source_lang == "en" and not should_translate_en(t):
                 print("***Skipping", block)
-                print_to_canvas(t, x, y, w, h, pdf, ft)
+                print_to_canvas(t, x, y, w, h, pdf, ft, target_lang)
                 continue
 
             from yimt.api.translators import Translators
@@ -298,7 +319,7 @@ def translate_pdf_auto(pdf_fn, source_lang="auto", target_lang="zh", translation
         translations = translator.translate_list(to_translate_texts)
         for i in range(len(to_translate_blocks)):
             x, y, w, h, t = to_translate_blocks[i]
-            print_to_canvas(translations[i], x, y, w, h, pdf, ft)
+            print_to_canvas(translations[i], x, y, w, h, pdf, ft, target_lang)
 
         if callbacker:
             callbacker.report(total_pages, p)
