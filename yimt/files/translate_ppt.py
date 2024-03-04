@@ -20,6 +20,12 @@ def scan_doc(ppt, new_ppt):
                         zip(text_frame.paragraphs, new_shape.text_frame.paragraphs)):
                     # print("\tParagraph{}".format(k + 1), paragraph.text)
                     runs.append(new_paragraph)
+            elif shape.has_table:
+                table = shape.table
+                new_table = new_shape.table
+                for row, new_row in zip(table.rows, new_table.rows):
+                    for cell, new_cell in zip(row.cells, new_row.cells):
+                        runs.append(new_cell.text_frame)
     return runs
 
 
