@@ -15,6 +15,8 @@
     <script>
         var file_type = "";
         var END_POINT
+        var translated_file_path  
+        var file_type  
         window.onload = function()
         {
             set_setting();
@@ -26,9 +28,14 @@
             if(!!server)
                 END_POINT = server;
 
-            var file_type = '{{type}}';
-            var file_path = '{{src}}';
-            var translated_file_path = '{{tgt}}';
+            var queryParams = new URLSearchParams(window.location.search);
+            file_path = queryParams.get("file_path");
+            translated_file_path = queryParams.get("translated_file_path");
+            file_type = queryParams.get("file_type");   
+               
+            console.log(file_type);
+            console.log(file_path);
+            console.log(translated_file_path);
 
             var randomNumber = Math.floor(Math.random() * 1000000);
             document.getElementById("document-container").setAttribute("src", END_POINT + "/request_original" + '?timestamp=' + randomNumber + '&file_path=' + encodeURIComponent(file_path)+ '&file_type=' + file_type);
@@ -41,7 +48,7 @@
         {
             let xhr = new XMLHttpRequest();
             var form = new FormData();
-            var translated_file_path = '{{tgt}}';
+            //var translated_file_path = '{{tgt}}';
             form.append("translated_file_path", translated_file_path);
             xhr.open('POST',END_POINT + "/get_download");
             xhr.send(form);

@@ -31,6 +31,8 @@
         <script>
             var file_type = "";
             var END_POINT;
+            var file_path = decodeURIComponent("{{ file_path }}");
+
             window.onload = function()
             {
                 END_POINT = "http://127.0.0.1:5555";
@@ -44,7 +46,8 @@
     
             function check_file_type()
             {
-                file_type = window.localStorage.getItem("file_type");
+                var file_type = "{{ file_type }}";
+                console.log("media file_type :"+ file_type);
                 if(file_type =="docx"){
                     Show_docx();
                     //document.getElementById("preview-media").innerText="d";
@@ -84,10 +87,10 @@
                 get_blob_file();
 
                 async function get_blob_file(){
-                    var translated_file_path = window.localStorage.getItem("translated_file_path");
+                    //var translated_file_path = window.localStorage.getItem("translated_file_path");
                     const res = await fetch(END_POINT + "/get_blob_file", {
                         method: "POST",
-                        body: JSON.stringify({file_path:translated_file_path}),
+                        body: JSON.stringify({file_path:file_path}),
                         headers: { "Content-Type": "application/json" },
                         }
                     );
@@ -116,9 +119,9 @@
             }
             function Show_pptx()
             {
-                var translated_file_path = window.localStorage.getItem("translated_file_path");
+                //var translated_file_path = window.localStorage.getItem("translated_file_path");
                 $("#preview-media").pptxToHtml({ 
-                    pptxFileUrl: END_POINT + "/pptx_target" + '?translated_file_path=' + encodeURIComponent(translated_file_path), 
+                    pptxFileUrl: END_POINT + "/pptx_target" + '?translated_file_path=' + encodeURIComponent(file_path), 
                     slidesScale: "50%", 
                     slideMode: false, 
                     keyBoardShortCut: false 
@@ -130,10 +133,10 @@
                     get_xlsx_file();
 
                     async function get_xlsx_file(){
-                        var translated_file_path = window.localStorage.getItem("translated_file_path");
+                        //var translated_file_path = window.localStorage.getItem("translated_file_path");
                         const res = await fetch(END_POINT + "/get_blob_file", {
                             method: "POST",
-                            body: JSON.stringify({file_path:translated_file_path}),
+                            body: JSON.stringify({file_path:file_path}),
                             headers: { "Content-Type": "application/json" },
                             }
                         );

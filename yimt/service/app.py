@@ -699,14 +699,8 @@ def create_app(args):
     def reference():
         if args.disable_web_ui:
             abort(404)
+        return render_template('reference.html')
 
-        type = request.values.get("type")
-        src = request.values.get("src")
-        src = src.replace("\\", "/")
-        tgt = request.values.get("tgt")
-        tgt = tgt.replace("\\", "/")
-
-        return render_template('reference.html', type=type, src=src, tgt=tgt)
 
     @app.route("/translate_file_progress", methods=['GET', 'POST'])
     def get_translate_progress():
@@ -755,10 +749,15 @@ def create_app(args):
     def request_original():
         # print("tph_original:")
         file_type = request.args.get('file_type')
+        file_path = request.args.get('file_path')
         # print("type:"+file_type)
         if file_type == 'docx' or file_type == 'pptx' or file_type == 'xlsx':
-            return send_file("templates/media_original.html")
-        file_path = request.args.get('file_path')
+            # return send_file("templates/media_original.html")
+            file_path_str = url_for('static', filename=file_path)
+            file_path_str = file_path_str.replace('/static/', '/')
+            file_path_str = file_path_str.lstrip('/')
+            # print("file_path_str:" + file_path_str)
+            return render_template("media_original.html", file_type=file_type, file_path=file_path_str)
         # print("tph_original:"+ file_path)
         return send_file(file_path)
 
@@ -766,10 +765,15 @@ def create_app(args):
     def request_target():
         # print("tph_target:")
         file_type = request.args.get('file_type')
+        file_path = request.args.get('translated_file_path')
         # print("type:" + file_type)
         if file_type == 'docx' or file_type == 'pptx' or file_type == 'xlsx':
-            return send_file("templates/media_target.html")
-        file_path = request.args.get('translated_file_path')
+            # return send_file("templates/media_target.html")
+            file_path_str = url_for('static', filename=file_path)
+            file_path_str = file_path_str.replace('/static/', '/')
+            file_path_str = file_path_str.lstrip('/')
+            # print("file_path_str:" + file_path_str)
+            return render_template("media_target.html", file_type=file_type, file_path=file_path_str)
         # print("tph_target:" + file_path)
         return send_file(file_path)
 
