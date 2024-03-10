@@ -14,7 +14,12 @@ from docx.oxml.text.paragraph import CT_P
 from docx.table import _Cell, Table
 from docx.text.paragraph import Paragraph
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
+from docx.oxml.ns import nsdecls
+from docx.oxml import parse_xml
 from yimt.api.utils import detect_lang
+from lxml import etree
+from lxml.etree import _Element
+
 
 
 def doc_to_docx(doc_fn, docx_fn):
@@ -103,6 +108,29 @@ def handle_paragraph_img(p, doc, new_doc):
     new_img = new_doc.add_picture(BytesIO(related_part.blob))
 
 
+def handle_headers_and_footers(doc, new_doc):
+    for section in doc.sections:
+        header = section.header
+        new_header = new_doc.sections[-1].header
+        new_header.is_linked_to_previous = header.is_linked_to_previous
+        new_header._element.clear()
+
+        for element in header._element.iterchildren():
+            new_element = parse_xml(element.xml)
+            new_header._element.append(new_element)
+
+        footer = section.footer
+        new_footer = new_doc.sections[-1].footer
+        new_footer.is_linked_to_previous = footer.is_linked_to_previous
+        new_footer._element.clear()
+
+        for element in footer._element.iterchildren():
+            new_element = parse_xml(element.xml)
+            new_footer._element.append(new_element)
+
+
+
+
 def scan_doc(doc, new_doc):
     if isinstance(doc, Document):
         parent_elm = doc.element.body
@@ -111,12 +139,17 @@ def scan_doc(doc, new_doc):
     else:
         raise ValueError("something's not right")
 
+    handle_headers_and_footers(doc, new_doc)
     handle_sections(doc, new_doc)
 
     runs = []
     for child in parent_elm.iterchildren():
         if isinstance(child, CT_P):
             p = Paragraph(child, doc)
+            if p.style.name == "Page Break":   # 处理分页符
+                new_p = new_doc.add_paragraph()
+                new_p.runs[0].add_break(docx.enum.text.WD_BREAK.PAGE)
+                continue
             if is_pic(p):
                 # print("Image P")
                 handle_paragraph_img(p, doc, new_doc)
@@ -165,15 +198,18 @@ def translate_docx_auto(in_fn, source_lang="auto", target_lang="zh", translation
     if source_lang == "auto":
         source_lang = detect_lang(runs[0].text)  # TODO: 语言检测更安全些
 
-    from yimt.api.translators import Translators
-    translator = Translators().get_translator(source_lang, target_lang)
+    # from yimt.api.translators import Translators
+    # translator = Translators().get_translator(source_lang, target_lang)
 
     if callbacker:
         callbacker.set_tag(docx_fn)
-
+    for r in runs:
+        print(r.text)
     runs = [r for r in runs if len(r.text.strip()) > 0]
-    txt_list = [r.text for r in runs]
-    result_list = translator.translate_list(txt_list, callbacker=callbacker)
+    # txt_list = [r.text for r in runs]
+    txt_list = ["###" for _ in runs]
+    # result_list = translator.translate_list(txt_list, callbacker=callbacker)
+    result_list = txt_list
     for i in range(len(runs)):
         runs[i].text = result_list[i]
 
