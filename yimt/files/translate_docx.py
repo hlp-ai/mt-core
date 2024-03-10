@@ -198,18 +198,16 @@ def translate_docx_auto(in_fn, source_lang="auto", target_lang="zh", translation
     if source_lang == "auto":
         source_lang = detect_lang(runs[0].text)  # TODO: 语言检测更安全些
 
-    # from yimt.api.translators import Translators
-    # translator = Translators().get_translator(source_lang, target_lang)
+    from yimt.api.translators import Translators
+    translator = Translators().get_translator(source_lang, target_lang)
 
     if callbacker:
         callbacker.set_tag(docx_fn)
     for r in runs:
         print(r.text)
     runs = [r for r in runs if len(r.text.strip()) > 0]
-    # txt_list = [r.text for r in runs]
-    txt_list = ["###" for _ in runs]
-    # result_list = translator.translate_list(txt_list, callbacker=callbacker)
-    result_list = txt_list
+    txt_list = [r.text for r in runs]
+    result_list = translator.translate_list(txt_list, callbacker=callbacker)
     for i in range(len(runs)):
         runs[i].text = result_list[i]
 
