@@ -17,6 +17,7 @@ from reportlab.pdfgen import canvas
 from reportlab.platypus import Paragraph, Frame, KeepInFrame
 
 from yimt.api.translator import Progress
+from yimt.api.translators import translator_factory
 from yimt.api.utils import detect_lang
 
 fonts = {
@@ -310,8 +311,7 @@ def translate_pdf_auto(pdf_fn, source_lang="auto", target_lang="zh", translation
                 print_to_canvas(t, x, y, w, h, pdf, ft, target_lang)
                 continue
 
-            from yimt.api.translators import Translators
-            translator = Translators().get_translator(source_lang, target_lang)
+            translator = translator_factory.get_translator(source_lang, target_lang)
 
             if callbacker:
                 callbacker.set_tag(pdf_fn)

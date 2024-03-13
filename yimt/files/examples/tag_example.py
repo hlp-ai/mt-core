@@ -1,4 +1,4 @@
-from yimt.api.translators import Translators
+from yimt.api.translators import translator_factory
 from yimt.files.translate_tag import translate_html
 
 html_doc = """<html><head><title>The Dormouse's story</title></head>
@@ -14,7 +14,7 @@ and they lived at the bottom of a well.</p>
 <p class="story">...</p>
 """
 
-translator = Translators().get_translator("en", "zh")
+translator = translator_factory.get_translator("en", "zh")
 
 translated_soup = translate_html(translator, html_doc)
 

@@ -3,6 +3,8 @@ import os
 
 import jieba
 from bs4 import BeautifulSoup, Comment, Doctype
+
+from yimt.api.translators import translator_factory
 from yimt.api.utils import detect_lang
 
 
@@ -58,8 +60,8 @@ def translate_tag_list(markup_strs, source_lang="auto", target_lang="zh", callba
     if source_lang == "auto":
         source_lang = detect_lang(to_translated_list[0])
 
-    from yimt.api.translators import Translators
-    translator = Translators().get_translator(source_lang, target_lang)
+    from yimt.api.translators import translator_factory
+    translator = translator_factory.get_translator(source_lang, target_lang)
 
     translations = translator.translate_list(to_translated_list, callbacker=callbacker)
 
@@ -113,8 +115,7 @@ def translate_ml_auto(in_fn, source_lang="auto", target_lang="zh", translation_f
     if source_lang == "auto":
         source_lang = detect_lang(t)
 
-    from yimt.api.translators import Translators
-    translator = Translators().get_translator(source_lang, target_lang)
+    translator = translator_factory.get_translator(source_lang, target_lang)
 
     if callbacker:
         callbacker.set_tag(in_fn)

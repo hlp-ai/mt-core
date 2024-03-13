@@ -3,6 +3,7 @@ import os
 import argparse
 
 from yimt.api.translator import Progress
+from yimt.api.translators import translator_factory
 from yimt.api.utils import detect_lang
 
 
@@ -18,8 +19,7 @@ def translate_txt_auto(txt_fn, source_lang="auto", target_lang="zh", translation
     if source_lang == "auto":
         source_lang = detect_lang(txt)
 
-    from yimt.api.translators import Translators
-    translator = Translators().get_translator(source_lang, target_lang)
+    translator = translator_factory.get_translator(source_lang, target_lang)
 
     if callbacker:
         callbacker.set_tag(txt_fn)

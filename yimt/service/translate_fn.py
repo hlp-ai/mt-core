@@ -1,13 +1,13 @@
 import multiprocessing
 from yimt.api.text_recognizer import TextRecognizers
 from yimt.api.text_to_speech import Text2Speeches
-from yimt.api.translators import Translators
+from yimt.api.translators import translator_factory
 from yimt.segmentation.text_splitter import may_combine_paragraph
 
 
 recognizers = TextRecognizers()
 synthesizers = Text2Speeches()
-translators = Translators()
+translators = translator_factory
 
 
 def run_ocr(img, source_lang, queue):

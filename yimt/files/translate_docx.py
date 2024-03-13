@@ -16,6 +16,8 @@ from docx.text.paragraph import Paragraph
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from docx.oxml.ns import nsdecls
 from docx.oxml import parse_xml
+
+from yimt.api.translators import translator_factory
 from yimt.api.utils import detect_lang
 from lxml import etree
 from lxml.etree import _Element
@@ -198,8 +200,7 @@ def translate_docx_auto(in_fn, source_lang="auto", target_lang="zh", translation
     if source_lang == "auto":
         source_lang = detect_lang(runs[0].text)  # TODO: 语言检测更安全些
 
-    from yimt.api.translators import Translators
-    translator = Translators().get_translator(source_lang, target_lang)
+    translator = translator_factory.get_translator(source_lang, target_lang)
 
     if callbacker:
         callbacker.set_tag(docx_fn)

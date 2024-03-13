@@ -4,6 +4,8 @@ import argparse
 import os
 
 from pptx import Presentation
+
+from yimt.api.translators import translator_factory
 from yimt.api.utils import detect_lang
 
 
@@ -45,8 +47,7 @@ def translate_ppt_auto(in_fn, source_lang="auto", target_lang="zh", translation_
     if source_lang == "auto":
         source_lang = detect_lang(runs[0].text)
 
-    from yimt.api.translators import Translators
-    translator = Translators().get_translator(source_lang, target_lang)
+    translator = translator_factory.get_translator(source_lang, target_lang)
 
     if callbacker:
         callbacker.set_tag(docx_fn)

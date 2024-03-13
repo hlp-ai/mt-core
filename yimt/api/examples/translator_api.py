@@ -1,7 +1,7 @@
-from yimt.api.translators import Translators
+from yimt.api.translators import translator_factory
 
 if __name__ == "__main__":
-    translators = Translators()
+    translators = translator_factory
     print(translators.support_languages())
 
     translator = translators.get_translator("aaa", "bbb")

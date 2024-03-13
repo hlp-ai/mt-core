@@ -1,11 +1,10 @@
 """Translation cmd"""
 import sys
 
-from yimt.api.translators import Translators
-
+from yimt.api.translators import translator_factory
 
 if __name__ == "__main__":
-    translators = Translators("./mnmt.yml")
+    translators = translator_factory
 
     while True:
         sl = input("sl: ")

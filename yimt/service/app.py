@@ -10,7 +10,7 @@ from werkzeug.utils import secure_filename
 
 from yimt.api.text_recognizer import TextRecognizers
 from yimt.api.translator import Progress
-from yimt.api.translators import Translators
+from yimt.api.translators import Translators, translator_factory
 from yimt.api.utils import detect_lang, get_logger
 
 from yimt.files.translate_files import support, translate_doc
@@ -117,7 +117,7 @@ def run_ocr(image_path, source_lang, queue):
 
 
 def run_translate(src, text_format, source_lang, target_lang, queue):
-    translators = Translators()
+    translators = translator_factory
 
     translator = translators.get_translator(source_lang, target_lang)
     if translator is None:
@@ -138,7 +138,7 @@ def create_app(args):
     if not args.disable_files_translation:  # clean uploaded files periodically
         remove_translated_files.setup(get_upload_dir())
 
-    translators = Translators()
+    translators = translator_factory
     # recognizers = TextRecognizers()
 
     translate_progress = TranslationProgress()
@@ -283,6 +283,7 @@ def create_app(args):
         """Translate text from a language to another"""
         if request.is_json:  # json data in body of POST method
             json = get_json_dict(request)
+            log_service.info(json)
             q = json.get("q")
             source_lang = json.get("source")
             target_lang = json.get("target")
