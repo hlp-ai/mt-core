@@ -1,0 +1,15 @@
+{
+    "options": [
+      ["Chinese", "English", "Japanese", "Korean", "German"],
+      ["Vietnamese", "Russian", "Arabic", "Spanish", "French"],
+      ["Portuguese", "Malay", "Hindi", "Italian", "Thai"],
+      ["Indonesian"]
+    ],
+    "lang_options": [
+      ["zh", "en", "ja", "ko", "de"],
+      ["vi", "ru", "ar", "es", "fr"],
+      ["pt", "ms", "hi", "it", "th"],
+      ["id"]
+    ]
+
+}
