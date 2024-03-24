@@ -220,6 +220,14 @@ body {
     cursor:pointer;
 }
 
+.source_select:hover{
+    color:#357aa1;
+}
+
+.target_select:hover{
+    color:#357aa1;
+}
+
 .target_select{
     display: inline-block;
     vertical-align: middle;
@@ -809,9 +817,11 @@ body {
     position: absolute;
     min-width: 560px;
     max-width: 700px;
-    top:150px;
+    top:147px;
     width: 60%;
+    /*
     height: 300px;
+    */
     margin-left: 10%;
     margin-right:10%;
     padding: 40px;
@@ -824,8 +834,10 @@ body {
     z-index: 8;
     display: none; 
     border-radius: 6px;
-    border: 1px solid  #565656
+    border: 1px solid  #565656;
     
+    overflow-y: auto; 
+    max-height: 200px; 
 
 }
 
@@ -844,4 +856,39 @@ body {
     background-color: #357aa1; 
     color: #ffffff;
     cursor: pointer;
+}
+
+.select_arrow{
+    position: absolute;
+    pointer-events: none;
+    width:18px;
+    height:18px;
+    top: 10px;
+    
+}
+
+.select_arrow:hover{
+    cursor: pointer;
+}
+
+#arrow_down_source{
+    left: 120px;
+    z-index: 7;
+}
+
+#arrow_down_target{
+    left: 305px;
+    z-index: 7;
+}
+
+#arrow_up_source{
+    display: none;
+    left: 120px;
+    z-index: 7;
+}
+
+#arrow_up_target{
+    display: none;
+    left: 305px;
+    z-index: 7;
 }
