@@ -136,11 +136,14 @@
 
     <div class="restriction">
         <div class="option-table" id="option-table"></div>
-        <div class="option-window" id="option-window"></div>
         <div class="fanyi__operations">
             <div class="fanyi__operations--left">
                 <div id="toolbar">
                     <button id="source" name="source" class="source_select" value="auto" onclick="openTableWindow(0)">自动检测</button>
+                    <img class="select_arrow" id="arrow_down_source" src="../static/img/arrow_down.jpg"/>
+                    <img class="select_arrow" id="arrow_down_target" src="../static/img/arrow_down.jpg"/>
+                    <img class="select_arrow" id="arrow_up_source" src="../static/img/arrow_up.jpg"/>
+                    <img class="select_arrow" id="arrow_up_target" src="../static/img/arrow_up.jpg"/>
                     <span class="mid">-></span>
                     <button id="target" name="target" class="target_select" value="zh" onclick="openTableWindow(1)">Chinese</button>
                     
@@ -151,7 +154,7 @@
                             ['Portuguese', 'Malay','Hindi','Italian','Thai'],
                             ['Thai']
                         ];*/
-
+                        const optionTable = document.getElementById('option-table');
                         function renderOptionTable(options, lang_options, query_type) {
                             var optionTable = document.getElementById('option-table');
                             optionTable.innerHTML = '';
@@ -206,6 +209,22 @@
                                         query = "source";
                                     }
                                     renderOptionTable(options, lang_options, query);
+                                    if(optionTable.style.display == "block"){
+                                        optionTable.style.display = 'none';
+                                        document.getElementById('arrow_down_target').style.display = 'block';
+                                        document.getElementById('arrow_up_target').style.display = 'none';
+                                        document.getElementById('arrow_down_source').style.display = 'block';
+                                        document.getElementById('arrow_up_source').style.display = 'none';                                                               
+                                    }else{
+                                        optionTable.style.display = 'block';
+                                        if(query_type==1){
+                                            document.getElementById('arrow_down_target').style.display = 'none';
+                                            document.getElementById('arrow_up_target').style.display = 'block';
+                                        }else{
+                                            document.getElementById('arrow_down_source').style.display = 'none';
+                                            document.getElementById('arrow_up_source').style.display = 'block';
+                                        }
+                                    }
                                 }
                             };
                             xhr.send();
@@ -215,11 +234,28 @@
                         function openTableWindow(query_type) {
                             //alert(query_type);
                             //console.log(options)
+
                             loadOptionsFromJSON(query_type);
                             //const jsonFile = "lang_options.json"; // JSON 文件的路径
-                            document.getElementById('option-table').style.display = 'block';
+                            
+                            //optionTable.style.display = optionTable.style.display === 'none' ? 'block' : 'none';
                            
                         }
+
+                        // 点击文档其他区域时隐藏选项表格
+                        document.addEventListener('click', function(event) {
+                            var target = event.target;
+                            var source_button = document.getElementById('source')
+                            var target_button = document.getElementById('target')
+                            if (!optionTable.contains(target)&&!source_button.contains(target)&&!target_button.contains(target)) {
+                                optionTable.style.display = 'none';
+                                document.getElementById('arrow_down_source').style.display = 'block';
+                                document.getElementById('arrow_down_target').style.display = 'block';
+                                document.getElementById('arrow_up_source').style.display = 'none';
+                                document.getElementById('arrow_up_target').style.display = 'none';
+                            }
+                        });
+                                    
                         
                     </script>
                     <input type="button" class="fanyi__operations--machine" id="transMachine" value="翻译" onclick='translate_func()'>
