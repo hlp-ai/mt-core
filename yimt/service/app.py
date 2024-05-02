@@ -566,22 +566,19 @@ def create_app(args):
         json = get_json_dict(request)
         token = json.get("token")
         text = json.get("text")
-        source_lang = json.get("source")
-        target_lang = json.get("target")
-        print(text)  # for test
+        lang = json.get("lang")
+
+        log_service.info("/translate_text2audio: " + "&text=" + text + "&lang=" + lang
+                         + "&api_key=" + token)
 
         if not text:
             abort(400, description="Invalid request: missing text parameter")
-        if not source_lang:
+        if not lang:
             abort(400, description="Invalid request: missing source parameter")
-        if not target_lang:
-            abort(400, description="Invalid request: missing target parameter")
-        if source_lang == "auto":
-            source_lang = detect_lang(text)
-        if source_lang not in from_langs:
-            abort(400, description="Source language %s is not supported" % source_lang)
-        if target_lang not in to_langs:
-            abort(400, description="Target language %s is not supported" % target_lang)
+        # if lang == "auto":
+        #     lang = detect_lang(text)
+        # if lang not in from_langs:
+        #     abort(400, description="Source language %s is not supported" % lang)
 
         import base64
         audio_64_string = base64.b64encode(open("dida.wav", "rb").read())  # 这里设置本地音频路径
