@@ -501,13 +501,12 @@ def create_app(args):
         with open(filepath, "wb") as image_file:
             image_file.write(image_data)
 
-        result = translate_image_fn(filepath, source_lang, target_lang)
-        if result is None:
-            abort(400, description="NO OCR or NO translator")
+        # result = translate_image_fn(filepath, source_lang, target_lang)
+        # if result is None:
+        #     abort(400, description="NO OCR or NO translator")
 
         resp = {
-            'originalText': result[0],
-            'translatedText': result[1]
+            'text': "this is a test for ocr."
         }
         return jsonify(resp)
 
@@ -556,7 +555,7 @@ def create_app(args):
         with open("decoded_audio.wav", "wb") as audio_file:
             audio_file.write(audio_data)
         resp = {
-            'translatedText': "test text for 'audio to text' "
+            'text': "this is a test for asr"
         }
         return jsonify(resp)
 
