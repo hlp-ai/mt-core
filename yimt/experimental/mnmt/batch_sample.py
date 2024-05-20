@@ -1,3 +1,4 @@
+"""从一个目录下的每个文件中采样给定数量的样本"""
 import argparse
 import os
 
