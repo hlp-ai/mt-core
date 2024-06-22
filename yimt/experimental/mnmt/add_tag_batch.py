@@ -1,3 +1,4 @@
+"""给一个目录下的tsv平行语料文件添加ONE-TO-MANY目标语言标记"""
 import argparse
 import os
 
