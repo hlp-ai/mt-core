@@ -27,6 +27,7 @@ languages:
   - {code: hi, name: Hindi, cname: 印地文}
   - {code: it, name: Italian, cname: 意大利文}
   - {code: th, name: Thai, cname: 泰文}
+  - {code: id, name: Indonesian, cname: 印尼语}
   - {code: uk, name: Ukrainian, cname: 乌克兰语}
   - {code: fa, name: Persian, cname: 波斯语}
   - {code: ta, name: Tamil, cname: 泰米尔语}
