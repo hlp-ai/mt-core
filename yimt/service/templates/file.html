@@ -109,7 +109,7 @@
 			}
 
 			document.getElementById("download").style.display = "inline";
-            is_finished = true  //标记翻译结束
+            is_finished = true;
 			document.getElementById('download').innerHTML = "<a href=" + res_json.translatedFileUrl + ">下载翻译文件</a>";
             var file_path = res_json.filepath;
             var translated_file_path = res_json.translated_file_path;
@@ -121,7 +121,7 @@
             queryParams.append("file_type", file_type);
 
             var url = "{{ url_for('reference') }}?" + queryParams.toString();
-            window.location.href = url;
+            window.location.href = url;  // 转向对照页面
 		}
 
 	</script>
