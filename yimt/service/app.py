@@ -722,11 +722,11 @@ def create_app(args):
         }
         return jsonify(resp)
 
-    @app.post("/get_download")
-    def get_download():
-        translate_file_path = request.form.get("translated_file_path")
-        # print("download trans_path:" + translate_file_path)  # for test
-        return url_for('download_file', filename=os.path.basename(translate_file_path), _external=True)
+    # @app.post("/get_download")
+    # def get_download():
+    #     translate_file_path = request.form.get("translated_file_path")
+    #     # print("download trans_path:" + translate_file_path)  # for test
+    #     return url_for('download_file', filename=os.path.basename(translate_file_path), _external=True)
 
     @app.get("/pptx_original")
     def pptx_original():
