@@ -35,9 +35,8 @@
             file_type = queryParams.get("file_type");
 
             var randomNumber = Math.floor(Math.random() * 1000000);
-            document.getElementById("document-container").setAttribute("src", END_POINT + "/request_original" + '?timestamp=' + randomNumber + '&file_path=' + encodeURIComponent(file_path)+ '&file_type=' + file_type);
+            document.getElementById("document-container").setAttribute("src", END_POINT + "/request_source" + '?timestamp=' + randomNumber + '&file_path=' + encodeURIComponent(file_path)+ '&file_type=' + file_type);
             document.getElementById("document-container2").setAttribute("src", END_POINT+"/request_target"+ '?timestamp=' + randomNumber + '&translated_file_path=' + encodeURIComponent(translated_file_path)+ '&file_type=' + file_type);
-            // get_download();
             document.getElementById('download_link').innerHTML = "<a href=" + translated_file_url + ">下载翻译文件</a>";
             request_ad();
         }
